@@ -1,0 +1,3 @@
+﻿using DevTools;
+
+MaxSatFinder.Run();

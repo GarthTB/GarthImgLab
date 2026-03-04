@@ -1,3 +1,4 @@
 <Solution>
+    <Project Path="DevTools/DevTools.csproj"/>
     <Project Path="GarthImgLab/GarthImgLab.csproj"/>
 </Solution>
