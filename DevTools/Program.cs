@@ -1,3 +1,4 @@
-﻿using DevTools;
+﻿using BenchmarkDotNet.Running;
+using DevTools;
 
-MaxSatFinder.Run();
+BenchmarkRunner.Run<RoundCornerBench>();
