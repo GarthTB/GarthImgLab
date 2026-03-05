@@ -17,27 +17,27 @@ internal static class Saving
             ["WebP"] = []
         }.ToFrozenDictionary();
 
-    public static Func<MagickImage, string, Task> GetSaver(string format, string option) =>
+    public static Func<MagickImage, string, Task> Saver(string format, string option) =>
         format switch {
             "HEIC" => (img, inPath) => {
                 img.Settings.SetDefine(Heic, "chroma", option);
-                return img.WriteAsync(GenOutPath(inPath, "heic"), Heic);
+                return img.WriteAsync(OutPath(inPath, "heic"), Heic);
             },
             "JPEG" => (img, inPath) => {
                 img.Settings.SetDefine(Jpeg, "sampling-factor", option);
-                return img.WriteAsync(GenOutPath(inPath, "jpg"), Pjpeg);
+                return img.WriteAsync(OutPath(inPath, "jpg"), Pjpeg);
             },
             "PNG" when Enum.TryParse(option, true, out MagickFormat fmt) => (img, inPath) =>
-                img.WriteAsync(GenOutPath(inPath, "png"), fmt),
+                img.WriteAsync(OutPath(inPath, "png"), fmt),
             "TIFF" when Enum.TryParse(option, true, out CompressionMethod cmp) => (img, inPath) => {
                 img.Settings.Compression = cmp;
-                return img.WriteAsync(GenOutPath(inPath, "tif"), Tiff);
+                return img.WriteAsync(OutPath(inPath, "tif"), Tiff);
             },
-            "WebP" => static (img, inPath) => img.WriteAsync(GenOutPath(inPath, "webp"), WebP),
+            "WebP" => static (img, inPath) => img.WriteAsync(OutPath(inPath, "webp"), WebP),
             _ => throw new ArgumentException("保存配置无效")
         };
 
-    private static string GenOutPath(string inPath, string ext) {
+    private static string OutPath(string inPath, string ext) {
         var dir = GetDirectoryName(inPath) ?? ".";
         var name = GetFileNameWithoutExtension(inPath);
         var outPath = Combine(dir, $"{name}_GIL.{ext}");
