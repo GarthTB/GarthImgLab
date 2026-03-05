@@ -1,0 +1,12 @@
+<Window x:Class="GarthImgLab.Views.PreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:GarthImgLab.VMs"
+    Title="GarthImgLab 1.0.0 - 预览"
+    Width="600"
+    Height="400">
+    <Window.DataContext>
+        <vm:PreviewVM/>
+    </Window.DataContext>
+    <Image Source="{Binding Preview}"/>
+</Window>
