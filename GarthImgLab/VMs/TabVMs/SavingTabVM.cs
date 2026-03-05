@@ -11,7 +11,7 @@ internal sealed partial class SavingTabVM: ObservableObject
     public static IReadOnlyCollection<string> Formats => Saving.Options.Keys;
 
     partial void OnFormatChanged(string value) {
-        if (!string.IsNullOrWhiteSpace(value))
-            Option = (Options = Saving.Options[value]).FirstOrDefault("");
+        if (Saving.Options.TryGetValue(value, out var options))
+            Option = (Options = options).FirstOrDefault("");
     }
 }
