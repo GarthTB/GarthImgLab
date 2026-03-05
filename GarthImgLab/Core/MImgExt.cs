@@ -5,26 +5,28 @@ using ImageMagick;
 using ImageMagick.Drawing;
 using static Math;
 
-internal static class ImgExt
+internal static class MImgExt
 {
-    public static void ToThumb(this IMagickImage img, double maxPx) {
-        var w = img.Width;
-        var w2 = (uint)Round(Sqrt(maxPx / w / img.Height) * w);
-        if (w2 < w) img.Resize(w2, 0, FilterType.Mitchell);
-    }
-
-    extension(IMagickImage<ushort> img)
+    extension(MImg img)
     {
-        public void RoundCorner(double rPx, MagickColor color) {
+        public void ToThumb(double maxPx) {
+            var w = img.Width;
+            var w2 = (uint)Round(Sqrt(maxPx / w / img.Height) * w);
+            if (w2 < w) img.Resize(w2, 0, FilterType.Mitchell);
+        }
+
+        public void RoundCorner(double rPx, MagickColor color, CT ct) {
             if (rPx == 0) return;
 
             var (w, h) = (img.Width, img.Height);
             var notA = (ushort)~color.A;
-            using MagickImage mask = new(new MagickColor(color) { A = notA }, w, h);
+            using MImg mask = new(new MagickColor(color) { A = notA }, w, h);
             new Drawables().FillColor(new MagickColor(color) { A = 65535 })
                 .RoundRectangle(0, 0, w, h, rPx, rPx)
                 .Draw(mask); // 内不透外反A
             mask.Negate(Channels.Alpha); // 内透外原A
+
+            ct.ThrowIfCancellationRequested();
             if (notA == 0) mask.Colorize(color, new(100)); // 若A为0，RGB会被置0，需重新上色
             img.Composite(mask, CompositeOperator.Over);
         }
@@ -36,7 +38,7 @@ internal static class ImgExt
             img.Extent(-(int)ltrPx, -(int)ltrPx, 2 * ltrPx + img.Width, ltrPx + img.Height + bPx);
         }
 
-        public unsafe void MapRgb(Func<RGB, RGB> func, bool antiClip, CancellationToken token) {
+        public unsafe void MapRgb(Func<RGB, RGB> func, bool antiClip, CT ct) {
             var ch = img.ChannelCount;
             if (ch < 3) throw new InvalidOperationException("单色图不能映射RGB");
 
@@ -49,19 +51,20 @@ internal static class ImgExt
                 antiClip
                     ? range => {
                         for (var (px, end) = range; px < end; px++) {
-                            if ((px & 0xFFFF) == 0) token.ThrowIfCancellationRequested();
+                            if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
 
                             var i = px * ch;
                             var (r, g, b) = NormRgb(i);
                             var (r2, g2, b2) = func((r, g, b));
                             var t = Sqrt(2 * Min(Dist(r), Min(Dist(g), Dist(b))));
-                            (r2, g2, b2) = (Lerp(r, r2, t), Lerp(g, g2, t), Lerp(b, b2, t));
-                            (p[i], p[i + 1], p[i + 2]) = (DeNorm(r2), DeNorm(g2), DeNorm(b2));
+                            p[i] = DeNorm(Lerp(r, r2, t));
+                            p[i + 1] = DeNorm(Lerp(g, g2, t));
+                            p[i + 2] = DeNorm(Lerp(b, b2, t));
                         }
                     }
                     : range => {
                         for (var (px, end) = range; px < end; px++) {
-                            if ((px & 0xFFFF) == 0) token.ThrowIfCancellationRequested();
+                            if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
 
                             var i = px * ch;
                             var (r, g, b) = func(NormRgb(i));

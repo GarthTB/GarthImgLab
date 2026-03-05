@@ -12,28 +12,28 @@ internal static class Saving
         = new Dictionary<string, string[]> {
             ["HEIC"] = ["420", "422", "444"],
             ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
-            ["PNG"] = ["PNG24", "PNG32", "PNG48", "PNG64"],
-            ["TIFF"] = ["LZMA", "LZW", "NoCompression", "ZIP", "Zstd"],
+            ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],
+            ["TIFF"] = ["LZMA", "LZW", "NoCompression", "Zip", "Zstd"],
             ["WebP"] = []
         }.ToFrozenDictionary();
 
-    public static Func<MagickImage, string, Task> Saver(string format, string option) =>
+    public static Func<MImg, string, CT, Task> Saver(string format, string option) =>
         format switch {
-            "HEIC" => (img, inPath) => {
+            "HEIC" => (img, inPath, ct) => {
                 img.Settings.SetDefine(Heic, "chroma", option);
-                return img.WriteAsync(OutPath(inPath, "heic"), Heic);
+                return img.WriteAsync(OutPath(inPath, "heic"), Heic, ct);
             },
-            "JPEG" => (img, inPath) => {
+            "JPEG" => (img, inPath, ct) => {
                 img.Settings.SetDefine(Jpeg, "sampling-factor", option);
-                return img.WriteAsync(OutPath(inPath, "jpg"), Pjpeg);
+                return img.WriteAsync(OutPath(inPath, "jpg"), Pjpeg, ct);
             },
-            "PNG" when Enum.TryParse(option, true, out MagickFormat fmt) => (img, inPath) =>
-                img.WriteAsync(OutPath(inPath, "png"), fmt),
-            "TIFF" when Enum.TryParse(option, true, out CompressionMethod cmp) => (img, inPath) => {
-                img.Settings.Compression = cmp;
-                return img.WriteAsync(OutPath(inPath, "tif"), Tiff);
+            "PNG" when Enum.TryParse(option, out MagickFormat f) => (img, inPath, ct) =>
+                img.WriteAsync(OutPath(inPath, "png"), f, ct),
+            "TIFF" when Enum.TryParse(option, out CompressionMethod m) => (img, inPath, ct) => {
+                img.Settings.Compression = m;
+                return img.WriteAsync(OutPath(inPath, "tif"), Tiff, ct);
             },
-            "WebP" => static (img, inPath) => img.WriteAsync(OutPath(inPath, "webp"), WebP),
+            "WebP" => static (img, inPath, ct) => img.WriteAsync(OutPath(inPath, "webp"), WebP, ct),
             _ => throw new ArgumentException("保存配置无效")
         };
 

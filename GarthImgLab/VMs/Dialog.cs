@@ -4,11 +4,10 @@ using Microsoft.Win32;
 using static System.Windows.MessageBox;
 using static System.Windows.MessageBoxButton;
 using static System.Windows.MessageBoxImage;
+using OCE = OperationCanceledException;
 
 internal static class Dialog
 {
-    public static void ShowInfo(string title, string text) => Show(text, title, OK, Information);
-
     public static string[] PickImg(string title, bool multi) {
         OpenFileDialog dialog = new() {
             Title = title,
@@ -23,19 +22,19 @@ internal static class Dialog
             : [];
     }
 
+    public static void ShowInfo(string title, string text) => Show(text, title, OK, Information);
+
     public static void RunOrShowEx(string opName, Action op, Action? onEx = null) {
-        try { op(); } catch (OperationCanceledException) {} catch (Exception ex) {
-            if (ex.InnerException is OperationCanceledException) return;
-            onEx?.Invoke();
-            Show($"{opName}异常！\n{ex}", "异常", OK, Error);
-        }
+        try { op(); } catch (Exception ex) { OnEx(ex, opName, onEx); }
     }
 
     public static async Task RunOrShowExAsync(string opName, Func<Task> op, Action? onEx = null) {
-        try { await op(); } catch (OperationCanceledException) {} catch (Exception ex) {
-            if (ex.InnerException is OperationCanceledException) return;
-            onEx?.Invoke();
+        try { await op(); } catch (Exception ex) { OnEx(ex, opName, onEx); }
+    }
+
+    private static void OnEx(Exception ex, string opName, Action? onEx) {
+        onEx?.Invoke();
+        if (ex is not OCE and { InnerException: not OCE })
             Show($"{opName}异常！\n{ex}", "异常", OK, Error);
-        }
     }
 }

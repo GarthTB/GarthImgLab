@@ -31,17 +31,17 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         _bRatio = .06,
         _textRatio = .36;
 
-    [ObservableProperty] private MagickImage? _icon;
+    [ObservableProperty] private MImg? _icon;
     [ObservableProperty] private bool _useIcon;
+    public static IReadOnlyList<string> ExifTags => Exif.Extractors.Keys;
     public static IReadOnlyList<string> FontFamilies => MagickNET.FontFamilies;
-    public static IReadOnlyCollection<string> ExifTags => Exif.Extractors.Keys;
     public void Dispose() => Icon?.Dispose();
     partial void OnCornerRatioChanged(double value) => CornerRatio = Clamp(value, 0, .5);
     partial void OnLtrRatioChanged(double value) => LtrRatio = Clamp(value, 0, 1);
     partial void OnBRatioChanged(double value) => BRatio = Clamp(value, 0, 1);
     partial void OnTextRatioChanged(double value) => TextRatio = Clamp(value, 0, 1);
 
-    partial void OnIconChanged(MagickImage? oldValue, MagickImage? newValue) {
+    partial void OnIconChanged(MImg? oldValue, MImg? newValue) {
         oldValue?.Dispose();
         if (newValue is null) UseIcon = false;
     }
@@ -59,44 +59,46 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         Dialog.RunOrShowEx(
             "选取图标",
             () => {
-                if (Dialog.PickImg("选取图标", false) is [var path, ..]) Icon = new(path);
+                if (Dialog.PickImg("选取图标", false) is [var path, ..])
+                    _ = Task.Run(() => Icon = new(path));
             },
             () => Icon = null);
 
-    public override void Apply(IMagickImage<ushort> img, CancellationToken token) =>
+    public override void Apply(MImg img, CT ct) =>
         Dialog.RunOrShowEx(
             "添加边框",
             () => {
                 var (imgW, imgH) = (img.Width, img.Height);
                 var minSide = Min(imgW, imgH);
                 var frameColor = ParseColor(FrameColor);
-                img.RoundCorner(CornerRatio * minSide, frameColor);
+                img.RoundCorner(CornerRatio * minSide, frameColor, ct);
 
-                token.ThrowIfCancellationRequested();
+                ct.ThrowIfCancellationRequested();
                 var bPx = (uint)Round(BRatio * minSide);
                 img.AddFrame((uint)Round(LtrRatio * minSide), bPx, frameColor);
 
                 if (bPx < 1) return;
 
-                var text = GetExifText(img.GetExifProfile());
+                var text = GetText(img.GetExifProfile());
                 var tgtTextH = TextRatio * bPx;
                 var (pen, textW, textH, ascent) = string.IsNullOrWhiteSpace(text)
                     ? (null, 0, tgtTextH, 0)
                     : GetPenMetrics(text, tgtTextH);
-                var (textX, iconY) = ((imgW - textW) / 2, imgH - (bPx + textH) / 2);
+                var textX = (imgW - textW) / 2;
+                var iconY = (int)Round(imgH - (bPx + textH) / 2);
 
                 if (UseIcon && Icon is {}) {
-                    token.ThrowIfCancellationRequested();
+                    ct.ThrowIfCancellationRequested();
                     using var mIcon = Icon.CloneAndMutate(m => m.Resize(0, (uint)Round(textH)));
 
-                    token.ThrowIfCancellationRequested();
+                    ct.ThrowIfCancellationRequested();
                     var shift = (GapRatio * textH + mIcon.Width) / 2;
-                    var iconX = (int)Round(textX + shift);
-                    img.Composite(mIcon, iconX, (int)Round(iconY), CompositeOperator.Over);
+                    var iconX = (int)Round(textX + textW + shift);
+                    img.Composite(mIcon, iconX, iconY, CompositeOperator.Over);
 
                     textX -= shift;
                 }
-                if (pen is {}) token.ThrowIfCancellationRequested();
+                if (pen is {}) ct.ThrowIfCancellationRequested();
                 pen?.Text(textX, iconY + ascent, text).Draw(img);
             });
 
@@ -104,7 +106,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         try { return new(color); } catch { return MagickColors.Red; }
     }
 
-    private string GetExifText(IExifProfile? exif) =>
+    private string GetText(IExifProfile? exif) =>
         string.Join(
             "  ",
             ((IEnumerable<string?>) [
