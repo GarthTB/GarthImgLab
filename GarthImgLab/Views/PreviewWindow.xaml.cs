@@ -1,18 +1,18 @@
 namespace GarthImgLab.Views;
 
-using System.ComponentModel;
+using VMs;
 
 public sealed partial class PreviewWindow
 {
     private bool _end;
-    public PreviewWindow() => InitializeComponent();
 
-    protected override void OnClosing(CancelEventArgs e) {
-        if (!_end) {
-            e.Cancel = true;
-            Hide();
-        } else
-            base.OnClosing(e);
+    public PreviewWindow() {
+        InitializeComponent();
+        IsVisibleChanged += (_, e) => (DataContext as PreviewVM)?.Visible = (bool)e.NewValue;
+        Closing += (_, e) => {
+            if (e.Cancel = !_end) Hide();
+        };
+        Closed += (_, _) => (DataContext as IDisposable)?.Dispose();
     }
 
     public void Shut() {
