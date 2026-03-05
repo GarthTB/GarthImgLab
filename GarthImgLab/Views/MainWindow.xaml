@@ -12,5 +12,384 @@
     UseLayoutRounding="True"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight">
-    <Grid/>
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background"
+                Value="#EAEAEA"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Padding"
+                Value="10,0,0,0"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding"
+                Value="8,0,0,0"/>
+            <Setter Property="SelectedIndex"
+                Value="0"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Padding"
+                Value="0"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+        </Style>
+        <Style TargetType="Slider">
+            <Setter Property="IsSnapToTickEnabled"
+                Value="True"/>
+            <Setter Property="TickPlacement"
+                Value="TopLeft"/>
+            <Setter Property="VerticalAlignment"
+                Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="Center"/>
+        </Style>
+    </Window.Resources>
+    <TabControl Padding="0"
+        SelectedIndex="{Binding TabIdx, Mode=OneWayToSource}">
+        <TabItem Header="文件"
+            Padding="12,4">
+            <Grid Height="240">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="52"/>
+                </Grid.RowDefinitions>
+                <ListBox Width="480"
+                    ToolTip="支持拖放；选中以查看预览"
+                    Drop="ImgPathsDrop"
+                    ItemsSource="{Binding ImgPaths}"
+                    SelectedItem="{Binding ImgPath}"/>
+                <Grid Row="1"
+                    Margin="12,11">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="添加"
+                        Command="{Binding AddImgCommand}"/>
+                    <Button Grid.Column="2"
+                        Content="移除"
+                        Command="{Binding RemoveImgCommand}"/>
+                    <Button Grid.Column="4"
+                        Content="预览"
+                        Click="ShowPreview"
+                        IsEnabled="{Binding Idle}"/>
+                    <Button Grid.Column="6"
+                        Content="启动"
+                        IsEnabled="{Binding Idle}"
+                        Command="{Binding RunCommand}"/>
+                    <Button Grid.Column="8"
+                        Content="打断"
+                        Command="{Binding RunCancelCommand}"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="饱和度"
+            Padding="12,4"
+            IsEnabled="{Binding Idle}">
+            <Grid Width="240"
+                Margin="12,11">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="24"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="66"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="启用"
+                        IsChecked="{Binding SatTabVM.Enabled}"/>
+                    <Label Grid.Column="1"
+                        Content="空间"/>
+                    <ComboBox Grid.Column="2"
+                        ItemsSource="{Binding SatTabVM.Strats}"
+                        SelectedItem="{Binding SatTabVM.Strat, Mode=OneWayToSource}"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="66"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="保护"
+                        ToolTip="避免像素值截断"
+                        IsChecked="{Binding SatTabVM.AntiClip}"/>
+                    <Label Grid.Column="1"
+                        Content="增益"/>
+                    <TextBox Grid.Column="2"
+                        Text="{Binding SatTabVM.Gain, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Slider Grid.Row="4"
+                    TickFrequency="0.05"
+                    Maximum="1"
+                    Minimum="-1"
+                    Value="{Binding SatTabVM.Gain}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="边框"
+            Padding="12,4"
+            IsEnabled="{Binding Idle}">
+            <Grid Margin="12,11">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="224"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="256"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="66"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="启用"
+                        IsChecked="{Binding FramingTabVM.Enabled}"/>
+                    <CheckBox Grid.Column="1"
+                        Content="嵌入图标"
+                        ToolTip="支持拖放"
+                        Drop="IconPathDrop"
+                        IsChecked="{Binding FramingTabVM.UseIcon}"/>
+                    <Button Grid.Column="2"
+                        Content="选取"
+                        Command="{Binding FramingTabVM.PickIconCommand}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="图标间距"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="文字高度的倍数；>0时图标在文字之右"
+                        Text="{Binding FramingTabVM.GapRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="边框颜色"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="HEX或名称，无效时变红"
+                        Text="{Binding FramingTabVM.FrameColor, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="圆角半径"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="原图短边的倍数[0,0.5]"
+                        Text="{Binding FramingTabVM.CornerRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="三边宽度"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="左上右三边的宽度；原图短边的倍数[0,1]"
+                        Text="{Binding FramingTabVM.LtrRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="下边高度"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="原图短边的倍数[0,1]"
+                        Text="{Binding FramingTabVM.BRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Grid Grid.Column="0"
+                    Grid.Row="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="文字高度"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="下边高的倍数[0,1]"
+                        Text="{Binding FramingTabVM.TextRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="字体系列"/>
+                    <ComboBox Grid.Column="1"
+                        ItemsSource="{Binding FramingTabVM.FontFamilies}"
+                        SelectedItem="{Binding FramingTabVM.FontFamily, Mode=OneWayToSource}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="68"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="文字颜色"/>
+                    <TextBox Grid.Column="1"
+                        ToolTip="HEX或名称，无效时变红"
+                        Text="{Binding FramingTabVM.TextColor, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                        ItemsSource="{Binding FramingTabVM.ExifTags}"
+                        SelectedItem="{Binding FramingTabVM.ExifKey1, Mode=OneWayToSource}"/>
+                    <TextBox Grid.Column="2"
+                        ToolTip="非“手写”时无效"
+                        Text="{Binding FramingTabVM.CustomInfo1, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                        ItemsSource="{Binding FramingTabVM.ExifTags}"
+                        SelectedItem="{Binding FramingTabVM.ExifKey2, Mode=OneWayToSource}"/>
+                    <TextBox Grid.Column="2"
+                        ToolTip="非“手写”时无效"
+                        Text="{Binding FramingTabVM.CustomInfo2, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                        ItemsSource="{Binding FramingTabVM.ExifTags}"
+                        SelectedItem="{Binding FramingTabVM.ExifKey3, Mode=OneWayToSource}"/>
+                    <TextBox Grid.Column="2"
+                        ToolTip="非“手写”时无效"
+                        Text="{Binding FramingTabVM.CustomInfo3, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                        ItemsSource="{Binding FramingTabVM.ExifTags}"
+                        SelectedItem="{Binding FramingTabVM.ExifKey4, Mode=OneWayToSource}"/>
+                    <TextBox Grid.Column="2"
+                        ToolTip="非“手写”时无效"
+                        Text="{Binding FramingTabVM.CustomInfo4, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <Grid Grid.Column="2"
+                    Grid.Row="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                        ItemsSource="{Binding FramingTabVM.ExifTags}"
+                        SelectedItem="{Binding FramingTabVM.ExifKey5, Mode=OneWayToSource}"/>
+                    <TextBox Grid.Column="2"
+                        ToolTip="非“手写”时无效"
+                        Text="{Binding FramingTabVM.CustomInfo5, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="保存"
+            Padding="12,4"
+            IsEnabled="{Binding Idle}">
+            <Grid Width="240"
+                Margin="12,11">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition Height="24"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="格式"/>
+                    <ComboBox Grid.Column="1"
+                        ItemsSource="{Binding SavingTabVM.Formats}"
+                        SelectedItem="{Binding SavingTabVM.Format, Mode=OneWayToSource}"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="选项"/>
+                    <ComboBox Grid.Column="1"
+                        ItemsSource="{Binding SavingTabVM.Options}"
+                        SelectedItem="{Binding SavingTabVM.Option}"/>
+                </Grid>
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="质量"/>
+                    <Slider Grid.Column="1"
+                        AutoToolTipPlacement="TopLeft"
+                        Maximum="100"
+                        Value="{Binding SavingTabVM.Quality}"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>
