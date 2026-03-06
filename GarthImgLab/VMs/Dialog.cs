@@ -13,8 +13,8 @@ internal static class Dialog
             Title = title,
             Multiselect = multi,
             CheckFileExists = true,
-            Filter = "图像文件 (*.bmp;*.heic;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp)"
-                   + "|*.bmp;*.heic;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp"
+            Filter = "图像文件 (*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp)"
+                   + "|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp"
                    + "|所有文件 (*.*)|*.*"
         };
         return dialog.ShowDialog() == true

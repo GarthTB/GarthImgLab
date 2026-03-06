@@ -8,7 +8,6 @@ using File = System.IO.File;
 internal static class Saving
 {
     public static readonly Dictionary<string, string[]> Options = new() {
-        ["HEIC"] = ["420", "422", "444"],
         ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
         ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],
         ["TIFF"] = ["LZMA", "LZW", "NoCompression", "Zip", "Zstd"],
@@ -17,10 +16,6 @@ internal static class Saving
 
     public static Func<MImg, string, CT, Task> Saver(string format, string option) =>
         format switch {
-            "HEIC" => (img, inPath, ct) => {
-                img.Settings.SetDefine(Heic, "chroma", option);
-                return img.WriteAsync(OutPath(inPath, "heic"), Heic, ct);
-            },
             "JPEG" => (img, inPath, ct) => {
                 img.Settings.SetDefine(Jpeg, "sampling-factor", option);
                 return img.WriteAsync(OutPath(inPath, "jpg"), Pjpeg, ct);
