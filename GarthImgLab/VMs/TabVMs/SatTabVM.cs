@@ -8,7 +8,7 @@ internal sealed partial class SatTabVM: FXTabVM
     [ObservableProperty] private bool _antiClip = true;
     [ObservableProperty] private double _gain;
     [ObservableProperty] private string _strat = "";
-    public static IReadOnlyList<string> Strats => Sat.Adjustors.Keys;
+    public static IReadOnlyCollection<string> Strats => Sat.Adjustors.Keys;
     partial void OnGainChanged(double value) => Gain = Math.Clamp(value, -1, 1);
 
     public override void Apply(MImg img, CT ct) =>

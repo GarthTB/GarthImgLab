@@ -1,6 +1,5 @@
 namespace GarthImgLab.Core;
 
-using System.Collections.Frozen;
 using ImageMagick;
 using static ImageMagick.MagickFormat;
 using static System.IO.Path;
@@ -8,14 +7,13 @@ using File = System.IO.File;
 
 internal static class Saving
 {
-    public static readonly FrozenDictionary<string, string[]> Options
-        = new Dictionary<string, string[]> {
-            ["HEIC"] = ["420", "422", "444"],
-            ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
-            ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],
-            ["TIFF"] = ["LZMA", "LZW", "NoCompression", "Zip", "Zstd"],
-            ["WebP"] = []
-        }.ToFrozenDictionary();
+    public static readonly Dictionary<string, string[]> Options = new() {
+        ["HEIC"] = ["420", "422", "444"],
+        ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
+        ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],
+        ["TIFF"] = ["LZMA", "LZW", "NoCompression", "Zip", "Zstd"],
+        ["WebP"] = []
+    };
 
     public static Func<MImg, string, CT, Task> Saver(string format, string option) =>
         format switch {

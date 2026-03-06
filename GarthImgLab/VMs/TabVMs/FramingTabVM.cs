@@ -33,7 +33,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
 
     [ObservableProperty] private MImg? _icon;
     [ObservableProperty] private bool _useIcon;
-    public static IReadOnlyList<string> ExifTags => Exif.Extractors.Keys;
+    public static IReadOnlyCollection<string> ExifTags => Exif.Extractors.Keys;
     public static IReadOnlyList<string> FontFamilies => MagickNET.FontFamilies;
     public void Dispose() => Icon?.Dispose();
     partial void OnCornerRatioChanged(double value) => CornerRatio = Clamp(value, 0, .5);
