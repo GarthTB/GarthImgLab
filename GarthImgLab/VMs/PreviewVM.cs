@@ -1,3 +1,5 @@
+// ReSharper disable UnusedParameterInPartialMethod
+
 namespace GarthImgLab.VMs;
 
 using System.ComponentModel;
@@ -15,7 +17,6 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
     [ObservableProperty] private FXTabVM? _curFXTabVM;
     [ObservableProperty] private MImg? _thumb;
     [ObservableProperty] private bool _visible;
-    private bool Active => CurFXTabVM is {} && Visible;
     partial void OnBefChanged(BitmapSource? value) => SetPreview();
     partial void OnAftChanged(BitmapSource? value) => SetPreview();
     partial void OnVisibleChanged(bool value) => SetPreview();
@@ -23,7 +24,7 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
     partial void OnCurFXTabVMChanged(FXTabVM? oldValue, FXTabVM? newValue) {
         oldValue?.PropertyChanged -= OnFxPropChanged;
         newValue?.PropertyChanged += OnFxPropChanged;
-        if (Active) _ = GenAftAsync();
+        _ = GenAftAsync();
     }
 
     private void OnFxPropChanged(object? s, PropertyChangedEventArgs e) {
@@ -70,8 +71,8 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
         _srcCts.Dispose();
         _befCts.Dispose();
         _aftCts.Dispose();
-        Thumb?.Dispose();
         CurFXTabVM?.PropertyChanged -= OnFxPropChanged;
+        Thumb?.Dispose();
     }
 
     #endregion 打断和销毁
@@ -86,10 +87,11 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
                 Thumb = path is {}
                     ? await Task.Run(
                         async () => {
-                            MImg img = new();
-                            await img.ReadAsync(path, ct);
-                            img.ToThumb(1 << 18);
-                            return img;
+                            MImg src = new();
+                            await src.ReadAsync(path, ct);
+                            src.ToThumb(1 << 18);
+                            ct.ThrowIfCancellationRequested();
+                            return src;
                         },
                         ct)
                     : null;
@@ -99,14 +101,16 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
         Dialog.RunOrShowExAsync(
             "生成原图预览",
             async () => {
+                var ct = await RenewBef();
                 Bef = Thumb is {}
                     ? await Task.Run(
                         () => {
                             var bef = Thumb.ToBitmapSource();
                             bef.Freeze();
+                            ct.ThrowIfCancellationRequested();
                             return bef;
                         },
-                        await RenewBef())
+                        ct)
                     : null;
             });
 
@@ -115,25 +119,25 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
             "生成效果预览",
             async () => {
                 var ct = await RenewAft();
-                if (Active && CurFXTabVM is {} vm)
-                    Aft = Thumb is {}
-                        ? await Task.Run(
-                            () => {
-                                using MImg clone = new(Thumb);
-                                ct.ThrowIfCancellationRequested();
-                                vm.Apply(clone, ct);
-                                ct.ThrowIfCancellationRequested();
-                                var aft = clone.ToBitmapSource();
-                                aft.Freeze();
-                                return aft;
-                            },
-                            ct)
-                        : null;
+                Aft = Visible && Thumb is {} && CurFXTabVM is {} vm
+                    ? await Task.Run(
+                        () => {
+                            using MImg clone = new(Thumb);
+                            ct.ThrowIfCancellationRequested();
+                            vm.Apply(clone, ct);
+                            ct.ThrowIfCancellationRequested();
+                            var aft = clone.ToBitmapSource();
+                            aft.Freeze();
+                            ct.ThrowIfCancellationRequested();
+                            return aft;
+                        },
+                        ct)
+                    : null;
             });
 
     private void SetPreview() =>
-        Preview = Active
-            ? CurFXTabVM!.Enabled
+        Preview = Visible && CurFXTabVM?.Enabled is {} enabled
+            ? enabled
                 ? Aft
                 : Bef
             : null;
