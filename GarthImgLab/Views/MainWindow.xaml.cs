@@ -21,7 +21,7 @@ public sealed partial class MainWindow
                 "拖放图标",
                 () => {
                     if (e.Data.GetData(DataFormats.FileDrop) is string[] and [var path, ..])
-                        _ = Task.Run(() => (vm.Icon, vm.UseIcon) = (new(path), true));
+                        (vm.Icon, vm.UseIcon) = (new(path), true);
                 },
                 () => vm.Icon = null);
     }

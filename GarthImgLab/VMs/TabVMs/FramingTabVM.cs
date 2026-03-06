@@ -59,8 +59,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         Dialog.RunOrShowEx(
             "选取图标",
             () => {
-                if (Dialog.PickImg("选取图标", false) is [var path, ..])
-                    _ = Task.Run(() => Icon = new(path));
+                if (Dialog.PickImg("选取图标", false) is [var path, ..]) Icon = new(path);
             },
             () => Icon = null);
 
@@ -109,11 +108,11 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         string.Join(
             "  ",
             ((IEnumerable<string>) [
-                (Exif.Extractors[ExifKey1] ?? (_ => CustomInfo1))(exif) ?? "",
-                (Exif.Extractors[ExifKey2] ?? (_ => CustomInfo2))(exif) ?? "",
-                (Exif.Extractors[ExifKey3] ?? (_ => CustomInfo3))(exif) ?? "",
-                (Exif.Extractors[ExifKey4] ?? (_ => CustomInfo4))(exif) ?? "",
-                (Exif.Extractors[ExifKey5] ?? (_ => CustomInfo5))(exif) ?? ""
+                (Exif.Extractors[ExifKey1] ?? (_ => CustomInfo1))(exif) ?? "--",
+                (Exif.Extractors[ExifKey2] ?? (_ => CustomInfo2))(exif) ?? "--",
+                (Exif.Extractors[ExifKey3] ?? (_ => CustomInfo3))(exif) ?? "--",
+                (Exif.Extractors[ExifKey4] ?? (_ => CustomInfo4))(exif) ?? "--",
+                (Exif.Extractors[ExifKey5] ?? (_ => CustomInfo5))(exif) ?? "--"
             ]).Where(static s => !string.IsNullOrWhiteSpace(s)));
 
     private (IDrawables<ushort>, double, double, double) GetPenMetrics(string text, double tgtH) {
@@ -125,7 +124,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         for (var (i, size) = (0, 14d); i < 3; i++) {
             var metrics = pen.FontPointSize(size).StrokeWidth(.03 * size).FontTypeMetrics(text)
                        ?? throw new InvalidOperationException("无法测量文字尺寸");
-            if (Abs(metrics.TextHeight - tgtH) < .06 * tgtH)
+            if (Abs(metrics.TextHeight - tgtH) < .1 * tgtH)
                 return (pen, metrics.TextWidth, metrics.TextHeight, metrics.Ascent);
             size *= tgtH / metrics.TextHeight;
         }
