@@ -25,16 +25,17 @@ internal static class Exif
             ? $"ISO {i}"
             : null,
         ["拍摄时间"] = static x => x?.GetValue(DateTimeOriginal)?.Value is {} t
-            ? t.Length > 7
+            ? t.Length == 19
                 ? $"{t[..4]}-{t[5..7]}-{t[8..]}"
                 : t
             : null,
         ["作者"] = static x => x?.GetValue(Artist)?.Value,
         ["版权"] = static x => x?.GetValue(Copyright)?.Value,
-        ["相机"] = static x => x?.GetValue(Model)?.Value,
-        ["厂商"] = static x => x?.GetValue(Make)?.Value,
-        ["镜头"] = static x => x?.GetValue(LensModel)?.Value,
+        ["相机型号"] = static x => x?.GetValue(Model)?.Value,
+        ["相机厂商"] = static x => x?.GetValue(Make)?.Value,
+        ["镜头型号"] = static x => x?.GetValue(LensModel)?.Value,
         ["镜头厂商"] = static x => x?.GetValue(LensMake)?.Value,
+        ["序列号"] = static x => x?.GetValue(SerialNumber)?.Value,
         ["软件"] = static x => x?.GetValue(Software)?.Value
     };
 }

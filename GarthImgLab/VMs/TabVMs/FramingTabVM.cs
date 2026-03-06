@@ -68,8 +68,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         Dialog.RunOrShowEx(
             "添加边框",
             () => {
-                var (imgW, imgH) = (img.Width, img.Height);
-                var minSide = Min(imgW, imgH);
+                var minSide = Min(img.Width, img.Height);
                 var frameColor = ParseColor(FrameColor);
                 img.RoundCorner(CornerRatio * minSide, frameColor, ct);
 
@@ -84,8 +83,8 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
                 var (pen, textW, textH, ascent) = string.IsNullOrWhiteSpace(text)
                     ? (null, 0, tgtTextH, 0)
                     : GetPenMetrics(text, tgtTextH);
-                var textX = (imgW - textW) / 2;
-                var iconY = (int)Round(imgH - (bPx + textH) / 2);
+                var textX = (img.Width - textW) / 2;
+                var iconY = (int)Round(img.Height - (bPx + textH) / 2);
 
                 if (UseIcon && Icon is {}) {
                     ct.ThrowIfCancellationRequested();
@@ -109,12 +108,12 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
     private string GetText(IExifProfile? exif) =>
         string.Join(
             "  ",
-            ((IEnumerable<string?>) [
-                (Exif.Extractors[ExifKey1] ?? (_ => CustomInfo1))(exif),
-                (Exif.Extractors[ExifKey2] ?? (_ => CustomInfo2))(exif),
-                (Exif.Extractors[ExifKey3] ?? (_ => CustomInfo3))(exif),
-                (Exif.Extractors[ExifKey4] ?? (_ => CustomInfo4))(exif),
-                (Exif.Extractors[ExifKey5] ?? (_ => CustomInfo5))(exif)
+            ((IEnumerable<string>) [
+                (Exif.Extractors[ExifKey1] ?? (_ => CustomInfo1))(exif) ?? "",
+                (Exif.Extractors[ExifKey2] ?? (_ => CustomInfo2))(exif) ?? "",
+                (Exif.Extractors[ExifKey3] ?? (_ => CustomInfo3))(exif) ?? "",
+                (Exif.Extractors[ExifKey4] ?? (_ => CustomInfo4))(exif) ?? "",
+                (Exif.Extractors[ExifKey5] ?? (_ => CustomInfo5))(exif) ?? ""
             ]).Where(static s => !string.IsNullOrWhiteSpace(s)));
 
     private (IDrawables<ushort>, double, double, double) GetPenMetrics(string text, double tgtH) {
@@ -125,7 +124,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
             .StrokeOpacity(new(50));
         for (var (i, size) = (0, 14d); i < 3; i++) {
             var metrics = pen.FontPointSize(size).StrokeWidth(.03 * size).FontTypeMetrics(text)
-                       ?? throw new InvalidOperationException("文字尺寸无效");
+                       ?? throw new InvalidOperationException("无法测量文字尺寸");
             if (Abs(metrics.TextHeight - tgtH) < .06 * tgtH)
                 return (pen, metrics.TextWidth, metrics.TextHeight, metrics.Ascent);
             size *= tgtH / metrics.TextHeight;
