@@ -10,6 +10,9 @@ using static Math;
 internal sealed partial class FramingTabVM: FXTabVM, IDisposable
 {
     [ObservableProperty]
+    private double _cornerRatio = .03, _ltrRatio = .03, _bRatio = .06, _textRatio = .36, _iconShift;
+
+    [ObservableProperty]
     private string _frameColor = "#080808",
         _fontFamily = "",
         _textColor = "#D0A010",
@@ -23,13 +26,6 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         _customInfo3 = "",
         _customInfo4 = "",
         _customInfo5 = "";
-
-    [ObservableProperty]
-    private double _gapRatio = 1.4,
-        _cornerRatio = .03,
-        _ltrRatio = .03,
-        _bRatio = .06,
-        _textRatio = .36;
 
     [ObservableProperty] private MImg? _icon;
     [ObservableProperty] private bool _useIcon;
@@ -90,7 +86,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
                     using var mIcon = Icon.CloneAndMutate(m => m.Resize(0, (uint)Round(textH)));
 
                     ct.ThrowIfCancellationRequested();
-                    var shift = (GapRatio * textH + mIcon.Width) / 2;
+                    var shift = (IconShift * textH + mIcon.Width) / 2;
                     var iconX = (int)Round(textX + textW + shift);
                     img.Composite(mIcon, iconX, iconY, CompositeOperator.Over);
 
