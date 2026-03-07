@@ -119,10 +119,10 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
             "生成效果预览",
             async () => {
                 var ct = await RenewAft();
-                Aft = Visible && Thumb is {} && CurFXTabVM is {} vm
+                Aft = Visible && Thumb is {} t && CurFXTabVM is {} vm
                     ? await Task.Run(
                         () => {
-                            using MImg clone = new(Thumb);
+                            using var clone = (MImg)t.CloneArea(t.Width, t.Height);
                             ct.ThrowIfCancellationRequested();
                             vm.Apply(clone, ct);
                             ct.ThrowIfCancellationRequested();

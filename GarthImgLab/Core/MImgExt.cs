@@ -45,37 +45,39 @@ internal static class MImgExt
             const double max = 65535;
             var (w, h) = (img.Width, img.Height);
             using var pixels = img.GetPixelsUnsafe();
-            var p = (ushort*)pixels.GetAreaPointer(0, 0, w, h);
+            var ptr = (ushort*)pixels.GetAreaPointer(0, 0, w, h);
             Parallel.ForEach(
                 Partitioner.Create(0, w * h),
                 antiClip
-                    ? range => {
-                        for (var (px, end) = range; px < end; px++) {
-                            if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
+                    ? MapPxAntiClip
+                    : MapPx);
 
-                            var i = px * ch;
-                            var (r, g, b) = NormRgb(i);
-                            var (r2, g2, b2) = func((r, g, b));
-                            var t = Sqrt(2 * Min(Dist(r), Min(Dist(g), Dist(b))));
-                            p[i] = DeNorm(Lerp(r, r2, t));
-                            p[i + 1] = DeNorm(Lerp(g, g2, t));
-                            p[i + 2] = DeNorm(Lerp(b, b2, t));
-                        }
-                    }
-                    : range => {
-                        for (var (px, end) = range; px < end; px++) {
-                            if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
-
-                            var i = px * ch;
-                            var (r, g, b) = func(NormRgb(i));
-                            (p[i], p[i + 1], p[i + 2]) = (DeNorm(r), DeNorm(g), DeNorm(b));
-                        }
-                    });
-
-            RGB NormRgb(long i) => (p[i] / max, p[i + 1] / max, p[i + 2] / max);
-            static double Dist(double v) => Min(v, 1 - v);
             static double Lerp(double a, double b, double t) => a + t * (b - a);
             static ushort DeNorm(double v) => (ushort)Round(v * max);
+
+            void MapPx(Tuple<long, long> part) {
+                for (var (px, end) = part; px < end; px++) {
+                    if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
+
+                    var i = px * ch;
+                    var (r, g, b) = func((ptr[i] / max, ptr[i + 1] / max, ptr[i + 2] / max));
+                    (ptr[i], ptr[i + 1], ptr[i + 2]) = (DeNorm(r), DeNorm(g), DeNorm(b));
+                }
+            }
+
+            void MapPxAntiClip(Tuple<long, long> part) {
+                for (var (px, end) = part; px < end; px++) {
+                    if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
+
+                    var i = px * ch;
+                    var (r, g, b) = (ptr[i] / max, ptr[i + 1] / max, ptr[i + 2] / max);
+                    var (r2, g2, b2) = func((r, g, b));
+                    var t = Sqrt(2 * Min(Min(r, 1 - r), Min(Min(g, 1 - g), Min(b, 1 - b))));
+                    ptr[i] = DeNorm(Lerp(r, r2, t));
+                    ptr[i + 1] = DeNorm(Lerp(g, g2, t));
+                    ptr[i + 2] = DeNorm(Lerp(b, b2, t));
+                }
+            }
         }
     }
 }
