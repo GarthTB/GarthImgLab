@@ -192,10 +192,10 @@
                         <ColumnDefinition Width="68"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="图标偏移"/>
+                    <Label Content="图标间距"/>
                     <TextBox Grid.Column="1"
                         ToolTip="文字高度的倍数；越大越靠右"
-                        Text="{Binding FramingTabVM.IconShift, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+                        Text="{Binding FramingTabVM.GapRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
                 </Grid>
                 <Grid Grid.Column="0"
                     Grid.Row="4">

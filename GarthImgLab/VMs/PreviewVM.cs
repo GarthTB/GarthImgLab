@@ -119,6 +119,7 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
             "生成效果预览",
             async () => {
                 var ct = await RenewAft();
+                await Task.Delay(128, ct); // 防抖
                 Aft = Visible && Thumb is {} t && CurFXTabVM is {} vm
                     ? await Task.Run(
                         () => {

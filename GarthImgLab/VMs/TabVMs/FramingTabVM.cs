@@ -10,9 +10,6 @@ using static Math;
 internal sealed partial class FramingTabVM: FXTabVM, IDisposable
 {
     [ObservableProperty]
-    private double _cornerRatio = .03, _ltrRatio = .03, _bRatio = .06, _textRatio = .36, _iconShift;
-
-    [ObservableProperty]
     private string _frameColor = "#080808",
         _fontFamily = "",
         _textColor = "#D0A010",
@@ -26,6 +23,13 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
         _customInfo3 = "",
         _customInfo4 = "",
         _customInfo5 = "";
+
+    [ObservableProperty]
+    private double _gapRatio = 1.2,
+        _cornerRatio = .03,
+        _ltrRatio = .03,
+        _bRatio = .06,
+        _textRatio = .36;
 
     [ObservableProperty] private MImg? _icon;
     [ObservableProperty] private bool _useIcon;
@@ -86,12 +90,12 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
                     using var mIcon = Icon.CloneAndMutate(m => m.Resize(0, (uint)Round(textH)));
 
                     ct.ThrowIfCancellationRequested();
-                    var shift = (IconShift * textH + mIcon.Width) / 2;
-                    var iconX = (int)Round(textX + textW + shift);
+                    var gap = GapRatio * textH;
+                    textX -= (gap + mIcon.Width) / 2;
+                    var iconX = (int)Round(textX + textW + gap);
                     img.Composite(mIcon, iconX, iconY, CompositeOperator.Over);
-
-                    textX -= shift;
                 }
+
                 if (pen is {}) ct.ThrowIfCancellationRequested();
                 pen?.Text(textX, iconY + ascent, text).Draw(img);
             });
