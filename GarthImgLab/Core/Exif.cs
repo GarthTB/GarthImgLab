@@ -34,7 +34,6 @@ internal static class Exif {
         ["相机厂商"] = static x => x?.GetValue(Make)?.Value,
         ["镜头型号"] = static x => x?.GetValue(LensModel)?.Value,
         ["镜头厂商"] = static x => x?.GetValue(LensMake)?.Value,
-        ["序列号"] = static x => x?.GetValue(SerialNumber)?.Value,
         ["软件"] = static x => x?.GetValue(Software)?.Value
     };
 }

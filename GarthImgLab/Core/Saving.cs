@@ -9,7 +9,7 @@ internal static class Saving {
     public static readonly Dictionary<string, string[]> Options = new() {
         ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
         ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],
-        ["TIFF"] = ["LZMA", "LZW", "NoCompression", "Zip", "Zstd"],
+        ["TIFF"] = ["LZW", "NoCompression", "Zip"],
         ["WebP"] = []
     };
 
