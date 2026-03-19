@@ -19,8 +19,7 @@ Okhsl  (4095,3861,2768) 1.0146240005026508
 Oklrch (4095,0,4095)    0.32249096477516476
 Hct    (4095,0,0)       113.35620829574427 */
 
-internal static class MaxSatFinder
-{
+internal static class MaxSatFinder {
     private const int MaxVal = (1 << 12) - 1;
 
     public static void Run() {
@@ -57,7 +56,6 @@ internal static class MaxSatFinder
                     return globalMaxS;
                 },
                 static x => x);
-
         foreach (var ((r, g, b), s) in maxSatArr) Console.WriteLine($"({r},{g},{b})\t{s}");
     }
 

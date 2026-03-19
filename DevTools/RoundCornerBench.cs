@@ -10,41 +10,40 @@ using ImageMagick;
 using ImageMagick.Drawing;
 
 /* 结果：NotNegate最优
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.7922/25H2/2025Update/HudsonValley2)
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8037/25H2/2025Update/HudsonValley2)
 12th Gen Intel Core i5-12500H 2.50GHz, 1 CPU, 16 logical and 12 physical cores
-.NET SDK 10.0.200-preview.0.26103.119
-  [Host]     : .NET 10.0.3 (10.0.3, 10.0.326.7603), X64 RyuJIT x86-64-v3
-  DefaultJob : .NET 10.0.2 (10.0.2, 10.0.225.61305), X64 RyuJIT x86-64-v3
+.NET SDK 10.0.201
+  [Host]     : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.5 (10.0.5, 10.0.526.15411), X64 RyuJIT x86-64-v3
 
 | Method    | Color | Ratio | Mean     | Error    | StdDev   | Ratio | Allocated | Alloc Ratio |
 |---------- |------ |------ |---------:|---------:|---------:|------:|----------:|------------:|
-| CopyAlpha | #4820 | 0     | 36.61 ms | 0.104 ms | 0.092 ms |  1.00 |   13.4 KB |        1.00 |
-| NotNegate | #4820 | 0     | 26.15 ms | 0.088 ms | 0.078 ms |  0.71 |   7.96 KB |        0.59 |
-| WriteMask | #4820 | 0     | 31.24 ms | 0.153 ms | 0.143 ms |  0.85 |  13.34 KB |        1.00 |
+| CopyAlpha | #4820 | 0     | 35.74 ms | 0.171 ms | 0.160 ms |  1.00 |   13.4 KB |        1.00 |
+| NotNegate | #4820 | 0     | 26.00 ms | 0.050 ms | 0.039 ms |  0.73 |   7.96 KB |        0.59 |
+| WriteMask | #4820 | 0     | 31.67 ms | 0.166 ms | 0.147 ms |  0.89 |  13.34 KB |        1.00 |
 |           |       |       |          |          |          |       |           |             |
-| CopyAlpha | #4820 | 0.25  | 61.99 ms | 0.386 ms | 0.322 ms |  1.00 |   13.4 KB |        1.00 |
-| NotNegate | #4820 | 0.25  | 51.97 ms | 0.238 ms | 0.211 ms |  0.84 |   7.96 KB |        0.59 |
-| WriteMask | #4820 | 0.25  | 59.56 ms | 0.552 ms | 0.516 ms |  0.96 |  13.34 KB |        1.00 |
+| CopyAlpha | #4820 | 0.25  | 61.07 ms | 0.316 ms | 0.295 ms |  1.00 |   13.4 KB |        1.00 |
+| NotNegate | #4820 | 0.25  | 51.82 ms | 0.485 ms | 0.453 ms |  0.85 |   7.96 KB |        0.59 |
+| WriteMask | #4820 | 0.25  | 59.52 ms | 0.435 ms | 0.407 ms |  0.97 |  13.34 KB |        1.00 |
 |           |       |       |          |          |          |       |           |             |
-| CopyAlpha | #4828 | 0     | 36.60 ms | 0.341 ms | 0.319 ms |  1.00 |   13.5 KB |        1.00 |
-| NotNegate | #4828 | 0     | 26.39 ms | 0.141 ms | 0.132 ms |  0.72 |   8.06 KB |        0.60 |
-| WriteMask | #4828 | 0     | 31.27 ms | 0.153 ms | 0.143 ms |  0.85 |  13.34 KB |        0.99 |
+| CopyAlpha | #4828 | 0     | 36.33 ms | 0.281 ms | 0.249 ms |  1.00 |   13.5 KB |        1.00 |
+| NotNegate | #4828 | 0     | 26.29 ms | 0.133 ms | 0.125 ms |  0.72 |   8.06 KB |        0.60 |
+| WriteMask | #4828 | 0     | 31.38 ms | 0.193 ms | 0.180 ms |  0.86 |  13.34 KB |        0.99 |
 |           |       |       |          |          |          |       |           |             |
-| CopyAlpha | #4828 | 0.25  | 62.00 ms | 0.270 ms | 0.252 ms |  1.00 |   13.5 KB |        1.00 |
-| NotNegate | #4828 | 0.25  | 52.02 ms | 0.348 ms | 0.325 ms |  0.84 |   8.06 KB |        0.60 |
-| WriteMask | #4828 | 0.25  | 59.63 ms | 0.388 ms | 0.363 ms |  0.96 |  13.34 KB |        0.99 |
+| CopyAlpha | #4828 | 0.25  | 61.24 ms | 0.559 ms | 0.495 ms |  1.00 |   13.5 KB |        1.00 |
+| NotNegate | #4828 | 0.25  | 51.93 ms | 0.215 ms | 0.201 ms |  0.85 |   8.06 KB |        0.60 |
+| WriteMask | #4828 | 0.25  | 59.64 ms | 0.226 ms | 0.211 ms |  0.97 |  13.34 KB |        0.99 |
 |           |       |       |          |          |          |       |           |             |
-| CopyAlpha | #482F | 0     | 36.16 ms | 0.264 ms | 0.247 ms |  1.00 |   13.4 KB |        1.00 |
-| NotNegate | #482F | 0     | 31.03 ms | 0.177 ms | 0.166 ms |  0.86 |   8.25 KB |        0.62 |
-| WriteMask | #482F | 0     | 29.78 ms | 0.131 ms | 0.116 ms |  0.82 |  13.23 KB |        0.99 |
+| CopyAlpha | #482F | 0     | 35.63 ms | 0.156 ms | 0.146 ms |  1.00 |   13.4 KB |        1.00 |
+| NotNegate | #482F | 0     | 31.99 ms | 0.275 ms | 0.258 ms |  0.90 |   8.27 KB |        0.62 |
+| WriteMask | #482F | 0     | 36.39 ms | 1.390 ms | 4.100 ms |  1.02 |  13.23 KB |        0.99 |
 |           |       |       |          |          |          |       |           |             |
-| CopyAlpha | #482F | 0.25  | 61.49 ms | 0.340 ms | 0.318 ms |  1.00 |   13.4 KB |        1.00 |
-| NotNegate | #482F | 0.25  | 56.75 ms | 0.211 ms | 0.176 ms |  0.92 |   8.25 KB |        0.62 |
-| WriteMask | #482F | 0.25  | 57.98 ms | 0.375 ms | 0.351 ms |  0.94 |  13.23 KB |        0.99 | */
+| CopyAlpha | #482F | 0.25  | 65.01 ms | 1.137 ms | 2.271 ms |  1.00 |   13.4 KB |        1.00 |
+| NotNegate | #482F | 0.25  | 62.75 ms | 1.245 ms | 1.278 ms |  0.97 |   8.27 KB |        0.62 |
+| WriteMask | #482F | 0.25  | 60.20 ms | 1.115 ms | 1.095 ms |  0.93 |  13.23 KB |        0.99 | */
 
 [MemoryDiagnoser]
-public class RoundCornerBench
-{
+public class RoundCornerBench {
     private readonly MagickImage _img = new("F:/Photos/Test/lena_std.tif");
     [Params("#482F", "#4828", "#4820")] public string Color = "";
     [Params(0, .25)] public double Ratio = 0;
@@ -52,7 +51,7 @@ public class RoundCornerBench
     [Benchmark(Baseline = true)]
     public string CopyAlpha() {
         using var img = _img.Clone();
-        var (w, h) = (img.Width, img.Height);
+        uint w = img.Width, h = img.Height;
         var r = Ratio * Math.Min(w, h);
         MagickColor color = new(Color);
 
@@ -71,7 +70,7 @@ public class RoundCornerBench
     [Benchmark]
     public string NotNegate() {
         using var img = _img.Clone();
-        var (w, h) = (img.Width, img.Height);
+        uint w = img.Width, h = img.Height;
         var r = Ratio * Math.Min(w, h);
         MagickColor color = new(Color);
 
@@ -90,7 +89,7 @@ public class RoundCornerBench
     [Benchmark]
     public string WriteMask() {
         using var img = _img.Clone();
-        var (w, h) = (img.Width, img.Height);
+        uint w = img.Width, h = img.Height;
         var r = Ratio * Math.Min(w, h);
         MagickColor color = new(Color);
 

@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.15.8"/>
-        <PackageReference Include="Magick.NET-Q16-x64" Version="14.10.3"/>
+        <PackageReference Include="Magick.NET-Q16-x64" Version="14.11.0"/>
         <PackageReference Include="Wacton.Unicolour" Version="6.4.0"/>
     </ItemGroup>
 
