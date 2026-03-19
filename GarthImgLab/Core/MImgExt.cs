@@ -5,10 +5,8 @@ using ImageMagick;
 using ImageMagick.Drawing;
 using static Math;
 
-internal static class MImgExt
-{
-    extension(MImg img)
-    {
+internal static class MImgExt {
+    extension(MImg img) {
         public void ToThumb(double maxPx) {
             var w = img.Width;
             var w2 = (uint)Round(Sqrt(maxPx / w / img.Height) * w);
@@ -18,7 +16,7 @@ internal static class MImgExt
         public void RoundCorner(double rPx, MagickColor color, CT ct) {
             if (rPx == 0) return;
 
-            var (w, h) = (img.Width, img.Height);
+            uint w = img.Width, h = img.Height;
             var notA = (ushort)~color.A;
             using MImg mask = new(new MagickColor(color) { A = notA }, w, h);
             new Drawables().FillColor(new MagickColor(color) { A = 65535 })
@@ -43,7 +41,7 @@ internal static class MImgExt
             if (ch < 3) throw new InvalidOperationException("单色图不能映射RGB");
 
             const double max = 65535;
-            var (w, h) = (img.Width, img.Height);
+            uint w = img.Width, h = img.Height;
             using var pixels = img.GetPixelsUnsafe();
             var ptr = (ushort*)pixels.GetAreaPointer(0, 0, w, h);
             Parallel.ForEach(

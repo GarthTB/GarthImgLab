@@ -5,36 +5,32 @@ using CommunityToolkit.Mvvm.Input;
 using Core;
 using ImageMagick;
 using ImageMagick.Drawing;
+using Microsoft.Win32;
 using static Math;
 
-internal sealed partial class FramingTabVM: FXTabVM, IDisposable
-{
-    [ObservableProperty]
-    private string _frameColor = "#080808",
-        _fontFamily = "",
-        _textColor = "#D0A010",
-        _exifKey1 = "",
-        _exifKey2 = "",
-        _exifKey3 = "",
-        _exifKey4 = "",
-        _exifKey5 = "",
-        _customInfo1 = "",
-        _customInfo2 = "",
-        _customInfo3 = "",
-        _customInfo4 = "",
-        _customInfo5 = "";
-
-    [ObservableProperty]
-    private double _gapRatio = 1.2,
-        _cornerRatio = .03,
-        _ltrRatio = .03,
-        _bRatio = .06,
-        _textRatio = .36;
-
-    [ObservableProperty] private MImg? _icon;
-    [ObservableProperty] private bool _useIcon;
-    public static IReadOnlyCollection<string> ExifTags => Exif.Extractors.Keys;
+internal sealed partial class FramingTabVM: FXTabVM, IDisposable {
+    [ObservableProperty] public partial bool UseIcon { get; set; }
+    [ObservableProperty] public partial MImg? Icon { get; set; }
+    [ObservableProperty] public partial double GapRatio { get; set; } = 1.2;
+    [ObservableProperty] public partial string FrameColor { get; set; } = "#080808";
+    [ObservableProperty] public partial double CornerRatio { get; set; } = .03;
+    [ObservableProperty] public partial double LtrRatio { get; set; } = .03;
+    [ObservableProperty] public partial double BRatio { get; set; } = .06;
+    [ObservableProperty] public partial double TextRatio { get; set; } = .36;
     public static IReadOnlyList<string> FontFamilies => MagickNET.FontFamilies;
+    [ObservableProperty] public partial string SelFontFamily { get; set; } = "";
+    [ObservableProperty] public partial string TextColor { get; set; } = "#D0A010";
+    public static IReadOnlyCollection<string> ExifTags => Exif.Extractors.Keys;
+    [ObservableProperty] public partial string ExifKey1 { get; set; } = "";
+    [ObservableProperty] public partial string CustomInfo1 { get; set; } = "";
+    [ObservableProperty] public partial string ExifKey2 { get; set; } = "";
+    [ObservableProperty] public partial string CustomInfo2 { get; set; } = "";
+    [ObservableProperty] public partial string ExifKey3 { get; set; } = "";
+    [ObservableProperty] public partial string CustomInfo3 { get; set; } = "";
+    [ObservableProperty] public partial string ExifKey4 { get; set; } = "";
+    [ObservableProperty] public partial string CustomInfo4 { get; set; } = "";
+    [ObservableProperty] public partial string ExifKey5 { get; set; } = "";
+    [ObservableProperty] public partial string CustomInfo5 { get; set; } = "";
     public void Dispose() => Icon?.Dispose();
     partial void OnCornerRatioChanged(double value) => CornerRatio = Clamp(value, 0, .5);
     partial void OnLtrRatioChanged(double value) => LtrRatio = Clamp(value, 0, 1);
@@ -55,50 +51,54 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
     }
 
     [RelayCommand(CanExecute = nameof(UseIcon))]
-    private void PickIcon() =>
-        Dialog.RunOrShowEx(
-            "选取图标",
-            () => {
-                if (Dialog.PickImg("选取图标", false) is [var path, ..]) Icon = new(path);
-            },
-            () => Icon = null);
+    private void PickIcon() {
+        const string filter = "图像文件|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp|所有文件|*.*";
+        OpenFileDialog ofd = new() { Title = "选取图标", Filter = filter };
+        try {
+            if (ofd.ShowDialog() == true) Icon = new(ofd.FileName);
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"加载图标时：\n{ex}", "异常", OK, Error);
+            Icon = null;
+        }
+    }
 
-    public override void Apply(MImg img, CT ct) =>
-        Dialog.RunOrShowEx(
-            "添加边框",
-            () => {
-                var minSide = Min(img.Width, img.Height);
-                var frameColor = ParseColor(FrameColor);
-                img.RoundCorner(CornerRatio * minSide, frameColor, ct);
+    public override void Apply(MImg img, CT ct) {
+        try {
+            var minSide = Min(img.Width, img.Height);
+            var frameColor = ParseColor(FrameColor);
+            img.RoundCorner(CornerRatio * minSide, frameColor, ct);
+
+            ct.ThrowIfCancellationRequested();
+            var bPx = (uint)Round(BRatio * minSide);
+            img.AddFrame((uint)Round(LtrRatio * minSide), bPx, frameColor);
+
+            if (bPx < 1) return;
+
+            var text = GetText(img.GetExifProfile());
+            var tgtTextH = TextRatio * bPx;
+            var (pen, textW, textH, ascent) = string.IsNullOrWhiteSpace(text)
+                ? (null, 0, tgtTextH, 0)
+                : GetPenMetrics(text, tgtTextH);
+            var textX = (img.Width - textW) / 2;
+            var iconY = (int)Round(img.Height - (bPx + textH) / 2);
+
+            if (UseIcon && Icon is {}) {
+                ct.ThrowIfCancellationRequested();
+                using var mIcon = Icon.CloneAndMutate(m => m.Resize(0, (uint)Round(textH)));
 
                 ct.ThrowIfCancellationRequested();
-                var bPx = (uint)Round(BRatio * minSide);
-                img.AddFrame((uint)Round(LtrRatio * minSide), bPx, frameColor);
+                var gap = GapRatio * textH;
+                textX -= (gap + mIcon.Width) / 2;
+                var iconX = (int)Round(textX + textW + gap);
+                img.Composite(mIcon, iconX, iconY, CompositeOperator.Over);
+            }
 
-                if (bPx < 1) return;
-
-                var text = GetText(img.GetExifProfile());
-                var tgtTextH = TextRatio * bPx;
-                var (pen, textW, textH, ascent) = string.IsNullOrWhiteSpace(text)
-                    ? (null, 0, tgtTextH, 0)
-                    : GetPenMetrics(text, tgtTextH);
-                var textX = (img.Width - textW) / 2;
-                var iconY = (int)Round(img.Height - (bPx + textH) / 2);
-
-                if (UseIcon && Icon is {}) {
-                    ct.ThrowIfCancellationRequested();
-                    using var mIcon = Icon.CloneAndMutate(m => m.Resize(0, (uint)Round(textH)));
-
-                    ct.ThrowIfCancellationRequested();
-                    var gap = GapRatio * textH;
-                    textX -= (gap + mIcon.Width) / 2;
-                    var iconX = (int)Round(textX + textW + gap);
-                    img.Composite(mIcon, iconX, iconY, CompositeOperator.Over);
-                }
-
-                if (pen is {}) ct.ThrowIfCancellationRequested();
-                pen?.Text(textX, iconY + ascent, text).Draw(img);
-            });
+            if (pen is {}) ct.ThrowIfCancellationRequested();
+            pen?.Text(textX, iconY + ascent, text).Draw(img);
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"添加边框时：\n{ex}", "异常", OK, Error);
+        }
+    }
 
     private static MagickColor ParseColor(string color) {
         try { return new(color); } catch { return MagickColors.Red; }
@@ -117,7 +117,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable
 
     private (IDrawables<ushort>, double, double, double) GetPenMetrics(string text, double tgtH) {
         var color = ParseColor(TextColor);
-        var pen = new Drawables().Font(FontFamily)
+        var pen = new Drawables().Font(SelFontFamily)
             .FillColor(color)
             .StrokeColor(color)
             .StrokeOpacity(new(50));

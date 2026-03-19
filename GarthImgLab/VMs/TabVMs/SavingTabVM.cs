@@ -3,15 +3,15 @@ namespace GarthImgLab.VMs.TabVMs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Core;
 
-internal sealed partial class SavingTabVM: ObservableObject
-{
-    [ObservableProperty] private string _format = "", _option = "";
-    [ObservableProperty] private string[] _options = [];
-    [ObservableProperty] private byte _quality = 96;
+internal sealed partial class SavingTabVM: ObservableObject {
     public static IReadOnlyCollection<string> Formats => Saving.Options.Keys;
+    [ObservableProperty] public partial string SelFormat { get; set; } = "";
+    [ObservableProperty] public partial string[] Options { get; private set; } = [];
+    [ObservableProperty] public partial string SelOption { get; set; } = "";
+    [ObservableProperty] public partial byte Quality { get; set; } = 96;
 
-    partial void OnFormatChanged(string value) {
+    partial void OnSelFormatChanged(string value) {
         if (Saving.Options.TryGetValue(value, out var options))
-            Option = (Options = options).FirstOrDefault("");
+            SelOption = (Options = options).FirstOrDefault("");
     }
 }

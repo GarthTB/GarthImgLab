@@ -22,9 +22,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="Magick.NET-Q16-x64" Version="14.10.3"/>
-        <PackageReference Include="Magick.NET.SystemWindowsMedia" Version="8.0.16"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
+        <PackageReference Include="Magick.NET-Q16-x64" Version="14.11.0"/>
+        <PackageReference Include="Magick.NET.SystemWindowsMedia" Version="8.0.18"/>
         <PackageReference Include="Wacton.Unicolour" Version="6.4.0"/>
     </ItemGroup>
 

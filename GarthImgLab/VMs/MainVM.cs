@@ -4,14 +4,14 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
+using Microsoft.Win32;
 using TabVMs;
 
-internal sealed partial class MainVM(PreviewVM previewVM): ObservableObject, IDisposable
-{
-    [ObservableProperty] private byte _tabIdx;
+internal sealed partial class MainVM(PreviewVM previewVM): ObservableObject, IDisposable {
     public SatTabVM SatTabVM { get; } = new();
     public FramingTabVM FramingTabVM { get; } = new();
     public SavingTabVM SavingTabVM { get; } = new();
+    [ObservableProperty] public partial byte TabIdx { get; set; }
     public void Dispose() => FramingTabVM.Dispose();
 
     partial void OnTabIdxChanged(byte value) =>
@@ -19,60 +19,60 @@ internal sealed partial class MainVM(PreviewVM previewVM): ObservableObject, IDi
 
     #region 路径
 
-    [ObservableProperty] private string? _imgPath;
     public ObservableCollection<string> ImgPaths { get; } = [];
-    private bool ImgPathSelected => ImgPath is {};
+    [ObservableProperty] public partial string? SelImgPath { get; set; }
+    private bool ImgPathSelected => SelImgPath is {};
     private bool HasImgPath => ImgPaths.Count > 0;
 
-    partial void OnImgPathChanged(string? value) {
+    partial void OnSelImgPathChanged(string? value) {
         _ = previewVM.SetSrcAsync(value);
         RemoveImgCommand.NotifyCanExecuteChanged();
     }
 
-    public void AddImg(IEnumerable<string> paths) {
-        foreach (var path in paths.Where(path => !ImgPaths.Contains(path))) ImgPaths.Add(path);
+    public void AddImgs(IEnumerable<string> paths) {
+        foreach (var p in paths.Where(p => !ImgPaths.Contains(p))) ImgPaths.Add(p);
         RunCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
-    private void AddImg() => Dialog.RunOrShowEx("添加图像", () => AddImg(Dialog.PickImg("添加图像", true)));
+    private void AddImg() {
+        const string filter = "图像文件|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp|所有文件|*.*";
+        OpenFileDialog ofd = new() { Title = "添加图像", Multiselect = true, Filter = filter };
+        if (ofd.ShowDialog() == true) AddImgs(ofd.FileNames);
+    }
 
     [RelayCommand(CanExecute = nameof(ImgPathSelected))]
-    private void RemoveImg() =>
-        Dialog.RunOrShowEx(
-            "移除图像",
-            () => {
-                ImgPaths.Remove(ImgPath!);
-                RunCommand.NotifyCanExecuteChanged();
-            });
+    private void RemoveImg() {
+        ImgPaths.Remove(SelImgPath!);
+        RunCommand.NotifyCanExecuteChanged();
+    }
 
     #endregion 路径
 
     #region 批处理
 
-    [ObservableProperty] private bool _idle = true;
+    [ObservableProperty] public partial bool Idle { get; set; } = true;
 
     [RelayCommand(CanExecute = nameof(HasImgPath), IncludeCancelCommand = true)]
-    private Task RunAsync(CT ct) =>
-        Dialog.RunOrShowExAsync(
-            "批处理",
-            async () => {
-                previewVM.CancelAll();
-                Idle = false;
-                var save = Saving.Saver(SavingTabVM.Format, SavingTabVM.Option);
-                while (ImgPaths is [var path, ..]) {
-                    using MImg img = new();
-                    await img.ReadAsync(path, ct);
-                    if (SatTabVM.Enabled) await Task.Run(() => SatTabVM.Apply(img, ct), ct);
-                    if (FramingTabVM.Enabled) await Task.Run(() => FramingTabVM.Apply(img, ct), ct);
-                    img.Quality = SavingTabVM.Quality;
-                    await save(img, path, ct);
-                    ImgPaths.RemoveAt(0);
-                }
-                Idle = true;
-                Dialog.ShowInfo("完成", "全部处理完成");
-            },
-            () => Idle = true);
+    private async Task RunAsync(CT ct) {
+        try {
+            previewVM.CancelAll();
+            Idle = false;
+            var save = Saving.Saver(SavingTabVM.SelFormat, SavingTabVM.SelOption);
+            while (ImgPaths is [var path, ..]) {
+                using MImg img = new();
+                await img.ReadAsync(path, ct);
+                if (SatTabVM.Enabled) await Task.Run(() => SatTabVM.Apply(img, ct), ct);
+                if (FramingTabVM.Enabled) await Task.Run(() => FramingTabVM.Apply(img, ct), ct);
+                img.Quality = SavingTabVM.Quality;
+                await save(img, path, ct);
+                ImgPaths.RemoveAt(0);
+            }
+            Show("全部处理完成", "完成", OK, Information);
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"批处理时：\n{ex}", "异常", OK, Error);
+        } finally { Idle = true; }
+    }
 
     #endregion 批处理
 }

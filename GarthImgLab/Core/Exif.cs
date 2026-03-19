@@ -3,8 +3,7 @@ namespace GarthImgLab.Core;
 using ImageMagick;
 using static ImageMagick.ExifTag;
 
-internal static class Exif
-{
+internal static class Exif {
     public static readonly Dictionary<string, Func<IExifProfile?, string?>?> Extractors = new() {
         ["手写"] = null,
         ["快门"] = static x => x?.GetValue(ExposureTime)?.Value.ToDouble() is {} t and > 0
@@ -24,7 +23,7 @@ internal static class Exif
         ["ISO感光度"] = static x => x?.GetValue(ISOSpeedRatings)?.Value is [var i and > 0, ..]
             ? $"ISO {i}"
             : null,
-        ["拍摄时间"] = static x => x?.GetValue(DateTimeOriginal)?.Value is {} t
+        ["拍摄时间"] = static x => x?.GetValue(DateTimeOriginal)?.Value is { Length: > 0 } t
             ? t.Length == 19
                 ? $"{t[..4]}-{t[5..7]}-{t[8..]}"
                 : t

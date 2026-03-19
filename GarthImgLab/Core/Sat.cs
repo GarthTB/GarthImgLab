@@ -3,8 +3,7 @@ namespace GarthImgLab.Core;
 using CS = Wacton.Unicolour.ColourSpace;
 using Uc = Wacton.Unicolour.Unicolour;
 
-internal static class Sat
-{
+internal static class Sat {
     private const double LchabMax = 133.80761432012983,
         LchuvMax = 179.04142708939614,
         HsluvMax = 100.05922027251566,

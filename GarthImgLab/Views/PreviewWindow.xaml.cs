@@ -2,8 +2,7 @@ namespace GarthImgLab.Views;
 
 using VMs;
 
-public sealed partial class PreviewWindow
-{
+public sealed partial class PreviewWindow {
     private bool _end;
 
     public PreviewWindow() {

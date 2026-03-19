@@ -5,8 +5,7 @@ using static ImageMagick.MagickFormat;
 using static System.IO.Path;
 using File = System.IO.File;
 
-internal static class Saving
-{
+internal static class Saving {
     public static readonly Dictionary<string, string[]> Options = new() {
         ["JPEG"] = ["4:2:0", "4:2:2", "4:4:4"],
         ["PNG"] = ["Png24", "Png32", "Png48", "Png64"],

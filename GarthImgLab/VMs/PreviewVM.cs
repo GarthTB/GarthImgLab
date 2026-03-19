@@ -9,14 +9,15 @@ using Core;
 using ImageMagick;
 using TabVMs;
 
-internal sealed partial class PreviewVM: ObservableObject, IDisposable
-{
+internal sealed partial class PreviewVM: ObservableObject, IDisposable {
     #region 属性和响应
 
-    [ObservableProperty] private BitmapSource? _bef, _aft, _preview;
-    [ObservableProperty] private FXTabVM? _curFXTabVM;
-    [ObservableProperty] private MImg? _thumb;
-    [ObservableProperty] private bool _visible;
+    [ObservableProperty] private partial MImg? Thumb { get; set; }
+    [ObservableProperty] private partial BitmapSource? Bef { get; set; }
+    [ObservableProperty] private partial BitmapSource? Aft { get; set; }
+    [ObservableProperty] public partial BitmapSource? Preview { get; private set; }
+    [ObservableProperty] public partial FXTabVM? CurFXTabVM { get; set; }
+    [ObservableProperty] public partial bool Visible { get; set; }
     partial void OnBefChanged(BitmapSource? value) => SetPreview();
     partial void OnAftChanged(BitmapSource? value) => SetPreview();
     partial void OnVisibleChanged(bool value) => SetPreview();
@@ -79,62 +80,65 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable
 
     #region 渲染方法
 
-    public Task SetSrcAsync(string? path) =>
-        Dialog.RunOrShowExAsync(
-            "加载预览源",
-            async () => {
-                var ct = await RenewSrc();
-                Thumb = path is {}
-                    ? await Task.Run(
-                        async () => {
-                            MImg src = new();
-                            await src.ReadAsync(path, ct);
-                            src.ToThumb(1 << 18);
-                            ct.ThrowIfCancellationRequested();
-                            return src;
-                        },
-                        ct)
-                    : null;
-            });
+    public async Task SetSrcAsync(string? path) {
+        try {
+            var ct = await RenewSrc();
+            Thumb = path is {}
+                ? await Task.Run(
+                    async () => {
+                        MImg src = new();
+                        await src.ReadAsync(path, ct);
+                        src.ToThumb(1 << 18);
+                        ct.ThrowIfCancellationRequested();
+                        return src;
+                    },
+                    ct)
+                : null;
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"加载预览源时：\n{ex}", "异常", OK, Error);
+        }
+    }
 
-    private Task GenBefAsync() =>
-        Dialog.RunOrShowExAsync(
-            "生成原图预览",
-            async () => {
-                var ct = await RenewBef();
-                Bef = Thumb is {}
-                    ? await Task.Run(
-                        () => {
-                            var bef = Thumb.ToBitmapSource();
-                            bef.Freeze();
-                            ct.ThrowIfCancellationRequested();
-                            return bef;
-                        },
-                        ct)
-                    : null;
-            });
+    private async Task GenBefAsync() {
+        try {
+            var ct = await RenewBef();
+            Bef = Thumb is {}
+                ? await Task.Run(
+                    () => {
+                        var bef = Thumb.ToBitmapSource();
+                        bef.Freeze();
+                        ct.ThrowIfCancellationRequested();
+                        return bef;
+                    },
+                    ct)
+                : null;
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"预览原图时：\n{ex}", "异常", OK, Error);
+        }
+    }
 
-    private Task GenAftAsync() =>
-        Dialog.RunOrShowExAsync(
-            "生成效果预览",
-            async () => {
-                var ct = await RenewAft();
-                await Task.Delay(128, ct); // 防抖
-                Aft = Visible && Thumb is {} t && CurFXTabVM is {} vm
-                    ? await Task.Run(
-                        () => {
-                            using var clone = (MImg)t.CloneArea(t.Width, t.Height);
-                            ct.ThrowIfCancellationRequested();
-                            vm.Apply(clone, ct);
-                            ct.ThrowIfCancellationRequested();
-                            var aft = clone.ToBitmapSource();
-                            aft.Freeze();
-                            ct.ThrowIfCancellationRequested();
-                            return aft;
-                        },
-                        ct)
-                    : null;
-            });
+    private async Task GenAftAsync() {
+        try {
+            var ct = await RenewAft();
+            await Task.Delay(128, ct); // 防抖
+            Aft = Visible && Thumb is {} t && CurFXTabVM is {} vm
+                ? await Task.Run(
+                    () => {
+                        using var clone = (MImg)t.CloneArea(t.Width, t.Height);
+                        ct.ThrowIfCancellationRequested();
+                        vm.Apply(clone, ct);
+                        ct.ThrowIfCancellationRequested();
+                        var aft = clone.ToBitmapSource();
+                        aft.Freeze();
+                        ct.ThrowIfCancellationRequested();
+                        return aft;
+                    },
+                    ct)
+                : null;
+        } catch (Exception ex) {
+            if (ex is not (OCE or { InnerException: OCE })) Show($"预览效果时：\n{ex}", "异常", OK, Error);
+        }
+    }
 
     private void SetPreview() =>
         Preview = Visible && CurFXTabVM?.Enabled is {} enabled
