@@ -1,8 +1,7 @@
-# GarthImgLab Garth的图像处理工具
+# GarthImgLab Garth的图像工具 ![Tech Stack](https://skillicons.dev/icons?i=dotnet,cs,windows)
 
-![Tech Stack](https://skillicons.dev/icons?i=dotnet,cs,windows)
 [![License MIT](https://img.shields.io/badge/License-MIT-750014)](https://mit-license.org)
-[![Latest 1.0.0](https://img.shields.io/badge/Latest-1.0.0-0FBF3E?logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
+[![Latest 1.0.1](https://img.shields.io/badge/Latest-1.0.1-0FBF3E?logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
 
 为数字摄影后期处理设计的 Windows x64 单平台 GUI 应用程序。
 集合多种非线性效果，提供丰富参数，支持批量处理、效果组合、
@@ -33,7 +32,7 @@
 3. 添加图像，选中其一，利用预览调整参数，启动处理
 4. 结果自动输出至原图目录下，无覆写风险
 
-## 📜 项目信息
+## ℹ 关于
 
 - 地址：https://github.com/GarthTB/GarthImgLab
 - 技术：.NET 10.0/C# 14.0/WPF
@@ -41,9 +40,11 @@
 - 协议：[MIT 许可证](https://mit-license.org/)
 - 作者：Garth TB | 天卜 <g-art-h@outlook.com>
 - 版权：Copyright (c) 2026 Garth TB | 天卜
-- 声明：本项目基于作者自用需求，追求极简高效而不过分完备
+- 声明：本项目基于作者自用需求，追求极简高效而不确保完备
 
-## 📝 版本日志
+## 📝 版本
+
+### v1.0.1 (20260319) 移除无效的TIFF压缩选项
 
 ### v1.0.0 (20260308) 首发
 

@@ -6,7 +6,7 @@
     xmlns:vm="clr-namespace:GarthImgLab.VMs"
     d:DataContext="{d:DesignInstance vm:MainVM, IsDesignTimeCreatable=True}"
     mc:Ignorable="d"
-    Title="GarthImgLab 1.0.0"
+    Title="GarthImgLab 1.0.1"
     FontSize="14"
     AllowDrop="True"
     UseLayoutRounding="True"
