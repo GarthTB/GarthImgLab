@@ -1,17 +1,19 @@
-# GarthImgLab Garth的图像工具 ![Tech Stack](https://skillicons.dev/icons?i=dotnet,cs,windows)
-
-[![License MIT](https://img.shields.io/badge/License-MIT-750014)](https://mit-license.org)
-[![Latest 1.0.1](https://img.shields.io/badge/Latest-1.0.1-0FBF3E?logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
+# GarthImgLab Garth的图像工具
 
 为数字摄影后期处理设计的 Windows x64 单平台 GUI 应用程序。
 集合多种非线性效果，提供丰富参数，支持批量处理、效果组合、
 实时预览，用于在图像发布前进行细微润饰和装裱。
 
+![Tech Stack](https://skillicons.dev/icons?i=dotnet,cs,windows)
+
+[![License MIT](https://img.shields.io/badge/License-MIT-750014)](https://mit-license.org)
+[![Latest 1.0.2](https://img.shields.io/badge/Latest-1.0.2-0FBF3E?logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
+
 ## ✨ 特点
 
 - 🏭 一站式：多种功能，批量操作
-- 📦 免安装：8MB便捷包，解压即用
-- 💪 强大稳定：ImageMagick内核，16位精度
+- 📦 免安装：<10 MB 便捷包，解压即用
+- 💪 强大稳定：ImageMagick 内核，16位精度
 - 👀 实时预览：响应参数变化，所见即所得
 
 ## ⚙ 功能
@@ -27,7 +29,7 @@
 
 ### 使用步骤
 
-1. 下载 [最新版本压缩包](https://github.com/GarthTB/GarthImgLab/releases/latest) 并解压
+1. 下载 [最新版本发布包](https://github.com/GarthTB/GarthImgLab/releases/latest) 并解压
 2. 运行 `GarthImgLab.exe`
 3. 添加图像，选中其一，利用预览调整参数，启动处理
 4. 结果自动输出至原图目录下，无覆写风险
@@ -44,7 +46,9 @@
 
 ## 📝 版本
 
-### v1.0.1 (20260319) 移除无效的TIFF压缩选项
+### v1.0.2 (20260327) 升级依赖库，移除图标拖放支持
+
+### v1.0.1 (20260319) 移除无效的 TIFF 压缩选项
 
 ### v1.0.0 (20260308) 首发
 
