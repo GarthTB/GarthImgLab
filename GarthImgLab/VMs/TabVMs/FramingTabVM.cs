@@ -10,7 +10,7 @@ using static Math;
 
 internal sealed partial class FramingTabVM: FXTabVM, IDisposable {
     [ObservableProperty] public partial bool UseIcon { get; set; }
-    [ObservableProperty] public partial MImg? Icon { get; set; }
+    [ObservableProperty] private partial MImg? Icon { get; set; }
     [ObservableProperty] public partial double GapRatio { get; set; } = 1.2;
     [ObservableProperty] public partial string FrameColor { get; set; } = "#080808";
     [ObservableProperty] public partial double CornerRatio { get; set; } = .03;
@@ -54,11 +54,11 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable {
     private void PickIcon() {
         const string filter = "图像文件|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp|所有文件|*.*";
         var ofd = new OpenFileDialog { Title = "选取图标", Filter = filter };
-        try {
-            if (ofd.ShowDialog() == true) Icon = new(ofd.FileName);
-        } catch (Exception ex) {
-            if (ex is not (OCE or { InnerException: OCE })) Show($"加载图标时：\n{ex}", "异常", OK, Error);
+        if (ofd.ShowDialog() != true) return;
+        try { Icon = new(ofd.FileName); } catch (Exception ex) {
             Icon = null;
+            UseIcon = false;
+            Show($"加载图标时：\n{ex}", "异常", OK, Error);
         }
     }
 

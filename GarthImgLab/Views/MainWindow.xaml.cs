@@ -14,18 +14,7 @@ public sealed partial class MainWindow {
         Closed += (_, _) => (DataContext as IDisposable)?.Dispose();
     }
 
-    private void IconPathDrop(object s, DragEventArgs e) {
-        if (DataContext is not MainVM { FramingTabVM: var vm }
-         || e.Data.GetData(DataFormats.FileDrop) is not (string[] and [var path]))
-            return;
-        try { (vm.Icon, vm.UseIcon) = (new(path), true); } catch (Exception ex) {
-            if (ex is not (OCE or { InnerException: OCE }))
-                MessageBox.Show($"加载图标时：\n{ex}", "异常", OK, Error);
-            vm.Icon = null;
-        }
-    }
-
-    private void ImgPathsDrop(object s, DragEventArgs e) {
+    private void DropImgPaths(object s, DragEventArgs e) {
         if (DataContext is MainVM vm && e.Data.GetData(DataFormats.FileDrop) is string[] paths)
             vm.AddImgs(paths.Where(File.Exists));
     }

@@ -1,0 +1,208 @@
+<UserControl x:Class="GarthImgLab.Views.Tabs.FramingTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:GarthImgLab.VMs.TabVMs"
+    d:DataContext="{d:DesignInstance vm:FramingTabVM}"
+    mc:Ignorable="d"
+    FontSize="14"
+    UseLayoutRounding="True">
+    <Grid Margin="12,11">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="224"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="256"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="66"/>
+                <ColumnDefinition Width="96"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Padding="8,0,0,0"
+                Content="启用"
+                IsChecked="{Binding Enabled}"/>
+            <CheckBox Grid.Column="1"
+                Padding="8,0,0,0"
+                Content="嵌入图标"
+                IsChecked="{Binding UseIcon}"/>
+            <Button Grid.Column="2"
+                Content="选取"
+                Command="{Binding PickIconCommand}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="图标间距"/>
+            <TextBox Grid.Column="1"
+                ToolTip="文字高度的倍数；越大越靠右"
+                Text="{Binding GapRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="边框颜色"/>
+            <TextBox Grid.Column="1"
+                ToolTip="HEX或名称，无效时变红"
+                Text="{Binding FrameColor, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="圆角半径"/>
+            <TextBox Grid.Column="1"
+                ToolTip="原图短边的倍数[0,0.5]"
+                Text="{Binding CornerRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="三边宽度"/>
+            <TextBox Grid.Column="1"
+                ToolTip="左上右三边的宽度；原图短边的倍数[0,1]"
+                Text="{Binding LtrRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="下边高度"/>
+            <TextBox Grid.Column="1"
+                ToolTip="原图短边的倍数[0,1]"
+                Text="{Binding BRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="文字高度"/>
+            <TextBox Grid.Column="1"
+                ToolTip="下边高的倍数[0,1]"
+                Text="{Binding TextRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="字体系列"/>
+            <ComboBox Grid.Column="1"
+                ItemsSource="{Binding FontFamilies}"
+                SelectedItem="{Binding SelFontFamily, Mode=OneWayToSource}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="文字颜色"/>
+            <TextBox Grid.Column="1"
+                ToolTip="HEX或名称，无效时变红"
+                Text="{Binding TextColor, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey1, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo1, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey2, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo2, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey3, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo3, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey4, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo4, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey5, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo5, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,52 @@
+<UserControl x:Class="GarthImgLab.Views.Tabs.SavingTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:GarthImgLab.VMs.TabVMs"
+    d:DataContext="{d:DesignInstance vm:SavingTabVM}"
+    mc:Ignorable="d"
+    FontSize="14"
+    UseLayoutRounding="True">
+    <Grid Width="240"
+        Margin="12,11">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="格式"/>
+            <ComboBox Grid.Column="1"
+                ItemsSource="{Binding Formats}"
+                SelectedItem="{Binding SelFormat, Mode=OneWayToSource}"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="选项"/>
+            <ComboBox Grid.Column="1"
+                ItemsSource="{Binding Options}"
+                SelectedItem="{Binding SelOption}"/>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="质量"/>
+            <Slider Grid.Column="1"
+                AutoToolTipPlacement="TopLeft"
+                Maximum="100"
+                Value="{Binding Quality}"/>
+        </Grid>
+    </Grid>
+</UserControl>
