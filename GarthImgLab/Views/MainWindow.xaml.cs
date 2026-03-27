@@ -16,7 +16,7 @@ public sealed partial class MainWindow {
 
     private void IconPathDrop(object s, DragEventArgs e) {
         if (DataContext is not MainVM { FramingTabVM: var vm }
-         || e.Data.GetData(DataFormats.FileDrop) is not (string[] and [var path, ..]))
+         || e.Data.GetData(DataFormats.FileDrop) is not (string[] and [var path]))
             return;
         try { (vm.Icon, vm.UseIcon) = (new(path), true); } catch (Exception ex) {
             if (ex is not (OCE or { InnerException: OCE }))

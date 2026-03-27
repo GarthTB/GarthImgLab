@@ -12,48 +12,6 @@
     UseLayoutRounding="True"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight">
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Background"
-                Value="#EAEAEA"/>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="VerticalContentAlignment"
-                Value="Center"/>
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="Padding"
-                Value="8,0,0,0"/>
-            <Setter Property="SelectedIndex"
-                Value="0"/>
-            <Setter Property="VerticalContentAlignment"
-                Value="Center"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="Padding"
-                Value="0"/>
-            <Setter Property="VerticalContentAlignment"
-                Value="Center"/>
-        </Style>
-        <Style TargetType="Slider">
-            <Setter Property="IsSnapToTickEnabled"
-                Value="True"/>
-            <Setter Property="TickPlacement"
-                Value="TopLeft"/>
-            <Setter Property="VerticalAlignment"
-                Value="Center"/>
-        </Style>
-        <Style TargetType="TabItem">
-            <Setter Property="Padding"
-                Value="12,4"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="HorizontalContentAlignment"
-                Value="Center"/>
-            <Setter Property="VerticalContentAlignment"
-                Value="Center"/>
-        </Style>
-    </Window.Resources>
     <TabControl Padding="0"
         SelectedIndex="{Binding TabIdx, Mode=OneWayToSource}">
         <TabItem Header="文件">

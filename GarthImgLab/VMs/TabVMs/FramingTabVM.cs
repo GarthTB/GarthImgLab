@@ -53,7 +53,7 @@ internal sealed partial class FramingTabVM: FXTabVM, IDisposable {
     [RelayCommand(CanExecute = nameof(UseIcon))]
     private void PickIcon() {
         const string filter = "图像文件|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp|所有文件|*.*";
-        OpenFileDialog ofd = new() { Title = "选取图标", Filter = filter };
+        var ofd = new OpenFileDialog { Title = "选取图标", Filter = filter };
         try {
             if (ofd.ShowDialog() == true) Icon = new(ofd.FileName);
         } catch (Exception ex) {

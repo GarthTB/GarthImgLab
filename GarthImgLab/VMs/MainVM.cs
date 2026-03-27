@@ -37,7 +37,7 @@ internal sealed partial class MainVM(PreviewVM previewVM): ObservableObject, IDi
     [RelayCommand]
     private void AddImg() {
         const string filter = "图像文件|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.webp|所有文件|*.*";
-        OpenFileDialog ofd = new() { Title = "添加图像", Multiselect = true, Filter = filter };
+        var ofd = new OpenFileDialog { Title = "添加图像", Multiselect = true, Filter = filter };
         if (ofd.ShowDialog() == true) AddImgs(ofd.FileNames);
     }
 
