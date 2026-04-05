@@ -3,7 +3,6 @@ namespace GarthImgLab.VMs;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Core;
 using Microsoft.Win32;
 using TabVMs;
 
@@ -57,17 +56,18 @@ internal sealed partial class MainVM(PreviewVM previewVM): ObservableObject, IDi
     private async Task RunAsync(CT ct) {
         try {
             previewVM.CancelAll();
-            Idle = false;
-            var save = Saving.Saver(SavingTabVM.SelFormat, SavingTabVM.SelOption);
-            while (ImgPaths is [var path, ..]) {
-                using MImg img = new();
-                await img.ReadAsync(path, ct);
-                if (SatTabVM.Enabled) await Task.Run(() => SatTabVM.Apply(img, ct), ct);
-                if (FramingTabVM.Enabled) await Task.Run(() => FramingTabVM.Apply(img, ct), ct);
-                img.Quality = SavingTabVM.Quality;
-                await save(img, path, ct);
-                ImgPaths.RemoveAt(0);
-            }
+            var save = SavingTabVM.Saver;
+            for (Idle = false; ImgPaths is [var path, ..]; ImgPaths.RemoveAt(0))
+                await Task.Run(
+                    async () => {
+                        using MImg img = new();
+                        await img.ReadAsync(path, ct);
+                        SatTabVM.Apply(img, ct);
+                        FramingTabVM.Apply(img, ct);
+                        img.Quality = SavingTabVM.Quality;
+                        await save(img, path, ct);
+                    },
+                    ct);
             Show("全部处理完成", "完成", OK, Information);
         } catch (Exception ex) {
             if (ex is not (OCE or { InnerException: OCE })) Show($"批处理时：\n{ex}", "异常", OK, Error);

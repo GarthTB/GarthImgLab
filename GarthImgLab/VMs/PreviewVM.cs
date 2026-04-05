@@ -5,28 +5,42 @@ namespace GarthImgLab.VMs;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Core;
 using ImageMagick;
 using TabVMs;
+using CTS = CancellationTokenSource;
 
 internal sealed partial class PreviewVM: ObservableObject, IDisposable {
     #region 属性和响应
 
-    [ObservableProperty] private partial MImg? Thumb { get; set; }
-    [ObservableProperty] private partial BitmapSource? Bef { get; set; }
-    [ObservableProperty] private partial BitmapSource? Aft { get; set; }
-    [ObservableProperty] public partial BitmapSource? Preview { get; private set; }
-    [ObservableProperty] public partial FXTabVM? CurFXTabVM { get; set; }
-    [ObservableProperty] public partial bool Visible { get; set; }
-    partial void OnBefChanged(BitmapSource? value) => SetPreview();
-    partial void OnAftChanged(BitmapSource? value) => SetPreview();
-    partial void OnVisibleChanged(bool value) => SetPreview();
-
-    partial void OnCurFXTabVMChanged(FXTabVM? oldValue, FXTabVM? newValue) {
-        oldValue?.PropertyChanged -= OnFxPropChanged;
-        newValue?.PropertyChanged += OnFxPropChanged;
-        _ = GenAftAsync();
+    public FXTabVM? CurFXTabVM {
+        get;
+        set {
+            var old = field;
+            if (!SetProperty(ref field, value)) return;
+            old?.PropertyChanged -= OnFxPropChanged;
+            value?.PropertyChanged += OnFxPropChanged;
+            _ = GenAftAsync();
+        }
     }
+
+    private MImg? Thumb {
+        get;
+        set {
+            var old = field;
+            if (!SetProperty(ref field, value)) return;
+            old?.Dispose();
+            _ = GenBefAsync();
+            _ = GenAftAsync();
+        }
+    }
+
+    [ObservableProperty] public partial BitmapSource? Preview { get; private set; }
+    [ObservableProperty] private partial BitmapSource? Bef { get; set; }
+    partial void OnBefChanged(BitmapSource? value) => SetPreview();
+    [ObservableProperty] private partial BitmapSource? Aft { get; set; }
+    partial void OnAftChanged(BitmapSource? value) => SetPreview();
+    [ObservableProperty] public partial bool Visible { get; set; }
+    partial void OnVisibleChanged(bool value) => SetPreview();
 
     private void OnFxPropChanged(object? s, PropertyChangedEventArgs e) {
         if (e.PropertyName == nameof(FXTabVM.Enabled))
@@ -35,34 +49,34 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable {
             _ = GenAftAsync();
     }
 
-    partial void OnThumbChanged(MImg? oldValue, MImg? newValue) {
-        oldValue?.Dispose();
-        _ = (GenBefAsync(), GenAftAsync());
-    }
-
     #endregion 属性和响应
 
     #region 打断和销毁
 
     private CTS _srcCts = new(), _befCts = new(), _aftCts = new();
-    public void CancelAll() => _ = (RenewSrc(), RenewBef(), RenewAft());
 
-    private async Task<CT> RenewSrc() {
+    public void CancelAll() {
+        _ = RenewSrc();
+        _ = RenewBef();
+        _ = RenewAft();
+    }
+
+    private async Task<CTS> RenewSrc() {
         await _srcCts.CancelAsync();
         _srcCts.Dispose();
-        return (_srcCts = new()).Token;
+        return _srcCts = new();
     }
 
-    private async Task<CT> RenewBef() {
+    private async Task<CTS> RenewBef() {
         await _befCts.CancelAsync();
         _befCts.Dispose();
-        return (_befCts = new()).Token;
+        return _befCts = new();
     }
 
-    private async Task<CT> RenewAft() {
+    private async Task<CTS> RenewAft() {
         await _aftCts.CancelAsync();
         _aftCts.Dispose();
-        return (_aftCts = new()).Token;
+        return _aftCts = new();
     }
 
     public void Dispose() {
@@ -82,26 +96,25 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable {
 
     public async Task SetSrcAsync(string? path) {
         try {
-            var ct = await RenewSrc();
+            var ct = (await RenewSrc()).Token;
             Thumb = path is {}
                 ? await Task.Run(
                     async () => {
                         MImg src = new();
                         await src.ReadAsync(path, ct);
+                        ct.ThrowIfCancellationRequested();
                         src.ToThumb(1 << 18);
                         ct.ThrowIfCancellationRequested();
                         return src;
                     },
                     ct)
                 : null;
-        } catch (Exception ex) {
-            if (ex is not (OCE or { InnerException: OCE })) Show($"加载预览源时：\n{ex}", "异常", OK, Error);
-        }
+        } catch (OCE) {} catch (Exception ex) { Show($"加载预览源时：\n{ex}", "异常", OK, Error); }
     }
 
     private async Task GenBefAsync() {
         try {
-            var ct = await RenewBef();
+            var ct = (await RenewBef()).Token;
             Bef = Thumb is {}
                 ? await Task.Run(
                     () => {
@@ -112,21 +125,19 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable {
                     },
                     ct)
                 : null;
-        } catch (Exception ex) {
-            if (ex is not (OCE or { InnerException: OCE })) Show($"预览原图时：\n{ex}", "异常", OK, Error);
-        }
+        } catch (OCE) {} catch (Exception ex) { Show($"预览原图时：\n{ex}", "异常", OK, Error); }
     }
 
     private async Task GenAftAsync() {
         try {
-            var ct = await RenewAft();
-            await Task.Delay(128, ct); // 防抖
-            Aft = Visible && Thumb is {} t && CurFXTabVM is {} vm
+            var ct = (await RenewAft()).Token;
+            await Task.Delay(150, ct); // 防抖
+            Aft = Visible && Thumb is {} t && CurFXTabVM is {} fx
                 ? await Task.Run(
                     () => {
                         using var clone = (MImg)t.CloneArea(t.Width, t.Height);
                         ct.ThrowIfCancellationRequested();
-                        vm.Apply(clone, ct);
+                        fx.Apply(clone, ct);
                         ct.ThrowIfCancellationRequested();
                         var aft = clone.ToBitmapSource();
                         aft.Freeze();
@@ -141,8 +152,8 @@ internal sealed partial class PreviewVM: ObservableObject, IDisposable {
     }
 
     private void SetPreview() =>
-        Preview = Visible && CurFXTabVM?.Enabled is {} enabled
-            ? enabled
+        Preview = Visible && CurFXTabVM is {} fx
+            ? fx.Enabled
                 ? Aft
                 : Bef
             : null;

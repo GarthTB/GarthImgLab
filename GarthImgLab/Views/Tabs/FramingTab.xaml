@@ -10,29 +10,31 @@
     UseLayoutRounding="True">
     <Grid Margin="12,11">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="224"/>
+            <ColumnDefinition Width="196"/>
             <ColumnDefinition Width="12"/>
-            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="248"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
             <RowDefinition Height="11"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="29"/>
+            <RowDefinition Height="11"/>
+            <RowDefinition Height="29"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="66"/>
-                <ColumnDefinition Width="96"/>
+                <ColumnDefinition Width="66"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <CheckBox Padding="8,0,0,0"
@@ -40,7 +42,7 @@
                 IsChecked="{Binding Enabled}"/>
             <CheckBox Grid.Column="1"
                 Padding="8,0,0,0"
-                Content="嵌入图标"
+                Content="图标"
                 IsChecked="{Binding UseIcon}"/>
             <Button Grid.Column="2"
                 Content="选取"
@@ -74,13 +76,24 @@
                 <ColumnDefinition Width="68"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            <Label Content="文字颜色"/>
+            <TextBox Grid.Column="1"
+                ToolTip="HEX或名称，无效时变红"
+                Text="{Binding TextColor, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="0"
+            Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="68"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <Label Content="圆角半径"/>
             <TextBox Grid.Column="1"
                 ToolTip="原图短边的倍数[0,0.5]"
                 Text="{Binding CornerRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
         </Grid>
         <Grid Grid.Column="0"
-            Grid.Row="8">
+            Grid.Row="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="68"/>
                 <ColumnDefinition/>
@@ -91,7 +104,7 @@
                 Text="{Binding LtrRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
         </Grid>
         <Grid Grid.Column="0"
-            Grid.Row="10">
+            Grid.Row="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="68"/>
                 <ColumnDefinition/>
@@ -102,7 +115,7 @@
                 Text="{Binding BRatio, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:0.#####}}"/>
         </Grid>
         <Grid Grid.Column="0"
-            Grid.Row="12">
+            Grid.Row="14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="68"/>
                 <ColumnDefinition/>
@@ -129,15 +142,14 @@
                 <ColumnDefinition Width="68"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Content="文字颜色"/>
+            <Label Content="分隔符号"/>
             <TextBox Grid.Column="1"
-                ToolTip="HEX或名称，无效时变红"
-                Text="{Binding TextColor, UpdateSourceTrigger=PropertyChanged}"/>
+                Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
         <Grid Grid.Column="2"
             Grid.Row="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="102"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -151,7 +163,7 @@
         <Grid Grid.Column="2"
             Grid.Row="6">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="102"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -165,7 +177,7 @@
         <Grid Grid.Column="2"
             Grid.Row="8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="102"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -179,7 +191,7 @@
         <Grid Grid.Column="2"
             Grid.Row="10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="102"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -193,7 +205,7 @@
         <Grid Grid.Column="2"
             Grid.Row="12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="102"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -203,6 +215,20 @@
             <TextBox Grid.Column="2"
                 ToolTip="非“手写”时无效"
                 Text="{Binding CustomInfo5, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Grid.Column="2"
+            Grid.Row="14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="102"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox ToolTip="各项信息将从左到右列出；“手写”并留空时禁用"
+                ItemsSource="{Binding ExifTags}"
+                SelectedItem="{Binding ExifKey6, Mode=OneWayToSource}"/>
+            <TextBox Grid.Column="2"
+                ToolTip="非“手写”时无效"
+                Text="{Binding CustomInfo6, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </Grid>
 </UserControl>

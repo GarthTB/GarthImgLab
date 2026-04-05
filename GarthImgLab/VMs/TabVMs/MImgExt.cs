@@ -1,9 +1,10 @@
-namespace GarthImgLab.Core;
+namespace GarthImgLab.VMs.TabVMs;
 
 using System.Collections.Concurrent;
 using ImageMagick;
 using ImageMagick.Drawing;
 using static Math;
+using RGBMapper = Func<double, double, double, (double, double, double)>;
 
 internal static class MImgExt {
     extension(MImg img) {
@@ -36,7 +37,7 @@ internal static class MImgExt {
             img.Extent(-(int)ltrPx, -(int)ltrPx, 2 * ltrPx + img.Width, ltrPx + img.Height + bPx);
         }
 
-        public unsafe void MapRgb(Func<RGB, RGB> func, bool antiClip, CT ct) {
+        public unsafe void MapRgb(RGBMapper f, bool antiClip, CT ct) {
             var ch = img.ChannelCount;
             if (ch < 3) throw new InvalidOperationException("单色图不能映射RGB");
 
@@ -50,7 +51,6 @@ internal static class MImgExt {
                     ? MapPxAntiClip
                     : MapPx);
 
-            static double Lerp(double a, double b, double t) => a + t * (b - a);
             static ushort DeNorm(double v) => (ushort)Round(v * max);
 
             void MapPx(Tuple<long, long> part) {
@@ -58,8 +58,10 @@ internal static class MImgExt {
                     if ((px & 0xFFFF) == 0) ct.ThrowIfCancellationRequested();
 
                     var i = px * ch;
-                    var (r, g, b) = func((ptr[i] / max, ptr[i + 1] / max, ptr[i + 2] / max));
-                    (ptr[i], ptr[i + 1], ptr[i + 2]) = (DeNorm(r), DeNorm(g), DeNorm(b));
+                    var (r, g, b) = f(ptr[i] / max, ptr[i + 1] / max, ptr[i + 2] / max);
+                    ptr[i] = DeNorm(r);
+                    ptr[i + 1] = DeNorm(g);
+                    ptr[i + 2] = DeNorm(b);
                 }
             }
 
@@ -69,11 +71,11 @@ internal static class MImgExt {
 
                     var i = px * ch;
                     var (r, g, b) = (ptr[i] / max, ptr[i + 1] / max, ptr[i + 2] / max);
-                    var (r2, g2, b2) = func((r, g, b));
-                    var t = Sqrt(2 * Min(Min(r, 1 - r), Min(Min(g, 1 - g), Min(b, 1 - b))));
-                    ptr[i] = DeNorm(Lerp(r, r2, t));
-                    ptr[i + 1] = DeNorm(Lerp(g, g2, t));
-                    ptr[i + 2] = DeNorm(Lerp(b, b2, t));
+                    var (r2, g2, b2) = f(r, g, b);
+                    var t = Sin(PI * Min(Min(r, 1 - r), Min(Min(g, 1 - g), Min(b, 1 - b))));
+                    ptr[i] = DeNorm(r + t * (r2 - r));
+                    ptr[i + 1] = DeNorm(g + t * (g2 - g));
+                    ptr[i + 2] = DeNorm(b + t * (b2 - b));
                 }
             }
         }
