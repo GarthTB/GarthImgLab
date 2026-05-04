@@ -93,5 +93,5 @@ internal sealed partial class SatTabVM: FXTabVM {
             : sat * (1 + gain);
 
     private static (double, double, double) ToRgb(CS cs, double f, double s, double t) =>
-        new Uc(cs, f, s, t).Rgb.ConstrainedTuple;
+        new Uc(cs, f, s, t).Rgb.Clipped.Tuple;
 }
