@@ -9,7 +9,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <PlatformTarget>x64</PlatformTarget>
         <ApplicationIcon>GIL.ico</ApplicationIcon>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <Authors>Garth TB | 天卜 &lt;g-art-h@outlook.com&gt;</Authors>
         <Description>Garth's image-processing tools | Garth的图像处理工具</Description>
         <Copyright>Copyright (c) 2026 Garth TB | 天卜</Copyright>

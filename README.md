@@ -3,24 +3,23 @@
 为数字摄影发布前处理设计的 Windows x64 单平台 GUI 应用。
 集合多种非线性效果，提供丰富参数，支持批量处理、实时预览。
 
+[![Latest Release](https://img.shields.io/github/v/release/GarthTB/GarthImgLab?color=0FBF3E&label=Latest&logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
 ![Tech Stack](https://skillicons.dev/icons?i=dotnet,cs,windows)
-
 [![License MIT](https://img.shields.io/badge/License-MIT-750014)](https://mit-license.org)
-[![Latest 1.0.3](https://img.shields.io/badge/Latest-1.0.3-0FBF3E?logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
 
-## ✨ 特点
+## ✨ 特性
 
-- 🏭 一站式：多种功能，批量操作
-- 📦 免安装：<10 MB 便捷包，解压即用
-- 💪 强大稳定：ImageMagick 内核，16位精度
-- 👀 实时预览：响应参数变化，所见即所得
+- 🏭 **一站式**：多种效果，批量应用
+- 📦 **免安装**：<10 MB 便捷包，解压即用
+- 💪 **强大稳定**：ImageMagick 内核，16位精度
+- 👀 **实时预览**：响应参数变化，所见即所得
 
 ## ⚙ 功能
 
 - 饱和度：在多种感知均匀的现代色彩空间中（如 JzCzhz、OKLCh 等）调整饱和度，并提供像素值蒙版以免高光和阴影溢出
 - 边框：向图像四周添加胶片风格的纯色边框，并在下边框处嵌入图标、标注手写信息或自动提取的 EXIF 元数据
 
-## 📥 用法
+## 📥 使用
 
 ### 系统要求：Windows x64
 
@@ -28,10 +27,9 @@
 
 ### 使用步骤
 
-1. 下载 [最新版本发布包](https://github.com/GarthTB/GarthImgLab/releases/latest) 并解压
+1. 从 [Releases](https://github.com/GarthTB/GarthImgLab/releases/latest) 下载压缩包并解压
 2. 运行 `GarthImgLab.exe`
-3. 添加图像，选中其一，利用预览调整参数，启动处理
-4. 结果自动输出至原目录下，无覆写风险
+3. 添加图像，选中其一，利用预览调整参数，启动处理；结果将输出至输入图像所在目录，自动生成唯一文件名，无覆写风险
 
 ## ℹ 关于
 
@@ -41,9 +39,11 @@
 - 协议：[MIT 许可证](https://mit-license.org/)
 - 作者：Garth TB | 天卜 <g-art-h@outlook.com>
 - 版权：Copyright (c) 2026 Garth TB | 天卜
-- 声明：本项目基于作者自用需求，追求极简高效而不承诺完备
+- 声明：本项目基于作者自用需求，追求极简高效而不承诺完备。开发者不对因使用本程序而造成的任何数据损失负责。
 
 ## 📝 版本
+
+### v1.0.4 (20260505) 升级依赖库
 
 ### v1.0.3 (20260405)
 
