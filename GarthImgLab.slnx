@@ -1,4 +1,7 @@
 <Solution>
-    <Project Path="DevTools/DevTools.csproj"/>
+    <Folder Name="/Docs/">
+        <File Path="CHANGELOG.md"/>
+        <File Path="README.md"/>
+    </Folder>
     <Project Path="GarthImgLab/GarthImgLab.csproj"/>
 </Solution>
