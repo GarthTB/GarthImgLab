@@ -1,0 +1,41 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+          - os: ubuntu-latest
+            rid: linux-x64
+
+    name: 构建并发布到 ${{ matrix.rid }}
+
+    runs-on: ${{ matrix.os }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+
+      - name: 安装 .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 编译并清理
+        shell: bash
+        run: |
+          dotnet publish GarthImgLab/GarthImgLab.csproj -c Release -r ${{ matrix.rid }} -o publish
+          find publish/ -name "*.pdb" -delete
+          find publish/ -name "*.dSYM" -exec rm -rf {} +
