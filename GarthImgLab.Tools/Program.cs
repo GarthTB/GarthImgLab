@@ -1,1 +1,3 @@
-﻿Console.WriteLine("Hello, World!");
+﻿using GarthImgLab.Tools;
+
+CalcMaxSat.Run();
