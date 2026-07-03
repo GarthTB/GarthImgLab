@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
 using GarthImgLab.Benchmarks;
 
-BenchmarkRunner.Run<ModifyByPixel>();
+BenchmarkRunner.Run<ApplyPerPixel>();
+BenchmarkRunner.Run<PixelParallelTuning>();
