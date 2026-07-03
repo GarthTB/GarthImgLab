@@ -6,8 +6,16 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <PublishAot>true</PublishAot>
     </PropertyGroup>
+    <ItemGroup>
+        <Using Include="BenchmarkDotNet.Attributes"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Data\lena_std.tif">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>lena_std.tif</Link>
+        </None>
+    </ItemGroup>
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.16.0-preview.1"/>
     </ItemGroup>

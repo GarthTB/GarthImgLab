@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>GarthImgLab.Benchmarks.ModifyByPixel-20260703-151234</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.8737/25H2/2025Update/HudsonValley2)
+12th Gen Intel Core i5-12500H 2.50GHz, 1 CPU, 16 logical and 12 physical cores
+Memory: 15.69 GB Total, 5.01 GB Available
+.NET SDK 10.0.301
+  [Host]     : .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method              </th><th>Mean   </th><th>Error  </th><th>StdDev </th><th>Median </th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>GetValueSetPixel</td><td>109,339.76 μs</td><td>733.898 μs</td><td>650.582 μs</td><td>109,330.12 μs</td><td>128.94</td><td>1.14</td><td>800.0000</td><td>-</td><td>-</td><td>8388672 B</td><td>5.332</td>
+</tr><tr><td>GetValueSetPixelParallel</td><td>331,522.76 μs</td><td>18,458.253 μs</td><td>54,424.581 μs</td><td>325,313.08 μs</td><td>390.97</td><td>63.94</td><td>500.0000</td><td>-</td><td>-</td><td>8403368 B</td><td>5.341</td>
+</tr><tr><td>GetValuesSetPixels</td><td>848.00 μs</td><td>6.296 μs</td><td>5.889 μs</td><td>847.78 μs</td><td>1.00</td><td>0.00</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1573263 B</td><td>1.000</td>
+</tr><tr><td>GetValuesSetPixelsParallel</td><td>672.07 μs</td><td>3.848 μs</td><td>3.599 μs</td><td>671.90 μs</td><td>0.79</td><td>0.01</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1577327 B</td><td>1.003</td>
+</tr><tr><td>GetAreaSetPixels</td><td>848.57 μs</td><td>4.884 μs</td><td>4.079 μs</td><td>848.60 μs</td><td>1.00</td><td>0.01</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1573262 B</td><td>1.000</td>
+</tr><tr><td>GetAreaSetPixelsParallel</td><td>671.76 μs</td><td>3.231 μs</td><td>3.022 μs</td><td>672.02 μs</td><td>0.79</td><td>0.01</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1577384 B</td><td>1.003</td>
+</tr><tr><td>ToArraySetPixels</td><td>855.30 μs</td><td>11.440 μs</td><td>10.701 μs</td><td>852.14 μs</td><td>1.01</td><td>0.01</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1573263 B</td><td>1.000</td>
+</tr><tr><td>ToArraySetPixelsParallel</td><td>664.37 μs</td><td>4.751 μs</td><td>4.212 μs</td><td>664.19 μs</td><td>0.78</td><td>0.01</td><td>499.0234</td><td>499.0234</td><td>499.0234</td><td>1577373 B</td><td>1.003</td>
+</tr><tr><td>AreaPointerUnsafe</td><td>395.32 μs</td><td>1.991 μs</td><td>1.862 μs</td><td>395.29 μs</td><td>0.47</td><td>0.00</td><td>-</td><td>-</td><td>-</td><td>64 B</td><td>0.000</td>
+</tr><tr><td>AreaPointerUnsafeParallel</td><td>95.48 μs</td><td>2.288 μs</td><td>6.712 μs</td><td>97.83 μs</td><td>0.11</td><td>0.01</td><td>0.7324</td><td>-</td><td>-</td><td>7367 B</td><td>0.005</td>
+</tr></tbody></table>
+</body>
+</html>
