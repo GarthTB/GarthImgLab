@@ -5,10 +5,10 @@ using ImageMagick.Drawing;
 
 public static class ImgExt {
     extension(MagickImage img) {
-        public void GenThumb(double maxPx, CancellationToken ct) {
+        public void ToThumb(double maxPx, CancellationToken ct) {
             var w = img.Width;
             var w2 = (uint)Math.Round(Math.Sqrt(maxPx / w / img.Height) * w);
-            if (w2 == w) return;
+            if (w2 >= w) return;
             ct.ThrowIfCancellationRequested();
 
             img.Resize(w2, 0);

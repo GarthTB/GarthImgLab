@@ -120,12 +120,12 @@ public class RoundCorner: IDisposable {
     // 有黑边，效果错误
     public void WriteMaskCopyAlpha() {
         var r = Radius;
-        using var corners = new MagickImage(Color, _w, _h);
+        using MagickImage corners = new(Color, _w, _h);
         corners.Alpha(AlphaOption.Set);
-        using var mask = new MagickImage(MagickColors.White, _w, _h);
+        using MagickImage mask = new(MagickColors.White, _w, _h);
         new Drawables().FillColor(MagickColors.Black).RoundRectangle(0, 0, _w, _h, r, r).Draw(mask);
         corners.SetWriteMask(mask);
-        using var a = new MagickImage(MagickColors.Transparent, _w, _h);
+        using MagickImage a = new(MagickColors.Transparent, _w, _h);
         corners.Composite(a, CompositeOperator.CopyAlpha);
         _testImg!.Composite(corners, CompositeOperator.Over);
     }
@@ -133,9 +133,9 @@ public class RoundCorner: IDisposable {
     // 过渡生硬
     public void WriteMaskEvaluate() {
         var r = Radius;
-        using var corners = new MagickImage(Color, _w, _h);
+        using MagickImage corners = new(Color, _w, _h);
         corners.Alpha(AlphaOption.Set);
-        using var mask = new MagickImage(MagickColors.White, _w, _h);
+        using MagickImage mask = new(MagickColors.White, _w, _h);
         new Drawables().FillColor(MagickColors.Black).RoundRectangle(0, 0, _w, _h, r, r).Draw(mask);
         corners.SetWriteMask(mask);
         corners.Evaluate(Channels.Alpha, EvaluateOperator.Set, 0);
