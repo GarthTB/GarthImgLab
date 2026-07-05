@@ -11,10 +11,7 @@
         <Using Include="BenchmarkDotNet.Attributes"/>
     </ItemGroup>
     <ItemGroup>
-        <None Include="Data\lena_std.tif">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Link>lena_std.tif</Link>
-        </None>
+        <None Include="Data\lena_std.tif" CopyToOutputDirectory="PreserveNewest" Link="lena_std.tif"/>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.16.0-preview.1"/>
