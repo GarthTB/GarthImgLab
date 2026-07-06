@@ -1,6 +1,7 @@
 namespace GarthImgLab.Models.ColorConverters;
 
-public static class OkLrCh {
+public readonly struct OkLrCh: IColorSpace<OkLrCh> {
+    public static double MaxSat => .32249098837223966; // (1,0,1)
     private const double K1 = .206, K2 = .03, K3 = (1 + K1) / (1 + K2);
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {

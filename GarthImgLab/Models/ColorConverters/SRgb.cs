@@ -3,7 +3,7 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 
 public static class SRgb {
-    private const double A = 1.055, S = 12.92, Th = 0.04045;
+    private const double A = 1.055, S = 12.92, Th = .04045;
 
     public static double SRgbToLinear(double v) {
         var abs = Abs(v);

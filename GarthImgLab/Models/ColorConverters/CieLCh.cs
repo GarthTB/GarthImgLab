@@ -2,7 +2,8 @@ namespace GarthImgLab.Models.ColorConverters;
 
 using static Math;
 
-public static class CieLCh {
+public readonly struct CieLCh: IColorSpace<CieLCh> {
+    public static double MaxSat => 133.80841634911246; // (0,0,1)
     private const double Xn = .9504559270516717, Yn = 1, Zn = 1.0890577507598784, D = 6d / 29;
 
     private static double F(double t) =>
@@ -10,7 +11,7 @@ public static class CieLCh {
             ? Cbrt(t)
             : t / (3 * D * D) + 4d / 29;
 
-    private static double FInv(double t) =>
+    private static double InvF(double t) =>
         t > D
             ? t * t * t
             : 3 * D * D * (t - 4d / 29);
@@ -42,9 +43,9 @@ public static class CieLCh {
         var fx = cieA / 500 + fy;
         var fz = fy - cieB / 200;
 
-        var x = Xn * FInv(fx);
-        var y = Yn * FInv(fy);
-        var z = Zn * FInv(fz);
+        var x = Xn * InvF(fx);
+        var y = Yn * InvF(fy);
+        var z = Zn * InvF(fz);
 
         return Xyz.ToSRgb(x, y, z);
     }

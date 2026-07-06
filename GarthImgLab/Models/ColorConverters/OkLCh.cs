@@ -3,7 +3,9 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 using static SRgb;
 
-public static class OkLCh {
+public readonly struct OkLCh: IColorSpace<OkLCh> {
+    public static double MaxSat => .32249098837223966; // (1,0,1)
+
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var lr = SRgbToLinear(r);
         var lg = SRgbToLinear(g);

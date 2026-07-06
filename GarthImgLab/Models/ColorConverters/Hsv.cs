@@ -4,8 +4,10 @@ namespace GarthImgLab.Models.ColorConverters;
 
 using static Math;
 
-public static class Hsv {
-    public static (double H, double S, double V) FromSRgb(double r, double g, double b) {
+public readonly struct Hsv: IColorSpace<Hsv> {
+    public static double MaxSat => 1;
+
+    public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var max = Max(r, Max(g, b));
         var min = Min(r, Min(g, b));
         var c = max - min;
@@ -24,10 +26,10 @@ public static class Hsv {
         var s = max == 0
             ? 0
             : c / max;
-        return (h, s, max);
+        return (max, s, h);
     }
 
-    public static (double R, double G, double B) ToSRgb(double h, double s, double v) {
+    public static (double R, double G, double B) ToSRgb(double v, double s, double h) {
         h %= 360;
         if (h < 0) h += 360;
         var c = v * s;

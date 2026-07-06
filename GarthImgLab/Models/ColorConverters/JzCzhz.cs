@@ -3,10 +3,11 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 using static PQ;
 
-public static class JzCzhz {
+public readonly struct JzCzhz: IColorSpace<JzCzhz> {
+    public static double MaxSat => .190289699629025; // (0,0,1)
     private const double B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
 
-    public static (double J, double C, double H) FromSRgb(double r, double g, double b) {
+    public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var (x, y, z) = Xyz.FromSRgb(r, g, b);
 
         var xp = B * x - (B - 1) * z;
@@ -21,8 +22,8 @@ public static class JzCzhz {
         var sp = InvEotf(s);
 
         var iz = .5 * lp + .5 * mp;
-        var az = 3.524000 * lp - 4.066708 * mp + 0.542708 * sp;
-        var bz = 0.199076 * lp + 1.096799 * mp - 1.295875 * sp;
+        var az = 3.52400 * lp - 4.066708 * mp + 0.542708 * sp;
+        var bz = .199076 * lp + 1.096799 * mp - 1.295875 * sp;
 
         var j = (1 + D) * iz / (1 + D * iz) - D0;
         var c = Sqrt(az * az + bz * bz);
