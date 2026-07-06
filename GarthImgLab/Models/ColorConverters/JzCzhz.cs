@@ -4,7 +4,7 @@ using static Math;
 using static PQ;
 
 public readonly struct JzCzhz: IColorSpace<JzCzhz> {
-    public static double MaxSat => .190289699629025; // (0,0,1)
+    public static double MaxSat { get; } = FromSRgb(0, 0, 1).C;
     private const double B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {

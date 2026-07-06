@@ -3,7 +3,7 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 
 public readonly struct CieLCh: IColorSpace<CieLCh> {
-    public static double MaxSat => 133.80841634911246; // (0,0,1)
+    public static double MaxSat { get; } = FromSRgb(0, 0, 1).C;
     private const double Xn = .9504559270516717, Yn = 1, Zn = 1.0890577507598784, D = 6d / 29;
 
     private static double F(double t) =>

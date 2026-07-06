@@ -7,14 +7,14 @@ public sealed class FrameMakerTests {
     private static readonly MagickColor Red = MagickColors.Red;
 
     [Fact]
-    public void Common_Cancelled_UnchangedAndThrow() {
+    public async Task Common_Cancelled_UnchangedAndThrow() {
         using MagickImage img = new(Red, 64, 32);
         var sign = img.Signature;
         img.RemoveAttribute("signature");
         using CancellationTokenSource cts = new();
-        cts.Cancel();
+        await cts.CancelAsync();
 
-        Throws<OperationCanceledException>(() =>
+        await ThrowsAsync<OperationCanceledException>(() =>
             new FrameMaker(Red, .5, .25, .5).Apply(img, cts.Token));
 
         Equal(sign, img.Signature);

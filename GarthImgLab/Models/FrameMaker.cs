@@ -4,9 +4,10 @@ using ImageMagick;
 using ImageMagick.Drawing;
 
 public sealed class FrameMaker(MagickColor c, double rcRatio, double ltrRatio, double bRatio): IFx {
-    public void Apply(MagickImage img, CancellationToken ct) {
+    public Task Apply(MagickImage img, CancellationToken ct) {
         RoundCorner(img, ct);
         AddFrame(img, ct);
+        return Task.CompletedTask;
     }
 
     private void RoundCorner(MagickImage img, CancellationToken ct) {

@@ -16,5 +16,5 @@ public sealed class Annotator(
         : null;
 
     public void Dispose() => _icon?.Dispose();
-    public void Apply(MagickImage img, CancellationToken ct) => throw new NotImplementedException();
+    public Task Apply(MagickImage img, CancellationToken ct) => throw new NotImplementedException();
 }

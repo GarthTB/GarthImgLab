@@ -4,7 +4,7 @@ using static Math;
 using static SRgb;
 
 public readonly struct OkLCh: IColorSpace<OkLCh> {
-    public static double MaxSat => .32249098837223966; // (1,0,1)
+    public static double MaxSat { get; } = FromSRgb(1, 0, 1).C;
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var lr = SRgbToLinear(r);
