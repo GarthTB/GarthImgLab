@@ -26,7 +26,7 @@ public enum TagName: byte {
     软件
 }
 
-public class ExifExtractor(IEnumerable<TagName> tags, string separator) {
+public sealed class ExifExtractor(IEnumerable<TagName> tags, string separator) {
     private const string PlaceHolder = "????";
 
     private readonly Func<MagickImage, string>[] _extractors = tags.AsValueEnumerable()

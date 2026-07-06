@@ -15,27 +15,23 @@ public enum SatBoostMode: byte {
     OkLrCh
 }
 
-public static class SatBooster {
+public sealed class SatBooster(SatBoostMode mode, double strength): IFx {
     private const double Max16 = 65535;
 
-    public static void Boost(
-        MagickImage img,
-        SatBoostMode mode,
-        double strength,
-        CancellationToken ct) {
+    public void Apply(MagickImage img, CancellationToken ct) {
         Action<nint> proc = mode switch {
-            SatBoostMode.HSV => p => Proc<Hsv>(p, strength),
-            SatBoostMode.HSL => p => Proc<Hsl>(p, strength),
-            SatBoostMode.CIELCh => p => Proc<CieLCh>(p, strength),
-            SatBoostMode.JzCzhz => p => Proc<JzCzhz>(p, strength),
-            SatBoostMode.OkLCh => p => Proc<OkLCh>(p, strength),
-            SatBoostMode.OkLrCh => p => Proc<OkLrCh>(p, strength),
+            SatBoostMode.HSV => Proc<Hsv>,
+            SatBoostMode.HSL => Proc<Hsl>,
+            SatBoostMode.CIELCh => Proc<CieLCh>,
+            SatBoostMode.JzCzhz => Proc<JzCzhz>,
+            SatBoostMode.OkLCh => Proc<OkLCh>,
+            SatBoostMode.OkLrCh => Proc<OkLrCh>,
             _ => throw new UnreachableException()
         };
         img.MapPixel(proc, ct);
     }
 
-    private static unsafe void Proc<T>(nint p, double strength) where T: struct, IColorSpace<T> {
+    private unsafe void Proc<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;
 
         var r = rgb[0] / Max16;
