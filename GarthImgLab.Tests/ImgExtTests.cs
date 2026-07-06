@@ -66,7 +66,7 @@ public sealed class ImgExtTests {
         img.RemoveAttribute("signature");
 
         Throws<InvalidOperationException>(() => img.MapPixel(
-            static p => ((ushort*)p)[1] = 0,
+            static p => ((ushort*)p)[0] = 0,
             CancellationToken.None));
 
         Equal(sign, img.Signature);

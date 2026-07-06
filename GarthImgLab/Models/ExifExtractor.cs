@@ -28,7 +28,12 @@ public enum TagName: byte {
 public static class ExifExtractor {
     private const string PlaceHolder = "????";
 
-    public static string ExtractExif(this MagickImage img, TagName tag) =>
+    public static Func<MagickImage, string> GetExtractor(string s) =>
+        Enum.TryParse(s, out TagName tag)
+            ? img => img.ExtractExif(tag)
+            : _ => s;
+
+    private static string ExtractExif(this MagickImage img, TagName tag) =>
         tag switch {
             快门 => GetExposureTime(img),
             焦距 => GetFocalLength(img),
