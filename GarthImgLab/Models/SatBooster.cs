@@ -18,7 +18,7 @@ public enum SatBoostMode: byte {
 public sealed class SatBooster(SatBoostMode mode, double strength): IFx {
     private const double Max16 = 65535;
 
-    public Task Apply(MagickImage img, CancellationToken ct) {
+    public void Apply(MagickImage img, CancellationToken ct) {
         Action<nint> proc = mode switch {
             SatBoostMode.HSV => Proc<Hsv>,
             SatBoostMode.HSL => Proc<Hsl>,
@@ -29,7 +29,6 @@ public sealed class SatBooster(SatBoostMode mode, double strength): IFx {
             _ => throw new UnreachableException()
         };
         img.MapPixel(proc, ct);
-        return Task.CompletedTask;
     }
 
     private unsafe void Proc<T>(nint p) where T: struct, IColorSpace<T> {

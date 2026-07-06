@@ -23,10 +23,10 @@ public sealed class Annotator(
 
     public void Dispose() => _icon?.Dispose();
 
-    public Task Apply(MagickImage img, CancellationToken ct) {
+    public void Apply(MagickImage img, CancellationToken ct) {
         uint w = img.Width, h = img.Height;
         var bPx = (uint)Round(bRatio * Min(w, h));
-        if (bPx == 0) return Task.CompletedTask;
+        if (bPx == 0) return;
         ct.ThrowIfCancellationRequested();
 
         var info = _getInfo(img);
@@ -47,11 +47,9 @@ public sealed class Annotator(
             img.Composite(mIcon, (int)Round(textX + textW + gap), iconY, CompositeOperator.Over);
         }
 
-        if (pen is null) return Task.CompletedTask;
+        if (pen is null) return;
         ct.ThrowIfCancellationRequested();
         pen.Text(textX, iconY + ascent, info).Draw(img);
-
-        return Task.CompletedTask;
     }
 
     private static InfoGetter GetInfoGetter(IEnumerable<string> tagInfoUnions, string separator) {

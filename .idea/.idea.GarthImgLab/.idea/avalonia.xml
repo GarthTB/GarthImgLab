@@ -5,6 +5,7 @@
       <map>
         <entry key="GarthImgLab/App.axaml" value="GarthImgLab/GarthImgLab.csproj" />
         <entry key="GarthImgLab/Views/MainWindow.axaml" value="GarthImgLab/GarthImgLab.csproj" />
+        <entry key="GarthImgLab/Views/PreviewWindow.axaml" value="GarthImgLab/GarthImgLab.csproj" />
       </map>
     </option>
   </component>

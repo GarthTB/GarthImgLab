@@ -14,7 +14,7 @@ public sealed class FrameMakerTests {
         using CancellationTokenSource cts = new();
         await cts.CancelAsync();
 
-        await ThrowsAsync<OperationCanceledException>(() =>
+        Throws<OperationCanceledException>(() =>
             new FrameMaker(Red, .5, .25, .5).Apply(img, cts.Token));
 
         Equal(sign, img.Signature);

@@ -59,8 +59,8 @@ public readonly struct JzCzhz: IColorSpace<JzCzhz> {
 }
 
 file static class PQ {
-    private const double C1 = 3424d / 4096, C2 = 2413d / 128, C3 = 2392d / 128;
-    private const double N = 2610d / 16384, P = 134.034375;
+    private const double C1 = .8359375, C2 = 18.8515625, C3 = 18.6875;
+    private const double N = .1593017578125, P = 134.034375;
     private const double WhiteL = 203;
 
     public static double Eotf(double ep) {

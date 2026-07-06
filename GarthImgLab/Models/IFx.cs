@@ -3,5 +3,5 @@ namespace GarthImgLab.Models;
 using ImageMagick;
 
 public interface IFx {
-    Task Apply(MagickImage img, CancellationToken ct);
+    void Apply(MagickImage img, CancellationToken ct);
 }
