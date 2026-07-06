@@ -14,7 +14,7 @@ public sealed class ImgExtTests {
 
         Action f = id switch {
             0 => () => img.ToThumb(512, cts.Token),
-            1 => () => img.MapPixel(static p => ((ushort*)p)[1] = 0, cts.Token),
+            1 => () => img.MapPixel(static p => ((ushort*)p)[0] = 0, cts.Token),
             _ => throw new UnreachableException()
         };
 
