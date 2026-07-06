@@ -4,7 +4,6 @@ namespace GarthImgLab.Models;
 
 using System.Diagnostics;
 using ImageMagick;
-using ZLinq;
 using static ImageMagick.ExifTag;
 using static TagName;
 
@@ -26,35 +25,28 @@ public enum TagName: byte {
     软件
 }
 
-public sealed class ExifExtractor(IEnumerable<TagName> tags, string separator) {
+public static class ExifExtractor {
     private const string PlaceHolder = "????";
 
-    private readonly Func<MagickImage, string>[] _extractors = tags.AsValueEnumerable()
-        .Select(static x => x switch {
-            快门 => (Func<MagickImage, string>)GetExposureTime,
-            焦距 => GetFocalLength,
-            等效焦距 => GetFocalLengthIn35MMFilm,
-            光圈 => GetFNumber,
-            感光度 => GetIsoSpeedRatings,
-            拍摄时间 => GetDateTimeOriginal,
-            作者 => GetArtist,
-            版权 => GetCopyright,
-            机身厂商 => GetMake,
-            机身型号 => GetModel,
-            机身序号 => GetBodySerialNumber,
-            镜头厂商 => GetLensMake,
-            镜头型号 => GetLensModel,
-            镜头序号 => GetLensSerialNumber,
-            软件 => GetSoftware,
+    public static string ExtractExif(this MagickImage img, TagName tag) =>
+        tag switch {
+            快门 => GetExposureTime(img),
+            焦距 => GetFocalLength(img),
+            等效焦距 => GetFocalLengthIn35MMFilm(img),
+            光圈 => GetFNumber(img),
+            感光度 => GetIsoSpeedRatings(img),
+            拍摄时间 => GetDateTimeOriginal(img),
+            作者 => GetStr(img, Artist, "tiff:artist"),
+            版权 => GetStr(img, Copyright, "tiff:copyright"),
+            机身厂商 => GetStr(img, Make, "tiff:make"),
+            机身型号 => GetStr(img, Model, "tiff:model"),
+            机身序号 => GetStr(img, SerialNumber, "exif:BodySerialNumber"),
+            镜头厂商 => GetStr(img, LensMake, "exif:LensMake"),
+            镜头型号 => GetStr(img, LensModel, "exif:LensModel"),
+            镜头序号 => GetStr(img, LensSerialNumber, "exif:LensSerialNumber"),
+            软件 => GetStr(img, Software, "tiff:software"),
             _ => throw new UnreachableException()
-        })
-        .ToArray();
-
-    public string GetExifValues(MagickImage img) {
-        var values = new string[_extractors.Length];
-        for (var i = 0; i < _extractors.Length; i++) values[i] = _extractors[i](img);
-        return string.Join(separator, values);
-    }
+        };
 
     private static string GetExposureTime(MagickImage img) {
         var v = img.GetExifProfile()?.GetValue(ExposureTime)?.Value.ToDouble();
@@ -137,22 +129,6 @@ public sealed class ExifExtractor(IEnumerable<TagName> tags, string separator) {
             ? $"{v[..4]}-{v[5..7]}-{v[8..]}"
             : v;
     }
-
-    private static string GetArtist(MagickImage img) => GetStr(img, Artist, "tiff:artist");
-    private static string GetCopyright(MagickImage img) => GetStr(img, Copyright, "tiff:copyright");
-    private static string GetMake(MagickImage img) => GetStr(img, Make, "tiff:make");
-    private static string GetModel(MagickImage img) => GetStr(img, Model, "tiff:model");
-
-    private static string GetBodySerialNumber(MagickImage img) =>
-        GetStr(img, SerialNumber, "exif:BodySerialNumber");
-
-    private static string GetLensMake(MagickImage img) => GetStr(img, LensMake, "exif:LensMake");
-    private static string GetLensModel(MagickImage img) => GetStr(img, LensModel, "exif:LensModel");
-
-    private static string GetLensSerialNumber(MagickImage img) =>
-        GetStr(img, LensSerialNumber, "exif:LensSerialNumber");
-
-    private static string GetSoftware(MagickImage img) => GetStr(img, Software, "tiff:software");
 
     private static string GetStr(MagickImage img, ExifTag<string> tag, string attribute) {
         var v = img.GetExifProfile()?.GetValue(tag)?.Value;
