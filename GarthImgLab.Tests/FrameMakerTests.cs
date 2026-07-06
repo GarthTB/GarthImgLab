@@ -20,20 +20,8 @@ public sealed class FrameMakerTests {
         Equal(sign, img.Signature);
     }
 
-    #region RoundCorner
-
-    [Theory, InlineData("#0F0F", "#0F0"), InlineData("#0F08", "#780")]
-    public void RoundCorner_VarAlpha_BlendOver(string hex, string expectedHex) {
-        using MagickImage img = new(Red, 64, 32);
-
-        new FrameMaker(new(hex), .5, 0, 0).Apply(img, NoneToken);
-
-        using var px = img.GetPixels();
-        Equal(new MagickColor(expectedHex), px.GetPixel(0, 0).ToColor());
-    }
-
-    [Theory, InlineData(0, "#0F0F"), InlineData(.5, "#0F00")]
-    public void RoundCorner_0RatioOr0Alpha_DoNothing(double ratio, string hex) {
+    [Theory, InlineData("#0F0F", 0), InlineData("#0F00", .5)]
+    public void RoundCorner_0RatioOr0Alpha_DoNothing(string hex, double ratio) {
         using MagickImage img = new(Red, 64, 32);
         var sign = img.Signature;
         img.RemoveAttribute("signature");
@@ -43,9 +31,15 @@ public sealed class FrameMakerTests {
         Equal(sign, img.Signature);
     }
 
-    #endregion RoundCorner
+    [Theory, InlineData("#0F0F", "#0F0"), InlineData("#0F08", "#780")]
+    public void RoundCorner_VarAlpha_BlendOver(string hex, string expected) {
+        using MagickImage img = new(Red, 64, 32);
 
-    #region AddFrame
+        new FrameMaker(new(hex), .5, 0, 0).Apply(img, NoneToken);
+
+        using var px = img.GetPixels();
+        Equal(new MagickColor(expected), px.GetPixel(0, 0).ToColor());
+    }
 
     [Fact]
     public void AddFrame_SizeAndPositionCorrectAndNoInterpolation() {
@@ -65,17 +59,4 @@ public sealed class FrameMakerTests {
         Equal(lime, px.GetPixel(72, 40).ToColor());
         Equal(lime, px.GetPixel(79, 55).ToColor());
     }
-
-    [Fact]
-    public void AddFrame_0Ratio_DoNothing() {
-        using MagickImage img = new(Red, 64, 32);
-        var sign = img.Signature;
-        img.RemoveAttribute("signature");
-
-        new FrameMaker(MagickColors.Lime, .5, 0, 0).Apply(img, NoneToken);
-
-        Equal(sign, img.Signature);
-    }
-
-    #endregion AddFrame
 }

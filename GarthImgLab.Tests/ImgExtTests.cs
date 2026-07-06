@@ -22,8 +22,6 @@ public sealed class ImgExtTests {
         Equal(sign, img.Signature);
     }
 
-    #region ToThumb
-
     [Fact]
     public void ToThumb_ScaleDown_KeepAspect() {
         var red = MagickColors.Red;
@@ -49,10 +47,6 @@ public sealed class ImgExtTests {
         Equal(sign, img.Signature);
     }
 
-    #endregion ToThumb
-
-    #region MapPixel
-
     [Fact]
     public void MapPixel_IterateAll() {
         using MagickImage img = new(MagickColors.Red, 64, 32);
@@ -77,6 +71,4 @@ public sealed class ImgExtTests {
 
         Equal(sign, img.Signature);
     }
-
-    #endregion MapPixel
 }
