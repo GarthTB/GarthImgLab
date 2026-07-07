@@ -2,14 +2,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:GarthImgLab.ViewModels"
     x:Class="GarthImgLab.Views.PreviewWindow"
-    x:DataType="vm:PreviewWindowVM"
+    x:DataType="vm:PreviewWindowVm"
     Icon="/Assets/icon_48.png"
     Padding="0,30,0,0"
     SizeToContent="WidthAndHeight"
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="AcrylicBlur">
     <Design.DataContext>
-        <vm:PreviewWindowVM/>
+        <vm:PreviewWindowVm/>
     </Design.DataContext>
     <TextBlock Text="{Binding Greeting}"/>
 </Window>

@@ -2,6 +2,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-public sealed class MainWindowVM: ObservableObject {
+public sealed class MainWindowVm: ObservableObject {
     public static string Greeting => "Welcome to Avalonia!";
 }

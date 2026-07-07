@@ -5,7 +5,7 @@ using Common;
 using ViewModels;
 
 public sealed partial class PreviewWindow: Window {
-    private readonly PreviewWindowVM _vm = new();
+    private readonly PreviewWindowVm _vm = new();
 
     public PreviewWindow() {
         InitializeComponent();
