@@ -40,8 +40,9 @@ public sealed class SatBooster(SatBoostMode mode, double strength): IFx {
 
         var min = Math.Min(r, Math.Min(g, b));
         var max = Math.Max(r, Math.Max(g, b));
-        var t = Math.Max(0, 2 * Math.Min(min, 1 - max));
-        var mask = t * t * (3 - 2 * t);
+        var x = Math.Min(min, 1 - max);
+        var mask = 4 * x * (1 - x);
+        if (mask < 0) mask = 0;
 
         var (l, c, h) = T.FromSRgb(r, g, b);
         c += (T.MaxSat - c) * strength * mask;

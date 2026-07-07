@@ -14,8 +14,7 @@ public static class ImgExt {
         }
 
         public void MapPixel(Action<nint> f, CancellationToken ct) {
-            if (img.ColorSpace is not (ColorSpace.RGB or ColorSpace.sRGB or ColorSpace.scRGB))
-                throw new InvalidOperationException("不支持此色空间");
+            if (img.ColorSpace != ColorSpace.sRGB) throw new InvalidOperationException("不支持此色空间");
             ct.ThrowIfCancellationRequested();
 
             uint w = img.Width, h = img.Height;
