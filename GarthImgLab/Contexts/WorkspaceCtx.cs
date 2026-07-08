@@ -30,6 +30,11 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
             await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
             var bmp = await ToBmpAsync(bef, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
+                if (ct.IsCancellationRequested) {
+                    bef.Dispose();
+                    bmp.Dispose();
+                    return;
+                }
                 DisposeCurrent();
                 _bef = bef;
                 _befBmp = bmp;
@@ -61,6 +66,11 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
                 ct);
             var bmp = await ToBmpAsync(aft, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
+                if (ct.IsCancellationRequested) {
+                    aft.Dispose();
+                    bmp.Dispose();
+                    return;
+                }
                 _aft?.Dispose();
                 _aftBmp?.Dispose();
                 _aft = aft;
@@ -79,16 +89,16 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
 
     private static CancellationToken CancelAndGetNewCt(ref CancellationTokenSource cts) {
         cts.Cancel();
-        cts.Dispose();
-        return (cts = new()).Token;
+        cts = new();
+        return cts.Token;
     }
 
     private void DisposeCurrent() {
         _bef?.Dispose();
         _aft?.Dispose();
+        _bef = _aft = null;
         _befBmp?.Dispose();
         _aftBmp?.Dispose();
-        _bef = _aft = null;
         _befBmp = _aftBmp = null;
     }
 
