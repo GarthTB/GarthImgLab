@@ -13,4 +13,9 @@ public abstract partial class FxTabVm(IWorkspaceCtx ctx): TabVm {
     [ObservableProperty] public partial bool Enabled { get; set; }
     partial void OnEnabledChanged(bool value) => ctx.AftActive = value;
     protected void Apply() => _ = ctx.UpdateAftAsync(Fxs);
+
+    public void OnActivated() {
+        ctx.AftActive = Enabled;
+        if (Enabled) Apply();
+    }
 }

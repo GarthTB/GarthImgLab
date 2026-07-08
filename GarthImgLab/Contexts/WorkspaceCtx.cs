@@ -11,10 +11,10 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
-    private CancellationTokenSource _cts = new();
+    private CancellationTokenSource _befCts = new(), _aftCts = new();
 
     [ObservableProperty, NotifyPropertyChangedFor(nameof(DisplayImg))]
-    public partial bool AftActive { get; set; }
+    public partial bool AftActive { private get; set; }
 
     public IImage? DisplayImg =>
         AftActive
@@ -22,9 +22,10 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
             : _befBmp;
 
     public async Task LoadBefAsync(string path) {
-        var ct = CancelAndGetNewCt();
+        var ct = CancelAndGetNewCt(ref _befCts);
+        CancelAndGetNewCt(ref _aftCts);
+        MagickImage bef = new();
         try {
-            MagickImage bef = new();
             await bef.ReadAsync(path, ct);
             await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
             var bmp = await ToBmpAsync(bef, ct);
@@ -34,18 +35,27 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
                 _befBmp = bmp;
                 if (!AftActive) OnPropertyChanged(nameof(DisplayImg));
             });
-        } catch (OperationCanceledException) {} catch { Clear(); }
+        } catch (Exception ex) {
+            bef.Dispose();
+            if (ex is not OperationCanceledException) Clear();
+        }
     }
 
     public async Task UpdateAftAsync(IReadOnlyList<IFx> fxs) {
-        var ct = CancelAndGetNewCt();
+        var ct = CancelAndGetNewCt(ref _aftCts);
+        MagickImage? aft = null;
         try {
             await Task.Delay(DebounceMs, ct);
             if (_bef is null) return;
-            var aft = await Task.Run(
+            aft = await Task.Run(
                 () => {
                     var img = (MagickImage)_bef.CloneArea(_bef.Width, _bef.Height);
-                    foreach (var fx in fxs) fx.Apply(img, ct);
+                    try {
+                        foreach (var fx in fxs) fx.Apply(img, ct);
+                    } catch {
+                        img.Dispose();
+                        throw;
+                    }
                     return img;
                 },
                 ct);
@@ -57,19 +67,20 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
                 _aftBmp = bmp;
                 if (AftActive) OnPropertyChanged(nameof(DisplayImg));
             });
-        } catch (OperationCanceledException) {}
+        } catch { aft?.Dispose(); }
     }
 
     public void Clear() {
-        CancelAndGetNewCt();
+        CancelAndGetNewCt(ref _befCts);
+        CancelAndGetNewCt(ref _aftCts);
         DisposeCurrent();
         OnPropertyChanged(nameof(DisplayImg));
     }
 
-    private CancellationToken CancelAndGetNewCt() {
-        _cts.Cancel();
-        _cts.Dispose();
-        return (_cts = new()).Token;
+    private static CancellationToken CancelAndGetNewCt(ref CancellationTokenSource cts) {
+        cts.Cancel();
+        cts.Dispose();
+        return (cts = new()).Token;
     }
 
     private void DisposeCurrent() {
@@ -82,9 +93,14 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
     }
 
     private static async Task<Bitmap> ToBmpAsync(MagickImage img, CancellationToken ct) {
-        using MemoryStream ms = new();
-        await img.WriteAsync(ms, MagickFormat.Bmp, ct);
-        ms.Seek(0, SeekOrigin.Begin);
-        return new(ms);
+        MemoryStream ms = new();
+        try {
+            await img.WriteAsync(ms, MagickFormat.Bmp, ct);
+            ms.Seek(0, SeekOrigin.Begin);
+            return new(ms);
+        } catch {
+            await ms.DisposeAsync();
+            throw;
+        }
     }
 }

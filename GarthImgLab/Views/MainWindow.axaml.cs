@@ -5,7 +5,7 @@ using Common;
 using ViewModels;
 
 public sealed partial class MainWindow: Window {
-    private readonly MainWindowVm _vm = new();
+    private readonly MainVm _vm = new();
 
     public MainWindow() {
         InitializeComponent();

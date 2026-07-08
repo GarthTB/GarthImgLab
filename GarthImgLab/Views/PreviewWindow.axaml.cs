@@ -5,11 +5,10 @@ using Common;
 using ViewModels;
 
 public sealed partial class PreviewWindow: Window {
-    private readonly PreviewWindowVm _vm = new();
-
     public PreviewWindow() {
         InitializeComponent();
-        DataContext = _vm;
         Title = $"{Meta.Name} - 预览";
     }
+
+    public PreviewWindow(MainVm vm): this() => DataContext = vm;
 }
