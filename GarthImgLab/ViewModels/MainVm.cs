@@ -14,6 +14,9 @@ public sealed partial class MainVm: ObservableObject {
     [ObservableProperty] public partial TabVm? SelTab { get; set; }
 
     partial void OnSelTabChanged(TabVm? value) {
-        if (value is FxTabVm fx) fx.OnActivated();
+        if (value is FxTabVm tab)
+            tab.OnActivated();
+        else
+            Ctx.UpdateAftAsync([]);
     }
 }

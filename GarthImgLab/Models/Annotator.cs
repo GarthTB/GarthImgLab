@@ -4,7 +4,7 @@ using ImageMagick;
 using ImageMagick.Drawing;
 using static Math;
 
-public sealed class Annotator: IDisposable, IFx {
+public sealed class Annotator: IFx {
     private readonly double _bRatio, _textRatio, _margin;
     private readonly Func<MagickImage, string> _getInfo;
     private readonly MagickImage? _icon;
@@ -18,7 +18,7 @@ public sealed class Annotator: IDisposable, IFx {
         double ltrRatio,
         double bRatio,
         double textRatio,
-        string? iconPath,
+        MagickImage? icon,
         double margin) {
         _pen = new Drawables().Font(font).FillColor(c).StrokeColor(c).StrokeOpacity(new(37));
         var funcs = tagInfoUnions.Select(ExifExtractor.GetExtractor).ToArray();
@@ -29,11 +29,9 @@ public sealed class Annotator: IDisposable, IFx {
         };
         _bRatio = bRatio / (ltrRatio + 1 + bRatio);
         _textRatio = textRatio;
-        if (iconPath is {}) _icon = new(iconPath);
+        _icon = icon;
         _margin = margin;
     }
-
-    public void Dispose() => _icon?.Dispose();
 
     public void Apply(MagickImage img, CancellationToken ct) {
         uint w = img.Width, h = img.Height;

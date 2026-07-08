@@ -48,10 +48,10 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
 
     public async Task UpdateAftAsync(IReadOnlyList<IFx> fxs) {
         var ct = CancelAndGetNewCt(ref _aftCts);
+        if (_bef is null || fxs.Count == 0) return;
         MagickImage? aft = null;
         try {
             await Task.Delay(DebounceMs, ct);
-            if (_bef is null) return;
             aft = await Task.Run(
                 () => {
                     var img = (MagickImage)_bef.CloneArea(_bef.Width, _bef.Height);
@@ -103,14 +103,9 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
     }
 
     private static async Task<Bitmap> ToBmpAsync(MagickImage img, CancellationToken ct) {
-        MemoryStream ms = new();
-        try {
-            await img.WriteAsync(ms, MagickFormat.Bmp, ct);
-            ms.Seek(0, SeekOrigin.Begin);
-            return new(ms);
-        } catch {
-            await ms.DisposeAsync();
-            throw;
-        }
+        using MemoryStream ms = new();
+        await img.WriteAsync(ms, MagickFormat.Bmp, ct);
+        ms.Seek(0, SeekOrigin.Begin);
+        return new(ms);
     }
 }
