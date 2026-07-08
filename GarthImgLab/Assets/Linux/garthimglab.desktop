@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=GarthImgLab
+Name[zh_CN]=Garth 的图像工具
+Exec=GarthImgLab
+Icon=garthimglab
+Comment=Garth's image-processing tools
+Terminal=false
+GenericName=Image Editor
+Categories=Graphics;Photography;
+StartupWMClass=GarthImgLab
+Keywords=image;photo;editor;
