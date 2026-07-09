@@ -7,19 +7,30 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ImageMagick;
 using Models;
 
-public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
+public sealed class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
     private CancellationTokenSource _befCts = new(), _aftCts = new();
-
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(DisplayImg))]
-    public partial bool AftActive { private get; set; }
+    private bool _on;
 
     public IImage? DisplayImg =>
-        AftActive
+        _on
             ? _aftBmp
             : _befBmp;
+
+    public void Clear() {
+        CancelAndGetNewCt(ref _befCts);
+        CancelAndGetNewCt(ref _aftCts);
+        DisposeCurrent();
+        OnPropertyChanged(nameof(DisplayImg));
+    }
+
+    public void Toggle(bool on) {
+        if (_on == on) return;
+        _on = on;
+        OnPropertyChanged(nameof(DisplayImg));
+    }
 
     public async Task LoadBefAsync(string path) {
         var ct = CancelAndGetNewCt(ref _befCts);
@@ -38,7 +49,7 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
                 DisposeCurrent();
                 _bef = bef;
                 _befBmp = bmp;
-                if (!AftActive) OnPropertyChanged(nameof(DisplayImg));
+                if (!_on) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch (Exception ex) {
             bef.Dispose();
@@ -75,16 +86,9 @@ public sealed partial class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
                 _aftBmp?.Dispose();
                 _aft = aft;
                 _aftBmp = bmp;
-                if (AftActive) OnPropertyChanged(nameof(DisplayImg));
+                if (_on) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch { aft?.Dispose(); }
-    }
-
-    public void Clear() {
-        CancelAndGetNewCt(ref _befCts);
-        CancelAndGetNewCt(ref _aftCts);
-        DisposeCurrent();
-        OnPropertyChanged(nameof(DisplayImg));
     }
 
     private static CancellationToken CancelAndGetNewCt(ref CancellationTokenSource cts) {

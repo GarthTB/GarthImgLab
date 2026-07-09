@@ -5,11 +5,11 @@ using Contexts;
 
 public sealed partial class MainVm: ObservableObject {
     public MainVm() {
-        Tabs = [new FileTabVm(Ctx), new SaturateTabVm(Ctx), new SaveTabVm()];
+        Tabs = [new FileTabVm(Ctx), new SaturateTabVm(Ctx), new FrameTabVm(Ctx), new SaveTabVm()];
         SelTab = Tabs[0];
     }
 
-    public IWorkspaceCtx Ctx { get; } = new WorkspaceCtx();
+    public WorkspaceCtx Ctx { get; } = new();
     public IReadOnlyList<TabVm> Tabs { get; }
     [ObservableProperty] public partial TabVm? SelTab { get; set; }
 
@@ -17,6 +17,6 @@ public sealed partial class MainVm: ObservableObject {
         if (value is FxTabVm tab)
             tab.OnActivated();
         else
-            Ctx.UpdateAftAsync([]);
+            _ = Ctx.UpdateAftAsync([]);
     }
 }

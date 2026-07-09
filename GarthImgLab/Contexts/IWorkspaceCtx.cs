@@ -6,8 +6,8 @@ using Models;
 
 public interface IWorkspaceCtx: INotifyPropertyChanged {
     IImage? DisplayImg { get; }
-    bool AftActive { set; }
+    void Clear();
+    void Toggle(bool on);
     Task LoadBefAsync(string path);
     Task UpdateAftAsync(IReadOnlyList<IFx> fxs);
-    void Clear();
 }

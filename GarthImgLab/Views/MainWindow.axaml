@@ -11,5 +11,12 @@
     <Design.DataContext>
         <vm:MainVm/>
     </Design.DataContext>
-    <TabControl ItemsSource="{Binding Tabs}"/>
+    <TabControl ItemsSource="{Binding Tabs}"
+        SelectedItem="{Binding SelTab}">
+        <TabControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:TabVm">
+                <TextBlock Text="{Binding Title}"/>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+    </TabControl>
 </Window>

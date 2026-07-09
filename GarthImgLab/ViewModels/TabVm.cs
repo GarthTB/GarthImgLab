@@ -11,11 +11,11 @@ public abstract class TabVm: ObservableObject {
 public abstract partial class FxTabVm(IWorkspaceCtx ctx): TabVm {
     protected abstract IReadOnlyList<IFx> Fxs { get; }
     [ObservableProperty] public partial bool Enabled { get; set; }
-    partial void OnEnabledChanged(bool value) => ctx.AftActive = value;
+    partial void OnEnabledChanged(bool value) => ctx.Toggle(value);
     protected void Apply() => _ = ctx.UpdateAftAsync(Fxs);
 
     public void OnActivated() {
-        ctx.AftActive = Enabled;
+        ctx.Toggle(Enabled);
         if (Enabled) Apply();
     }
 }
