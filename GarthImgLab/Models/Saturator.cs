@@ -59,7 +59,8 @@ public sealed class Saturator: IFx {
 
         var min = Math.Min(r, Math.Min(g, b));
         var max = Math.Max(r, Math.Max(g, b));
-        var mask = 2 * Math.Min(min, 1 - max);
+        var d = 2 * Math.Min(min, 1 - max);
+        var mask = Math.Pow(d, .2);
 
         var (l, c, h) = T.FromSRgb(r, g, b);
 

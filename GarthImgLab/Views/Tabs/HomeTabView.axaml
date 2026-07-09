@@ -10,7 +10,7 @@
             ItemsSource="{Binding Paths, Mode=OneTime}"
             SelectedItem="{Binding SelPath}"/>
         <Grid Grid.Row="2"
-            ColumnDefinitions="*,14,*,14,*,16,*,16,*,14,*">
+            ColumnDefinitions="*,14,*,14,*,16,*,14,*,14,*">
             <Button Content="添加"
                 Click="AddImg"/>
             <Button Grid.Column="2"

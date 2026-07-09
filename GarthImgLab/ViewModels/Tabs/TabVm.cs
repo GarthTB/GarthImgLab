@@ -15,6 +15,6 @@ public abstract partial class FxTabVm(IWorkspaceVm ws): TabVm {
 
     public void OnActivated() {
         ws.SetEnabled(Enabled);
-        if (Enabled) Apply();
+        Apply();
     }
 }
