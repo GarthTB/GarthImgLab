@@ -6,6 +6,7 @@
     x:DataType="vm:MainVm"
     Icon="/Assets/icon_48.png"
     Padding="0,30,0,0"
+    CanResize="False"
     SizeToContent="WidthAndHeight"
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="AcrylicBlur">

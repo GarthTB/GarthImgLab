@@ -3,5 +3,38 @@
     xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
     x:Class="GarthImgLab.Views.Tabs.SaturateTabView"
     x:DataType="vm:SaturateTabVm">
-    Welcome to Avalonia!
+    <Grid Margin="16"
+        RowDefinitions="*,14,*"
+        ColumnDefinitions="60,14,100,14,140">
+        <CheckBox Content="启用"
+            IsChecked="{Binding Enabled}"/>
+        <ComboBox Grid.Row="0"
+            Grid.Column="2"
+            IsEnabled="{Binding Enabled}"
+            ItemsSource="{Binding SaturateModes, Mode=OneTime}"
+            DisplayMemberBinding="{Binding Value, Mode=OneTime}"
+            SelectedValue="{Binding SelMode}"
+            SelectedValueBinding="{Binding Key, Mode=OneTime}"/>
+        <NumericUpDown Grid.Row="0"
+            Grid.Column="4"
+            InnerLeftContent="增益"
+            Minimum="-1"
+            Maximum="1"
+            Increment=".01"
+            FormatString="0.####"
+            IsEnabled="{Binding Enabled}"
+            Value="{Binding Strength}"/>
+        <Slider Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            Minimum="-1"
+            Maximum="1"
+            SmallChange=".1"
+            LargeChange="1"
+            TickFrequency=".05"
+            TickPlacement="TopLeft"
+            IsSnapToTickEnabled="True"
+            IsEnabled="{Binding Enabled}"
+            Value="{Binding Strength}"/>
+    </Grid>
 </UserControl>

@@ -5,7 +5,7 @@ using Tabs;
 
 public sealed partial class MainVm: ObservableObject {
     public MainVm() {
-        Tabs = [new FileTabVm(Ws), new SaturateTabVm(Ws), new FrameTabVm(Ws), new SaveTabVm()];
+        Tabs = [new HomeTabVm(Ws), new SaturateTabVm(Ws), new FrameTabVm(Ws), new SaveTabVm()];
         SelTab = Tabs[0];
     }
 

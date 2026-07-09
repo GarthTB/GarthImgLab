@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.Tabs.HomeTabView"
+    x:DataType="vm:HomeTabVm">
+    <Grid Margin="16"
+        RowDefinitions="*,14,*">
+        <ListBox Width="512"
+            Height="256"
+            ItemsSource="{Binding Paths, Mode=OneTime}"
+            SelectedItem="{Binding SelPath}"/>
+        <Grid Grid.Row="2"
+            ColumnDefinitions="*,14,*,14,*,14,*,14,*">
+            <Button Content="添加"/>
+            <Button Grid.Column="2"
+                Classes="Danger"
+                Content="移除"/>
+            <Button Grid.Column="4"
+                Content="预览"
+                Click="ShowPreviewWindow"/>
+            <Button Grid.Column="6"
+                Theme="{DynamicResource SolidButton}"
+                Content="启动"/>
+            <Button Grid.Column="8"
+                Theme="{DynamicResource SolidButton}"
+                Classes="Danger"
+                Content="打断"/>
+        </Grid>
+    </Grid>
+</UserControl>

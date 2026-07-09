@@ -3,7 +3,7 @@ namespace GarthImgLab.ViewModels.Tabs;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-public sealed partial class FileTabVm(IWorkspaceVm ws): TabVm {
+public sealed partial class HomeTabVm(IWorkspaceVm ws): TabVm {
     public override string Title => "文件";
 
     public ObservableCollection<string> Paths { get; } = [];

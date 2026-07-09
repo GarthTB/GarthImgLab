@@ -24,4 +24,6 @@ public sealed partial class PreviewWindow: Window {
         };
         _current.Show();
     }
+
+    public static void CloseCurrent() => _current?.Close();
 }

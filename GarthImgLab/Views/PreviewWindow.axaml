@@ -5,11 +5,9 @@
     x:DataType="vm:MainVm"
     Icon="/Assets/icon_48.png"
     Padding="0,30,0,0"
-    SizeToContent="WidthAndHeight"
+    Width="800"
+    Height="600"
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="AcrylicBlur">
-    <Design.DataContext>
-        <vm:MainVm/>
-    </Design.DataContext>
     <Image Source="{Binding Ws.DisplayImg}"/>
 </Window>
