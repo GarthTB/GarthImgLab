@@ -5,12 +5,12 @@
     x:DataType="vm:HomeTabVm">
     <Grid Margin="16"
         RowDefinitions="*,14,*">
-        <ListBox Width="512"
+        <ListBox Width="600"
             Height="256"
             ItemsSource="{Binding Paths, Mode=OneTime}"
             SelectedItem="{Binding SelPath}"/>
         <Grid Grid.Row="2"
-            ColumnDefinitions="*,14,*,14,*,14,*,14,*">
+            ColumnDefinitions="*,14,*,14,*,14,*,14,*,14,*">
             <Button Content="添加"/>
             <Button Grid.Column="2"
                 Classes="Danger"
@@ -18,10 +18,13 @@
             <Button Grid.Column="4"
                 Content="预览"
                 Click="ShowPreviewWindow"/>
-            <Button Grid.Column="6"
+            <CheckBox Grid.Column="6"
+                Content="完成时移除"
+                IsChecked="{Binding AutoRem}"/>
+            <Button Grid.Column="8"
                 Theme="{DynamicResource SolidButton}"
                 Content="启动"/>
-            <Button Grid.Column="8"
+            <Button Grid.Column="10"
                 Theme="{DynamicResource SolidButton}"
                 Classes="Danger"
                 Content="打断"/>

@@ -12,10 +12,10 @@ public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
     private CancellationTokenSource _befCts = new(), _aftCts = new();
-    private bool _on;
+    private bool _enabled;
 
     public IImage? DisplayImg =>
-        _on
+        _enabled
             ? _aftBmp
             : _befBmp;
 
@@ -26,9 +26,9 @@ public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
         OnPropertyChanged(nameof(DisplayImg));
     }
 
-    public void Toggle(bool on) {
-        if (_on == on) return;
-        _on = on;
+    public void SetEnabled(bool enabled) {
+        if (_enabled == enabled) return;
+        _enabled = enabled;
         OnPropertyChanged(nameof(DisplayImg));
     }
 
@@ -36,23 +36,21 @@ public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
         var ct = CancelAndGetNewCt(ref _befCts);
         CancelAndGetNewCt(ref _aftCts);
         MagickImage bef = new();
+        Bitmap? bmp = null;
         try {
             await bef.ReadAsync(path, ct);
             await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
-            var bmp = await ToBmpAsync(bef, ct);
+            bmp = await ToBmpAsync(bef, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
-                if (ct.IsCancellationRequested) {
-                    bef.Dispose();
-                    bmp.Dispose();
-                    return;
-                }
+                ct.ThrowIfCancellationRequested();
                 DisposeCurrent();
                 _bef = bef;
                 _befBmp = bmp;
-                if (!_on) OnPropertyChanged(nameof(DisplayImg));
+                if (!_enabled) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch (Exception ex) {
             bef.Dispose();
+            bmp?.Dispose();
             if (ex is not OperationCanceledException) Clear();
         }
     }
@@ -61,6 +59,7 @@ public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
         var ct = CancelAndGetNewCt(ref _aftCts);
         if (_bef is null || fxs.Count == 0) return;
         MagickImage? aft = null;
+        Bitmap? bmp = null;
         try {
             await Task.Delay(DebounceMs, ct);
             aft = await Task.Run(
@@ -75,26 +74,25 @@ public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
                     return img;
                 },
                 ct);
-            var bmp = await ToBmpAsync(aft, ct);
+            bmp = await ToBmpAsync(aft, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
-                if (ct.IsCancellationRequested) {
-                    aft.Dispose();
-                    bmp.Dispose();
-                    return;
-                }
+                ct.ThrowIfCancellationRequested();
                 _aft?.Dispose();
                 _aftBmp?.Dispose();
                 _aft = aft;
                 _aftBmp = bmp;
-                if (_on) OnPropertyChanged(nameof(DisplayImg));
+                if (_enabled) OnPropertyChanged(nameof(DisplayImg));
             });
-        } catch { aft?.Dispose(); }
+        } catch {
+            aft?.Dispose();
+            bmp?.Dispose();
+        }
     }
 
     private static CancellationToken CancelAndGetNewCt(ref CancellationTokenSource cts) {
         cts.Cancel();
-        cts = new();
-        return cts.Token;
+        cts.Dispose();
+        return (cts = new()).Token;
     }
 
     private void DisposeCurrent() {

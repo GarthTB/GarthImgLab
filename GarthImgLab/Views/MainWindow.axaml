@@ -13,11 +13,11 @@
     <Design.DataContext>
         <vm:MainVm/>
     </Design.DataContext>
-    <TabControl ItemsSource="{Binding Tabs}"
+    <TabControl ItemsSource="{Binding Tabs, Mode=OneTime}"
         SelectedItem="{Binding SelTab}">
         <TabControl.ItemTemplate>
             <DataTemplate x:DataType="tabs:TabVm">
-                <TextBlock Text="{Binding Title}"/>
+                <TextBlock Text="{Binding Title, Mode=OneTime}"/>
             </DataTemplate>
         </TabControl.ItemTemplate>
     </TabControl>

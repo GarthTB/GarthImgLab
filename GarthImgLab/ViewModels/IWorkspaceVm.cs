@@ -7,7 +7,7 @@ using Models;
 public interface IWorkspaceVm: INotifyPropertyChanged {
     IImage? DisplayImg { get; }
     void Clear();
-    void Toggle(bool on);
+    void SetEnabled(bool enabled);
     Task LoadBefAsync(string path);
     Task UpdateAftAsync(IReadOnlyList<IFx> fxs);
 }

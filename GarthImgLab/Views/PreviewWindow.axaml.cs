@@ -7,7 +7,7 @@ using ViewModels;
 public sealed partial class PreviewWindow: Window {
     private static PreviewWindow? _current;
 
-    public PreviewWindow() {
+    private PreviewWindow() {
         InitializeComponent();
         Title = $"{Meta.Name} - 预览";
     }

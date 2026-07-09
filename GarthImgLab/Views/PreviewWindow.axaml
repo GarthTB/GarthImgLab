@@ -2,12 +2,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:GarthImgLab.ViewModels"
     x:Class="GarthImgLab.Views.PreviewWindow"
-    x:DataType="vm:MainVm"
+    x:DataType="vm:IWorkspaceVm"
     Icon="/Assets/icon_48.png"
     Padding="0,30,0,0"
     Width="800"
     Height="600"
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="AcrylicBlur">
-    <Image Source="{Binding Ws.DisplayImg}"/>
+    <Image Source="{Binding DisplayImg}"/>
 </Window>

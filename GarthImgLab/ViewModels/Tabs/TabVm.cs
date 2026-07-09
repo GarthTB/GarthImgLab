@@ -10,11 +10,11 @@ public abstract class TabVm: ObservableObject {
 public abstract partial class FxTabVm(IWorkspaceVm ws): TabVm {
     protected abstract IReadOnlyList<IFx> Fxs { get; }
     [ObservableProperty] public partial bool Enabled { get; set; }
-    partial void OnEnabledChanged(bool value) => ws.Toggle(value);
+    partial void OnEnabledChanged(bool value) => ws.SetEnabled(value);
     protected void Apply() => _ = ws.UpdateAftAsync(Fxs);
 
     public void OnActivated() {
-        ws.Toggle(Enabled);
+        ws.SetEnabled(Enabled);
         if (Enabled) Apply();
     }
 }
