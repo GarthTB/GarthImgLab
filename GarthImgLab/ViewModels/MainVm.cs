@@ -1,15 +1,15 @@
 namespace GarthImgLab.ViewModels;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Contexts;
+using Tabs;
 
 public sealed partial class MainVm: ObservableObject {
     public MainVm() {
-        Tabs = [new FileTabVm(Ctx), new SaturateTabVm(Ctx), new FrameTabVm(Ctx), new SaveTabVm()];
+        Tabs = [new FileTabVm(Ws), new SaturateTabVm(Ws), new FrameTabVm(Ws), new SaveTabVm()];
         SelTab = Tabs[0];
     }
 
-    public WorkspaceCtx Ctx { get; } = new();
+    public WorkspaceVm Ws { get; } = new();
     public IReadOnlyList<TabVm> Tabs { get; }
     [ObservableProperty] public partial TabVm? SelTab { get; set; }
 
@@ -17,6 +17,6 @@ public sealed partial class MainVm: ObservableObject {
         if (value is FxTabVm tab)
             tab.OnActivated();
         else
-            _ = Ctx.UpdateAftAsync([]);
+            _ = Ws.UpdateAftAsync([]);
     }
 }

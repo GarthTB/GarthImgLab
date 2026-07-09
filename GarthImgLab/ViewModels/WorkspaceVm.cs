@@ -1,4 +1,4 @@
-namespace GarthImgLab.Contexts;
+namespace GarthImgLab.ViewModels;
 
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ImageMagick;
 using Models;
 
-public sealed class WorkspaceCtx: ObservableObject, IWorkspaceCtx {
+public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;

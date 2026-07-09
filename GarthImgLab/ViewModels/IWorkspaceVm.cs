@@ -1,10 +1,10 @@
-namespace GarthImgLab.Contexts;
+namespace GarthImgLab.ViewModels;
 
 using System.ComponentModel;
 using Avalonia.Media;
 using Models;
 
-public interface IWorkspaceCtx: INotifyPropertyChanged {
+public interface IWorkspaceVm: INotifyPropertyChanged {
     IImage? DisplayImg { get; }
     void Clear();
     void Toggle(bool on);

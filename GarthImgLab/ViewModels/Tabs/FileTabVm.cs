@@ -1,10 +1,9 @@
-namespace GarthImgLab.ViewModels;
+namespace GarthImgLab.ViewModels.Tabs;
 
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Contexts;
 
-public sealed partial class FileTabVm(IWorkspaceCtx ctx): TabVm {
+public sealed partial class FileTabVm(IWorkspaceVm ws): TabVm {
     public override string Title => "文件";
 
     public ObservableCollection<string> Paths { get; } = [];
@@ -12,8 +11,8 @@ public sealed partial class FileTabVm(IWorkspaceCtx ctx): TabVm {
 
     partial void OnSelPathChanged(string? value) {
         if (value is {})
-            _ = ctx.LoadBefAsync(value);
+            _ = ws.LoadBefAsync(value);
         else
-            ctx.Clear();
+            ws.Clear();
     }
 }

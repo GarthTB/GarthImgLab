@@ -44,7 +44,7 @@ public sealed class Annotator: IFx {
         var (textW, textH, ascent) = info.Length > 0
             ? MeasureText(info, tgtH)
             : (0, tgtH, 0);
-        var y = (int)Round(w - (bPx + textH) / 2);
+        var y = (int)Round(h - (bPx + textH) / 2);
         var textX = (w - textW) / 2;
         var iconH = (uint)Round(textH);
 

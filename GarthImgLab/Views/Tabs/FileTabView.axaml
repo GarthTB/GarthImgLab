@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:GarthImgLab.ViewModels"
-    x:Class="GarthImgLab.Views.SaturateTabView"
-    x:DataType="vm:SaturateTabVm">
+    xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.Tabs.FileTabView"
+    x:DataType="vm:FileTabVm">
     Welcome to Avalonia!
 </UserControl>

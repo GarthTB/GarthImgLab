@@ -1,4 +1,4 @@
-namespace GarthImgLab.Views;
+namespace GarthImgLab.Views.Tabs;
 
 using Avalonia.Controls;
 

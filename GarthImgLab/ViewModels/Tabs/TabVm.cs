@@ -1,21 +1,20 @@
-namespace GarthImgLab.ViewModels;
+namespace GarthImgLab.ViewModels.Tabs;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Contexts;
 using Models;
 
 public abstract class TabVm: ObservableObject {
     public abstract string Title { get; }
 }
 
-public abstract partial class FxTabVm(IWorkspaceCtx ctx): TabVm {
+public abstract partial class FxTabVm(IWorkspaceVm ws): TabVm {
     protected abstract IReadOnlyList<IFx> Fxs { get; }
     [ObservableProperty] public partial bool Enabled { get; set; }
-    partial void OnEnabledChanged(bool value) => ctx.Toggle(value);
-    protected void Apply() => _ = ctx.UpdateAftAsync(Fxs);
+    partial void OnEnabledChanged(bool value) => ws.Toggle(value);
+    protected void Apply() => _ = ws.UpdateAftAsync(Fxs);
 
     public void OnActivated() {
-        ctx.Toggle(Enabled);
+        ws.Toggle(Enabled);
         if (Enabled) Apply();
     }
 }

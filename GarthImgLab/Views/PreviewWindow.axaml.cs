@@ -2,7 +2,7 @@ namespace GarthImgLab.Views;
 
 using Avalonia.Controls;
 using Common;
-using Contexts;
+using ViewModels;
 
 public sealed partial class PreviewWindow: Window {
     private static PreviewWindow? _current;
@@ -12,14 +12,14 @@ public sealed partial class PreviewWindow: Window {
         Title = $"{Meta.Name} - 预览";
     }
 
-    public static void ShowOrActivate(IWorkspaceCtx ctx) {
+    public static void ShowOrActivate(IWorkspaceVm ws) {
         if (_current is {}) {
             _current.Activate();
             return;
         }
-        _current = new() { DataContext = ctx };
+        _current = new() { DataContext = ws };
         _current.Closed += (_, _) => {
-            ctx.Clear();
+            ws.Clear();
             _current = null;
         };
         _current.Show();

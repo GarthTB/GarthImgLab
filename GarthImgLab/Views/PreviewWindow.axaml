@@ -11,5 +11,5 @@
     <Design.DataContext>
         <vm:MainVm/>
     </Design.DataContext>
-    <Image Source="{Binding Ctx.DisplayImg}"/>
+    <Image Source="{Binding Ws.DisplayImg}"/>
 </Window>
