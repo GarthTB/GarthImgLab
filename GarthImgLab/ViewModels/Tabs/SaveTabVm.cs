@@ -12,10 +12,8 @@ public sealed partial class SaveTabVm: TabVm {
 
     public static IReadOnlyList<string> Formats => Saver.Map.Keys;
     [ObservableProperty] public partial string SelFormat { get; set; }
-
     public IReadOnlyList<string> Options => Saver.Map[SelFormat];
     [ObservableProperty] public partial string SelOption { get; set; } = "";
-
     [ObservableProperty] public partial byte Quality { get; set; } = 96;
 
     partial void OnSelFormatChanged(string value) {

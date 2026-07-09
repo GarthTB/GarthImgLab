@@ -21,8 +21,9 @@ public sealed class Workspace: ObservableObject, IWorkspace {
 
     public void Clear() {
         CancelAndGetNewCt(ref _befCts);
+        DisposeBef();
         CancelAndGetNewCt(ref _aftCts);
-        DisposeCurrent();
+        DisposeAft();
         OnPropertyChanged(nameof(DisplayImg));
     }
 
@@ -51,13 +52,14 @@ public sealed class Workspace: ObservableObject, IWorkspace {
             bmp = await ToBmpAsync(bef, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
                 ct.ThrowIfCancellationRequested();
-                DisposeCurrent();
+                DisposeBef();
+                DisposeAft();
                 _bef = bef;
                 _befBmp = bmp;
-                if (!_enabled) OnPropertyChanged(nameof(DisplayImg));
+                OnPropertyChanged(nameof(DisplayImg));
             });
         } catch (Exception ex) {
-            bef.Dispose();
+            bef?.Dispose();
             bmp?.Dispose();
             if (ex is not OperationCanceledException) Clear();
         }
@@ -66,7 +68,14 @@ public sealed class Workspace: ObservableObject, IWorkspace {
     public async Task UpdateAftAsync(IReadOnlyList<IFx>? fxs) {
         if (!_active) return;
         var ct = CancelAndGetNewCt(ref _aftCts);
-        if (_bef is null || fxs is null) return;
+        if (_bef is null) return;
+        if (fxs is null) {
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                DisposeAft();
+                OnPropertyChanged(nameof(DisplayImg));
+            });
+            return;
+        }
         MagickImage? aft = null;
         Bitmap? bmp = null;
         try {
@@ -76,20 +85,17 @@ public sealed class Workspace: ObservableObject, IWorkspace {
                     var img = (MagickImage)_bef.CloneArea(_bef.Width, _bef.Height);
                     try {
                         foreach (var fx in fxs) fx.Apply(img, ct);
+                        return img;
                     } catch {
                         img.Dispose();
                         throw;
                     }
-                    return img;
                 },
                 ct);
             bmp = await ToBmpAsync(aft, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
                 ct.ThrowIfCancellationRequested();
-                _aft?.Dispose();
-                _aftBmp?.Dispose();
-                _aft = aft;
-                _aftBmp = bmp;
+                DisposeAft();
                 if (_enabled) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch {
@@ -104,13 +110,18 @@ public sealed class Workspace: ObservableObject, IWorkspace {
         return (cts = new()).Token;
     }
 
-    private void DisposeCurrent() {
+    private void DisposeBef() {
         _bef?.Dispose();
-        _aft?.Dispose();
-        _bef = _aft = null;
+        _bef = null;
         _befBmp?.Dispose();
+        _befBmp = null;
+    }
+
+    private void DisposeAft() {
+        _aft?.Dispose();
+        _aft = null;
         _aftBmp?.Dispose();
-        _befBmp = _aftBmp = null;
+        _aftBmp = null;
     }
 
     private static async Task<Bitmap> ToBmpAsync(MagickImage img, CancellationToken ct) {

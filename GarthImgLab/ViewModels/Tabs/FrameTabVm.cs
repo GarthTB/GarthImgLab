@@ -1,5 +1,8 @@
 namespace GarthImgLab.ViewModels.Tabs;
 
-public sealed class FrameTabVm(IWorkspace ws): TabVm {
+using Models;
+
+public sealed class FrameTabVm(IWorkspace ws): FxTabVm(ws) {
     public override string Title => "边框";
+    public override IReadOnlyList<IFx> Fxs => throw new NotImplementedException();
 }
