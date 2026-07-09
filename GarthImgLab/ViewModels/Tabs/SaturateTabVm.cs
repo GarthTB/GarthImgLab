@@ -6,7 +6,7 @@ using System.Collections.Frozen;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models;
 
-public sealed partial class SaturateTabVm(IWorkspaceVm ws): FxTabVm(ws) {
+public sealed partial class SaturateTabVm(IWorkspace ws): FxTabVm(ws) {
     public override string Title => "饱和度";
     protected override IReadOnlyList<IFx> Fxs => [new Saturator(SelMode, Strength)];
 

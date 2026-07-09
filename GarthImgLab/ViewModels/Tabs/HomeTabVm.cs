@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-public sealed partial class HomeTabVm(IWorkspaceVm ws): TabVm {
-    public IWorkspaceVm Ws { get; } = ws;
+public sealed partial class HomeTabVm(IWorkspace ws): TabVm {
+    public IWorkspace Ws { get; } = ws;
     public override string Title => "文件";
 
     public ObservableCollection<string> Paths { get; } = [];

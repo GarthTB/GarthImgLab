@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Avalonia.Media;
 using Models;
 
-public interface IWorkspaceVm: INotifyPropertyChanged {
+public interface IWorkspace: INotifyPropertyChanged {
     IImage? DisplayImg { get; }
     void Clear();
     void SetEnabled(bool enabled);

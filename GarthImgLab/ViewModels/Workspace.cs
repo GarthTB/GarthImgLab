@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ImageMagick;
 using Models;
 
-public sealed class WorkspaceVm: ObservableObject, IWorkspaceVm {
+public sealed class Workspace: ObservableObject, IWorkspace {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;

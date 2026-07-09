@@ -7,7 +7,7 @@ public abstract class TabVm: ObservableObject {
     public abstract string Title { get; }
 }
 
-public abstract partial class FxTabVm(IWorkspaceVm ws): TabVm {
+public abstract partial class FxTabVm(IWorkspace ws): TabVm {
     protected abstract IReadOnlyList<IFx> Fxs { get; }
     [ObservableProperty] public partial bool Enabled { get; set; }
     partial void OnEnabledChanged(bool value) => ws.SetEnabled(value);

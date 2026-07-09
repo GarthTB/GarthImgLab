@@ -12,7 +12,7 @@ public sealed partial class PreviewWindow: Window {
         Title = $"{Meta.Name} - 预览";
     }
 
-    public static void ShowOrActivate(IWorkspaceVm ws) {
+    public static void ShowOrActivate(IWorkspace ws) {
         if (_current is {}) {
             _current.Activate();
             return;

@@ -9,7 +9,7 @@ public sealed partial class MainVm: ObservableObject {
         SelTab = Tabs[0];
     }
 
-    private WorkspaceVm Ws { get; } = new();
+    private Workspace Ws { get; } = new();
     public IReadOnlyList<TabVm> Tabs { get; }
     [ObservableProperty] public partial TabVm? SelTab { get; set; }
 
