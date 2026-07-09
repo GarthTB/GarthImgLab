@@ -9,10 +9,10 @@ using Models;
 
 public sealed class Workspace: ObservableObject, IWorkspace {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
+    private bool _active, _enabled;
     private MagickImage? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
     private CancellationTokenSource _befCts = new(), _aftCts = new();
-    private bool _enabled;
 
     public IImage? DisplayImg =>
         _enabled
@@ -26,6 +26,12 @@ public sealed class Workspace: ObservableObject, IWorkspace {
         OnPropertyChanged(nameof(DisplayImg));
     }
 
+    public void SetPreviewActive(bool active) {
+        if (_active == active) return;
+        _active = active;
+        if (!active) Clear();
+    }
+
     public void SetEnabled(bool enabled) {
         if (_enabled == enabled) return;
         _enabled = enabled;
@@ -33,11 +39,13 @@ public sealed class Workspace: ObservableObject, IWorkspace {
     }
 
     public async Task LoadBefAsync(string path) {
+        if (!_active) return;
         var ct = CancelAndGetNewCt(ref _befCts);
         CancelAndGetNewCt(ref _aftCts);
-        MagickImage bef = new();
+        MagickImage? bef = null;
         Bitmap? bmp = null;
         try {
+            bef = new();
             await bef.ReadAsync(path, ct);
             await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
             bmp = await ToBmpAsync(bef, ct);
@@ -55,9 +63,10 @@ public sealed class Workspace: ObservableObject, IWorkspace {
         }
     }
 
-    public async Task UpdateAftAsync(IReadOnlyList<IFx> fxs) {
+    public async Task UpdateAftAsync(IReadOnlyList<IFx>? fxs) {
+        if (!_active) return;
         var ct = CancelAndGetNewCt(ref _aftCts);
-        if (_bef is null || fxs.Count == 0) return;
+        if (_bef is null || fxs is null) return;
         MagickImage? aft = null;
         Bitmap? bmp = null;
         try {

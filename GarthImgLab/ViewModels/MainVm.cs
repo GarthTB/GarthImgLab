@@ -17,6 +17,6 @@ public sealed partial class MainVm: ObservableObject {
         if (value is FxTabVm tab)
             tab.OnActivated();
         else
-            _ = Ws.UpdateAftAsync([]);
+            _ = Ws.UpdateAftAsync(null);
     }
 }

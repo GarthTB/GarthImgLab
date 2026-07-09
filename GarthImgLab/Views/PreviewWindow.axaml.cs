@@ -17,9 +17,10 @@ public sealed partial class PreviewWindow: Window {
             _current.Activate();
             return;
         }
+        ws.SetPreviewActive(true);
         _current = new() { DataContext = ws };
         _current.Closed += (_, _) => {
-            ws.Clear();
+            ws.SetPreviewActive(false);
             _current = null;
         };
         _current.Show();

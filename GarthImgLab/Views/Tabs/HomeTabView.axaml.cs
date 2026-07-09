@@ -25,15 +25,15 @@ public sealed partial class HomeTabView: UserControl {
             var files = await sp.OpenFilePickerAsync(_openOptions);
             if (files.Count == 0) return;
 
-            foreach (var file in files) {
-                var path = file.TryGetLocalPath() ?? file.Path.LocalPath;
-                file.Dispose();
-                vm.AddPathAsync(path);
-            }
+            foreach (var file in files)
+                using (file)
+                    vm.AddPathAsync(file.TryGetLocalPath() ?? file.Path.LocalPath);
         } catch (Exception ex) { await ex.AlertAsync("添加图像"); }
     }
 
     private void ShowPreviewWindow(object? _, RoutedEventArgs e) {
-        if (DataContext is HomeTabVm vm) PreviewWindow.ShowOrActivate(vm.Ws);
+        if (DataContext is not HomeTabVm vm) return;
+        PreviewWindow.ShowOrActivate(vm.Ws);
+        if (vm.SelPath is {} path) vm.Ws.LoadBefAsync(path);
     }
 }
