@@ -1,4 +1,4 @@
-namespace GarthImgLab.ViewModels;
+namespace GarthImgLab.ViewModels.Contexts;
 
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ImageMagick;
 using Models;
 
-public sealed class Workspace: ObservableObject, IWorkspace {
+public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private bool _active, _enabled;
     private MagickImage? _bef, _aft;
@@ -21,13 +21,13 @@ public sealed class Workspace: ObservableObject, IWorkspace {
 
     public void Clear() {
         CancelAndGetNewCt(ref _befCts);
-        DisposeBef();
+        DisposeImg(ref _bef, ref _befBmp);
         CancelAndGetNewCt(ref _aftCts);
-        DisposeAft();
+        DisposeImg(ref _aft, ref _aftBmp);
         OnPropertyChanged(nameof(DisplayImg));
     }
 
-    public void SetPreviewActive(bool active) {
+    public void SetActive(bool active) {
         if (_active == active) return;
         _active = active;
         if (!active) Clear();
@@ -52,8 +52,8 @@ public sealed class Workspace: ObservableObject, IWorkspace {
             bmp = await ToBmpAsync(bef, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
                 ct.ThrowIfCancellationRequested();
-                DisposeBef();
-                DisposeAft();
+                DisposeImg(ref _bef, ref _befBmp);
+                DisposeImg(ref _aft, ref _aftBmp);
                 _bef = bef;
                 _befBmp = bmp;
                 OnPropertyChanged(nameof(DisplayImg));
@@ -71,7 +71,7 @@ public sealed class Workspace: ObservableObject, IWorkspace {
         if (_bef is null) return;
         if (fxs is null) {
             await Dispatcher.UIThread.InvokeAsync(() => {
-                DisposeAft();
+                DisposeImg(ref _aft, ref _aftBmp);
                 OnPropertyChanged(nameof(DisplayImg));
             });
             return;
@@ -95,7 +95,7 @@ public sealed class Workspace: ObservableObject, IWorkspace {
             bmp = await ToBmpAsync(aft, ct);
             await Dispatcher.UIThread.InvokeAsync(() => {
                 ct.ThrowIfCancellationRequested();
-                DisposeAft();
+                DisposeImg(ref _aft, ref _aftBmp);
                 if (_enabled) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch {
@@ -110,18 +110,11 @@ public sealed class Workspace: ObservableObject, IWorkspace {
         return (cts = new()).Token;
     }
 
-    private void DisposeBef() {
-        _bef?.Dispose();
-        _bef = null;
-        _befBmp?.Dispose();
-        _befBmp = null;
-    }
-
-    private void DisposeAft() {
-        _aft?.Dispose();
-        _aft = null;
-        _aftBmp?.Dispose();
-        _aftBmp = null;
+    private static void DisposeImg(ref MagickImage? img, ref Bitmap? bmp) {
+        img?.Dispose();
+        img = null;
+        bmp?.Dispose();
+        bmp = null;
     }
 
     private static async Task<Bitmap> ToBmpAsync(MagickImage img, CancellationToken ct) {

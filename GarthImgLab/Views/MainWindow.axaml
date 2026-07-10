@@ -17,7 +17,7 @@
         SelectedItem="{Binding SelTab}">
         <TabControl.ItemTemplate>
             <DataTemplate x:DataType="tabs:TabVm">
-                <TextBlock Text="{Binding Title, Mode=OneTime}"/>
+                <TextBlock Text="{Binding Tag, Mode=OneTime}"/>
             </DataTemplate>
         </TabControl.ItemTemplate>
     </TabControl>

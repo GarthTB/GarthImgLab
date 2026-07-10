@@ -19,9 +19,8 @@ public sealed partial class HomeTabView: UserControl {
 
     private async void AddImg(object? _, RoutedEventArgs e) {
         try {
-            if (DataContext is not HomeTabVm vm
-             || TopLevel.GetTopLevel(this)?.StorageProvider is not {} sp)
-                return;
+            var sp = TopLevel.GetTopLevel(this)?.StorageProvider;
+            if (DataContext is not HomeTabVm vm || sp is null) return;
             var files = await sp.OpenFilePickerAsync(_openOptions);
             if (files.Count == 0) return;
 
@@ -33,7 +32,7 @@ public sealed partial class HomeTabView: UserControl {
 
     private void ShowPreviewWindow(object? _, RoutedEventArgs e) {
         if (DataContext is not HomeTabVm vm) return;
-        PreviewWindow.ShowOrActivate(vm.Ws);
-        if (vm.SelPath is {} path) vm.Ws.LoadBefAsync(path);
+        PreviewWindow.ShowOrActivate(vm.Pc);
+        if (vm.SelPath is {} path) vm.Pc.LoadBefAsync(path);
     }
 }
