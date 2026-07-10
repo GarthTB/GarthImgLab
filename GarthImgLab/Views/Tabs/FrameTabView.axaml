@@ -61,10 +61,12 @@
         <TextBox Grid.Row="8"
             Grid.Column="0"
             InnerLeftContent="边框颜色"
+            HorizontalContentAlignment="Center"
             Text="{Binding FrameColor, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Grid.Row="8"
             Grid.Column="2"
             InnerLeftContent="文字颜色"
+            HorizontalContentAlignment="Center"
             Text="{Binding TextColor, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="10"
             Grid.Column="0"

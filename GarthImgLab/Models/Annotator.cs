@@ -52,10 +52,9 @@ public sealed class Annotator: IFx {
             using var mIcon = _icon.CloneAndMutate(m => m.Resize(0, iconH));
 
             ct.ThrowIfCancellationRequested();
-            var gap = _margin * textH;
-            var iconX = (int)Round(textX + textW + gap);
-            textX -= (gap + mIcon.Width) / 2;
-            img.Composite(mIcon, iconX, y, CompositeOperator.Over);
+            var margin = _margin * textH;
+            textX -= (margin + mIcon.Width) / 2;
+            img.Composite(mIcon, (int)Round(textX + textW + margin), y, CompositeOperator.Over);
         }
 
         if (textW < 1) return;
