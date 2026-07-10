@@ -65,17 +65,10 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         }
     }
 
-    public async Task UpdateAftAsync(IReadOnlyList<IFx>? fxs) {
+    public async Task UpdateAftAsync(IReadOnlyList<IFx> fxs) {
         if (!_active) return;
         var ct = CancelAndGetNewCt(ref _aftCts);
         if (_bef is null) return;
-        if (fxs is null) {
-            await Dispatcher.UIThread.InvokeAsync(() => {
-                DisposeImg(ref _aft, ref _aftBmp);
-                OnPropertyChanged(nameof(DisplayImg));
-            });
-            return;
-        }
         MagickImage? aft = null;
         Bitmap? bmp = null;
         try {
@@ -96,6 +89,8 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
             await Dispatcher.UIThread.InvokeAsync(() => {
                 ct.ThrowIfCancellationRequested();
                 DisposeImg(ref _aft, ref _aftBmp);
+                _aft = aft;
+                _aftBmp = bmp;
                 if (_enabled) OnPropertyChanged(nameof(DisplayImg));
             });
         } catch {

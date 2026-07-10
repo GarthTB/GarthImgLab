@@ -21,7 +21,6 @@ public sealed partial class HomeTabVm: TabVm {
 
     #region 文件
 
-    [ObservableProperty] public partial bool AutoRem { get; set; }
     public ObservableCollection<string> Paths { get; } = [];
 
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof(RemPathCommand))]
@@ -51,28 +50,28 @@ public sealed partial class HomeTabVm: TabVm {
 
     #region 批处理
 
-    private CancellationTokenSource _batchCts = new();
+    [ObservableProperty] public partial bool AutoRem { get; set; }
 
-    [RelayCommand(CanExecute = nameof(HasPaths))]
-    private async Task StartBatchAsync() {
+    [RelayCommand(CanExecute = nameof(HasPaths), IncludeCancelCommand = true)]
+    private async Task StartBatchAsync(CancellationToken ct) {
         try {
             var pipeline = _pb.Build();
             var saver = _pb.Saver ?? throw new OpEx("未配置保存参数");
-            var ct = _batchCts.Token;
+            List<string> done = new(Paths.Count);
             foreach (var path in Paths) {
                 ct.ThrowIfCancellationRequested();
                 using MagickImage img = new();
                 await img.ReadAsync(path, ct);
                 foreach (var fx in pipeline) fx.Apply(img, ct);
                 await saver.SaveAsync(img, path, ct);
-                if (!AutoRem) continue;
-                if (!Paths.Remove(path)) throw new OpEx("UI 移除图像失败");
+                done.Add(path);
             }
+            if (AutoRem && done.Count > 0)
+                if (done.Any(path => !Paths.Remove(path)))
+                    throw new OpEx("UI 移除图像失败");
+            await MsgBox.InfoAsync($"批处理完成，共{done.Count}张图像");
         } catch (Exception ex) {
             if (ex is not OperationCanceledException) await ex.AlertAsync("批处理");
-        } finally {
-            _batchCts.Dispose();
-            _batchCts = new();
         }
     }
 

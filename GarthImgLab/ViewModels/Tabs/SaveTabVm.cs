@@ -7,11 +7,17 @@ using Models;
 
 public sealed partial class SaveTabVm: TabVm {
     private readonly IPipelineBuilder _pb;
-    public SaveTabVm(IPipelineBuilder pb) => (_pb = pb).Saver = new(SelFormat, SelOption, Quality);
+
+    public SaveTabVm(IPipelineBuilder pb) {
+        _pb = pb;
+        SelFormat = Formats[0];
+        _pb.Saver = new(SelFormat, SelOption, Quality);
+    }
+
     public override TabTag Tag => TabTag.保存;
 
     public static IReadOnlyList<string> Formats => Saver.Map.Keys;
-    [ObservableProperty] public partial string SelFormat { get; set; } = Saver.Map.Keys[0];
+    [ObservableProperty] public partial string SelFormat { get; set; }
     public IReadOnlyList<string> Options => Saver.Map[SelFormat];
     [ObservableProperty] public partial string SelOption { get; set; } = "";
     [ObservableProperty] public partial byte Quality { get; set; } = 96;

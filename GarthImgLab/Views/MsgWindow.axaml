@@ -15,7 +15,8 @@
                 VerticalAlignment="Stretch"
                 TextWrapping="Wrap"/>
         </ScrollViewer>
-        <Button Margin="16,8,16,16"
+        <Button x:Name="Btn"
+            Margin="16,8,16,16"
             Grid.Row="1"
             Theme="{DynamicResource SolidButton}"
             Content="知道了"/>

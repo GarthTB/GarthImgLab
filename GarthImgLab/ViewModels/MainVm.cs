@@ -5,13 +5,11 @@ using Contexts;
 using Tabs;
 
 public sealed partial class MainVm: ObservableObject {
-    public MainVm() =>
-        Tabs = [
-            new HomeTabVm(Pb, Pc),
-            new SaturateTabVm(Pb, Pc),
-            new FrameTabVm(Pb, Pc),
-            new SaveTabVm(Pb)
-        ];
+    public MainVm() {
+        var home = new HomeTabVm(Pb, Pc);
+        Tabs = [home, new SaturateTabVm(Pb, Pc), new FrameTabVm(Pb, Pc), new SaveTabVm(Pb)];
+        SelTab = home;
+    }
 
     private PipelineBuilder Pb { get; } = new();
     private PreviewCtx Pc { get; } = new();
@@ -25,7 +23,7 @@ public sealed partial class MainVm: ObservableObject {
         if (value is FxTabVm tab)
             tab.OnActivated();
         else
-            _ = Pc.UpdateAftAsync(null);
+            Pc.SetEnabled(false);
     }
 
     #endregion 选项卡

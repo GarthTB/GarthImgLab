@@ -11,5 +11,6 @@ public sealed partial class MsgWindow: Window {
         InitializeComponent();
         Title = title;
         Msg.Text = msg;
+        Btn.Click += (_, _) => Close();
     }
 }
