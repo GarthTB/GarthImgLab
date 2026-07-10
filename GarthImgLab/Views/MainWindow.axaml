@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:GarthImgLab.ViewModels"
+    xmlns:tabs="clr-namespace:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.MainWindow"
+    x:DataType="vm:MainVm"
+    Icon="/Assets/icon_48.png"
+    Padding="0,30,0,0"
+    CanResize="False"
+    SizeToContent="WidthAndHeight"
+    ExtendClientAreaToDecorationsHint="True"
+    TransparencyLevelHint="AcrylicBlur">
+    <Design.DataContext>
+        <vm:MainVm/>
+    </Design.DataContext>
+    <TabControl ItemsSource="{Binding Tabs, Mode=OneTime}"
+        SelectedItem="{Binding SelTab}">
+        <TabControl.ItemTemplate>
+            <DataTemplate x:DataType="tabs:TabVm">
+                <TextBlock Text="{Binding Tag, Mode=OneTime}"/>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+    </TabControl>
+</Window>

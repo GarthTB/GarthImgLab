@@ -1,0 +1,58 @@
+<Application xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:semi="https://irihi.tech/semi"
+    xmlns:tabv="using:GarthImgLab.Views.Tabs"
+    xmlns:tabvm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.App">
+    <Application.Styles>
+        <semi:SemiTheme/>
+        <Style Selector="Button">
+            <Setter Property="HorizontalAlignment"
+                Value="Stretch"/>
+            <Setter Property="VerticalAlignment"
+                Value="Stretch"/>
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="HorizontalAlignment"
+                Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+            <Setter Property="VerticalAlignment"
+                Value="Center"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="HorizontalAlignment"
+                Value="Stretch"/>
+            <Setter Property="VerticalAlignment"
+                Value="Stretch"/>
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="HorizontalContentAlignment"
+                Value="Center"/>
+        </Style>
+    </Application.Styles>
+    <Application.DataTemplates>
+        <DataTemplate DataType="tabvm:HomeTabVm">
+            <tabv:HomeTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="tabvm:SaturateTabVm">
+            <tabv:SaturateTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="tabvm:FrameTabVm">
+            <tabv:FrameTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="tabvm:SaveTabVm">
+            <tabv:SaveTabView/>
+        </DataTemplate>
+    </Application.DataTemplates>
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="WindowDefaultBackground"
+                        Color="#A000"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

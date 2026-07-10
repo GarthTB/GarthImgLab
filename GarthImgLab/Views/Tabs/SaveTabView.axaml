@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.Tabs.SaveTabView"
+    x:DataType="vm:SaveTabVm">
+    <Grid Margin="16"
+        ColumnDefinitions="100,14,100,14,120">
+        <ComboBox ItemsSource="{Binding Formats, Mode=OneTime}"
+            SelectedItem="{Binding SelFormat}"/>
+        <ComboBox Grid.Column="2"
+            ItemsSource="{Binding Options}"
+            SelectedItem="{Binding SelOption}"/>
+        <NumericUpDown Grid.Column="4"
+            InnerLeftContent="质量"
+            Minimum="0"
+            Maximum="100"
+            FormatString="0"
+            Value="{Binding Quality}"/>
+    </Grid>
+</UserControl>

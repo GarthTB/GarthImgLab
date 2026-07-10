@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.Tabs.HomeTabView"
+    x:DataType="vm:HomeTabVm">
+    <Grid Margin="16"
+        RowDefinitions="*,14,*">
+        <ListBox Width="600"
+            Height="256"
+            ItemsSource="{Binding Paths, Mode=OneTime}"
+            SelectedItem="{Binding SelPath}"/>
+        <Grid Grid.Row="2"
+            ColumnDefinitions="*,14,*,16,*,14,*,14,*,14,*">
+            <Button Content="添加"
+                Click="AddImg"/>
+            <Button Grid.Column="2"
+                Classes="Danger"
+                Content="移除"
+                Command="{Binding RemPathCommand, Mode=OneTime}"/>
+            <CheckBox Grid.Column="4"
+                Content="完成时移除"
+                IsChecked="{Binding AutoRem}"/>
+            <Button Grid.Column="6"
+                Content="预览"
+                Click="ShowPreviewWindow"/>
+            <Button Grid.Column="8"
+                Theme="{DynamicResource SolidButton}"
+                Content="启动"
+                Command="{Binding StartBatchCommand, Mode=OneTime}"/>
+            <Button Grid.Column="10"
+                Theme="{DynamicResource SolidButton}"
+                Classes="Danger"
+                Content="打断"
+                Command="{Binding StartBatchCancelCommand, Mode=OneTime}"/>
+        </Grid>
+    </Grid>
+</UserControl>

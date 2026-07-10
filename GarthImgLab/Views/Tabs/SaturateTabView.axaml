@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
+    x:Class="GarthImgLab.Views.Tabs.SaturateTabView"
+    x:DataType="vm:SaturateTabVm">
+    <Grid Margin="16"
+        RowDefinitions="*,14,*"
+        ColumnDefinitions="60,14,100,14,140">
+        <CheckBox Content="启用"
+            IsChecked="{Binding Enabled}"/>
+        <ComboBox Grid.Row="0"
+            Grid.Column="2"
+            ItemsSource="{Binding SaturateModes, Mode=OneTime}"
+            DisplayMemberBinding="{Binding Value, Mode=OneTime}"
+            SelectedValue="{Binding SelMode}"
+            SelectedValueBinding="{Binding Key, Mode=OneTime}"/>
+        <NumericUpDown Grid.Row="0"
+            Grid.Column="4"
+            InnerLeftContent="增益"
+            Minimum="-1"
+            Maximum="1"
+            Increment=".01"
+            FormatString="0.####"
+            Value="{Binding Strength}"/>
+        <Slider Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            Minimum="-1"
+            Maximum="1"
+            SmallChange=".1"
+            LargeChange="1"
+            TickFrequency=".05"
+            TickPlacement="TopLeft"
+            IsSnapToTickEnabled="True"
+            Value="{Binding Strength}"/>
+    </Grid>
+</UserControl>

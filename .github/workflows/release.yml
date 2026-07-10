@@ -1,0 +1,107 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+          - os: ubuntu-latest
+            rid: linux-x64
+
+    name: 构建并发布到 ${{ matrix.rid }}
+
+    runs-on: ${{ matrix.os }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+
+      - name: 安装 .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 编译并清理
+        shell: bash
+        run: |
+          dotnet publish GarthImgLab/GarthImgLab.csproj -c Release -r ${{ matrix.rid }} -o publish
+          find publish/ -name "*.pdb" -delete
+          find publish/ -name "*.dSYM" -exec rm -rf {} +
+
+      - name: 平台相关处理
+        shell: bash
+        run: |
+          if [ "${{ matrix.rid }}" = "osx-arm64" ]; then
+            VER=$(dotnet msbuild GarthImgLab/GarthImgLab.csproj -getProperty:Version)
+            plutil -replace CFBundleVersion -string "$VER" GarthImgLab/Assets/macOS/Info.plist
+            plutil -replace CFBundleShortVersionString -string "$VER" GarthImgLab/Assets/macOS/Info.plist
+            APP="GarthImgLab.app"
+            mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+            mv publish/* "$APP/Contents/MacOS/"
+            cp GarthImgLab/Assets/macOS/Info.plist "$APP/Contents/"
+            cp GarthImgLab/Assets/macOS/icon.icns "$APP/Contents/Resources/"
+          elif [ "${{ matrix.rid }}" = "linux-x64" ]; then
+            cp GarthImgLab/Assets/Linux/garthimglab.desktop publish/
+            cp GarthImgLab/Assets/Linux/install.sh publish/
+            chmod +x publish/install.sh
+            cp GarthImgLab/Assets/Linux/icon_256.png publish/
+            cp GarthImgLab/Assets/icon_48.png publish/
+          fi
+
+      - name: 打包压缩
+        shell: bash
+        run: |
+          DIR="GarthImgLab-${{ github.ref_name }}-${{ matrix.rid }}"
+          if [ "${{ matrix.rid }}" = "win-x64" ]; then
+            mv publish "$DIR"
+            cp CHANGELOG.md LICENSE README.md "$DIR/"
+            7z a -t7z -m0=lzma2 -mx=9 "$DIR.7z" "$DIR"
+          elif [ "${{ matrix.rid }}" = "osx-arm64" ]; then
+            DMG_ROOT="dmg-root"
+            mkdir -p "$DMG_ROOT"
+            cp -R "GarthImgLab.app" "$DMG_ROOT/"
+            ln -s /Applications "$DMG_ROOT/Applications"
+            cp CHANGELOG.md LICENSE README.md "$DMG_ROOT/"
+            hdiutil create -volname "GarthImgLab" -srcfolder "$DMG_ROOT" -ov -format UDZO "$DIR.dmg"
+          elif [ "${{ matrix.rid }}" = "linux-x64" ]; then
+            mv publish "$DIR"
+            cp CHANGELOG.md LICENSE README.md "$DIR/"
+            tar -cJf "$DIR.tar.xz" "$DIR"
+          fi
+
+      - name: 生成校验和
+        shell: bash
+        run: |
+          BASE="GarthImgLab-${{ github.ref_name }}-${{ matrix.rid }}"
+          if [ "${{ matrix.rid }}" = "win-x64" ]; then
+            ARCHIVE="$BASE.7z"
+            HASHER="sha256sum"
+          elif [ "${{ matrix.rid }}" = "osx-arm64" ]; then
+            ARCHIVE="$BASE.dmg"
+            HASHER="shasum -a 256"
+          elif [ "${{ matrix.rid }}" = "linux-x64" ]; then
+            ARCHIVE="$BASE.tar.xz"
+            HASHER="sha256sum"
+          fi
+          $HASHER "$ARCHIVE" > "$ARCHIVE.sha256"
+
+      - name: 上传发布
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            *.7z
+            *.tar.xz
+            *.dmg
+            *.sha256
