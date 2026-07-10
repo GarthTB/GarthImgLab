@@ -10,7 +10,6 @@
             IsChecked="{Binding Enabled}"/>
         <ComboBox Grid.Row="0"
             Grid.Column="2"
-            IsEnabled="{Binding Enabled}"
             ItemsSource="{Binding SaturateModes, Mode=OneTime}"
             DisplayMemberBinding="{Binding Value, Mode=OneTime}"
             SelectedValue="{Binding SelMode}"
@@ -22,7 +21,6 @@
             Maximum="1"
             Increment=".01"
             FormatString="0.####"
-            IsEnabled="{Binding Enabled}"
             Value="{Binding Strength}"/>
         <Slider Grid.Row="2"
             Grid.Column="0"
@@ -34,7 +32,6 @@
             TickFrequency=".05"
             TickPlacement="TopLeft"
             IsSnapToTickEnabled="True"
-            IsEnabled="{Binding Enabled}"
             Value="{Binding Strength}"/>
     </Grid>
 </UserControl>
