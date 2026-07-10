@@ -15,7 +15,7 @@ public sealed class FrameMakerTests {
         cts.Cancel();
 
         Throws<OperationCanceledException>(() =>
-            new FrameMaker(Red, .5, .25, .5).Apply(img, cts.Token));
+            new FrameMaker(.25, .5, .5, Red).Apply(img, cts.Token));
 
         Equal(sign, img.Signature);
     }
@@ -26,7 +26,7 @@ public sealed class FrameMakerTests {
         var sign = img.Signature;
         img.RemoveAttribute("signature");
 
-        new FrameMaker(new(hex), ratio, 0, 0).Apply(img, NoneToken);
+        new FrameMaker(0, 0, ratio, new(hex)).Apply(img, NoneToken);
 
         Equal(sign, img.Signature);
     }
@@ -35,7 +35,7 @@ public sealed class FrameMakerTests {
     public void RoundCorner_VarAlpha_BlendOver(string hex, string expected) {
         using MagickImage img = new(Red, 64, 32);
 
-        new FrameMaker(new(hex), .5, 0, 0).Apply(img, NoneToken);
+        new FrameMaker(0, 0, .5, new(hex)).Apply(img, NoneToken);
 
         using var px = img.GetPixels();
         Equal(new MagickColor(expected), px.GetPixel(0, 0).ToColor());
@@ -46,7 +46,7 @@ public sealed class FrameMakerTests {
         var lime = MagickColors.Lime;
         using MagickImage img = new(Red, 64, 32);
 
-        new FrameMaker(lime, 0, .25, .5).Apply(img, NoneToken);
+        new FrameMaker(.25, .5, 0, lime).Apply(img, NoneToken);
 
         Equal(80u, img.Width);
         Equal(56u, img.Height);

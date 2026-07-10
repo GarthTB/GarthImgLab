@@ -11,20 +11,19 @@ public sealed class Annotator: IFx {
     private readonly IDrawables<ushort> _pen;
 
     public Annotator(
-        string font,
-        MagickColor c,
-        IEnumerable<string> tagInfoUnions,
-        string separator,
+        MagickImage? icon,
+        double margin,
         double ltrRatio,
         double bRatio,
         double textRatio,
-        MagickImage? icon,
-        double margin) {
+        MagickColor c,
+        string font,
+        string separator,
+        IEnumerable<string> tagInfoUnions) {
         _pen = new Drawables().Font(font).FillColor(c).StrokeColor(c).StrokeOpacity(new(37));
         var funcs = tagInfoUnions.Select(ExifExtractor.GetExtractor).ToArray();
         _getInfo = img => {
-            var parts = new string[funcs.Length];
-            for (var i = 0; i < funcs.Length; i++) parts[i] = funcs[i](img);
+            var parts = funcs.Select(x => x(img)).Where(static x => !string.IsNullOrWhiteSpace(x));
             return string.Join(separator, parts);
         };
         _bRatio = bRatio / (ltrRatio + 1 + bRatio);
@@ -41,9 +40,9 @@ public sealed class Annotator: IFx {
 
         var info = _getInfo(img);
         var tgtH = _textRatio * bPx;
-        var (textW, textH, ascent) = info.Length > 0
-            ? MeasureText(info, tgtH)
-            : (0, tgtH, 0);
+        var (textW, textH, ascent) = string.IsNullOrWhiteSpace(info)
+            ? (0, tgtH, 0)
+            : MeasureText(info, tgtH);
         var y = (int)Round(h - (bPx + textH) / 2);
         var textX = (w - textW) / 2;
         var iconH = (uint)Round(textH);

@@ -5,9 +5,9 @@ namespace GarthImgLab.Models;
 using System.Diagnostics;
 using ImageMagick;
 using static ImageMagick.ExifTag;
-using static TagName;
+using static AvailableExifTag;
 
-public enum TagName: byte {
+public enum AvailableExifTag: byte {
     快门,
     焦距,
     等效焦距,
@@ -29,11 +29,11 @@ public static class ExifExtractor {
     private const string PlaceHolder = "????";
 
     public static Func<MagickImage, string> GetExtractor(string s) =>
-        Enum.TryParse(s, out TagName tag)
+        Enum.TryParse(s, out AvailableExifTag tag)
             ? img => img.ExtractExif(tag)
             : _ => s;
 
-    private static string ExtractExif(this MagickImage img, TagName tag) =>
+    private static string ExtractExif(this MagickImage img, AvailableExifTag tag) =>
         tag switch {
             快门 => GetExposureTime(img),
             焦距 => GetFocalLength(img),
@@ -59,7 +59,7 @@ public static class ExifExtractor {
             var s = img.GetAttribute("exif:ExposureTime");
             if (double.TryParse(s, out var d))
                 v = d;
-            else if (s?.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(s))
                 return s;
             else
                 return PlaceHolder;
@@ -73,7 +73,7 @@ public static class ExifExtractor {
             var s = img.GetAttribute("exif:FocalLength");
             if (double.TryParse(s, out var d))
                 v = d;
-            else if (s?.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(s))
                 return s;
             else
                 return PlaceHolder;
@@ -87,7 +87,7 @@ public static class ExifExtractor {
             var s = img.GetAttribute("exif:FocalLengthIn35mmFilm");
             if (ushort.TryParse(s, out var us))
                 v = us;
-            else if (s?.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(s))
                 return s;
             else
                 return PlaceHolder;
@@ -101,7 +101,7 @@ public static class ExifExtractor {
             var s = img.GetAttribute("exif:FNumber");
             if (double.TryParse(s, out var d))
                 v = d;
-            else if (s?.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(s))
                 return s;
             else
                 return PlaceHolder;
@@ -115,7 +115,7 @@ public static class ExifExtractor {
             var s = img.GetAttribute("exif:ISOSpeedRatings");
             if (ushort.TryParse(s, out var us))
                 v = us;
-            else if (s?.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(s))
                 return s;
             else
                 return PlaceHolder;

@@ -3,7 +3,7 @@ namespace GarthImgLab.Models;
 using ImageMagick;
 using ImageMagick.Drawing;
 
-public sealed class FrameMaker(MagickColor c, double rcRatio, double ltrRatio, double bRatio): IFx {
+public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, MagickColor c): IFx {
     public void Apply(MagickImage img, CancellationToken ct) {
         RoundCorner(img, ct);
         AddFrame(img, ct);

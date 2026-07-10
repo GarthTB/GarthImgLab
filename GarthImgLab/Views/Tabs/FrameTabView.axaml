@@ -11,79 +11,104 @@
             <CheckBox Content="启用"
                 IsChecked="{Binding Enabled}"/>
             <CheckBox Grid.Column="2"
-                Content="图标"/>
+                Content="图标"
+                IsChecked="{Binding UseIcon}"/>
             <Button Grid.Column="4"
-                Content="更换"/>
+                Content="选取"
+                Click="SelectIcon"/>
             <NumericUpDown Grid.Column="6"
                 InnerLeftContent="图标间距"
                 Increment=".1"
-                FormatString="0.####"/>
+                FormatString="0.####"
+                Value="{Binding Margin}"/>
         </Grid>
         <TextBox Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             InnerLeftContent="图标路径"
-            IsReadOnly="True"/>
+            IsReadOnly="True"
+            Text="{Binding IconPath}"/>
         <NumericUpDown Grid.Row="4"
             Grid.Column="0"
             InnerLeftContent="三边宽度"
             Minimum="0"
             Increment=".01"
-            FormatString="0.####"/>
+            FormatString="0.####"
+            Value="{Binding LtrRatio}"/>
         <NumericUpDown Grid.Row="4"
             Grid.Column="2"
             InnerLeftContent="底边高度"
             Minimum="0"
             Increment=".01"
-            FormatString="0.####"/>
+            FormatString="0.####"
+            Value="{Binding BRatio}"/>
         <NumericUpDown Grid.Row="6"
             Grid.Column="0"
             InnerLeftContent="圆角半径"
             Minimum="0"
             Maximum=".5"
             Increment=".01"
-            FormatString="0.####"/>
+            FormatString="0.####"
+            Value="{Binding RcRatio}"/>
         <NumericUpDown Grid.Row="6"
             Grid.Column="2"
             InnerLeftContent="文字高度"
             Minimum="0"
             Maximum="1"
             Increment=".01"
-            FormatString="0.####"/>
+            FormatString="0.####"
+            Value="{Binding TextRatio}"/>
         <TextBox Grid.Row="8"
             Grid.Column="0"
-            InnerLeftContent="边框颜色"/>
+            InnerLeftContent="边框颜色"
+            Text="{Binding FrameColor, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox Grid.Row="8"
             Grid.Column="2"
-            InnerLeftContent="文字颜色"/>
+            InnerLeftContent="文字颜色"
+            Text="{Binding TextColor, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="10"
-            Grid.Column="0"/>
+            Grid.Column="0"
+            ItemsSource="{Binding Fonts, Mode=OneTime}"
+            SelectedItem="{Binding SelFont}"/>
         <TextBox Grid.Row="10"
             Grid.Column="2"
-            InnerLeftContent="分隔字符"/>
+            InnerLeftContent="分隔字符"
+            Text="{Binding Separator, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="12"
             Grid.Column="0"
             IsEditable="True"
-            PlaceholderText="信息1"/>
+            PlaceholderText="信息1"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo1, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="12"
             Grid.Column="2"
             IsEditable="True"
-            PlaceholderText="信息2"/>
+            PlaceholderText="信息2"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo2, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="14"
             Grid.Column="0"
             IsEditable="True"
-            PlaceholderText="信息3"/>
+            PlaceholderText="信息3"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo3, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="14"
             Grid.Column="2"
             IsEditable="True"
-            PlaceholderText="信息4"/>
+            PlaceholderText="信息4"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo4, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="16"
             Grid.Column="0"
             IsEditable="True"
-            PlaceholderText="信息5"/>
+            PlaceholderText="信息5"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo5, UpdateSourceTrigger=PropertyChanged}"/>
         <ComboBox Grid.Row="16"
             Grid.Column="2"
             IsEditable="True"
-            PlaceholderText="信息6"/>
+            PlaceholderText="信息6"
+            ItemsSource="{Binding ExifTags, Mode=OneTime}"
+            Text="{Binding TagOrInfo6, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </UserControl>
