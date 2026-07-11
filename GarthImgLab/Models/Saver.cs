@@ -20,7 +20,7 @@ public sealed class Saver(string fmt, string option, byte q) {
             "PNG" => SavePng(img, iPath, ct),
             "TIFF" => SaveTiff(img, iPath, ct),
             "WebP" => SaveWebP(img, iPath, ct),
-            _ => throw new NeverEx()
+            _ => throw new Never()
         };
     }
 

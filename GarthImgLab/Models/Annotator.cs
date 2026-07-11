@@ -6,9 +6,10 @@ using static Math;
 
 public sealed class Annotator: IFx {
     private readonly double _bRatio, _textRatio, _margin;
+    private readonly MagickColor _c;
+    private readonly string _font;
     private readonly Func<Img, string> _getInfo;
     private readonly Img? _icon;
-    private readonly IDrawables<ushort> _pen;
 
     public Annotator(
         Img? icon,
@@ -20,15 +21,16 @@ public sealed class Annotator: IFx {
         string font,
         string separator,
         IEnumerable<string> tagInfoUnions) {
-        _pen = new Drawables().Font(font).FillColor(c).StrokeColor(c).StrokeOpacity(new(37));
+        _icon = icon;
+        _margin = margin;
+        _bRatio = bRatio / (ltrRatio + 1 + bRatio);
+        _textRatio = textRatio;
+        _c = c;
+        _font = font;
         var funcs = tagInfoUnions.Select(ExifExtractor.GetExtractor).ToArray();
         _getInfo = img => string.Join(
             separator,
             funcs.Select(x => x(img)).Where(static x => !string.IsNullOrWhiteSpace(x)));
-        _bRatio = bRatio / (ltrRatio + 1 + bRatio);
-        _textRatio = textRatio;
-        _icon = icon;
-        _margin = margin;
     }
 
     public void Apply(Img img, CT ct) {
@@ -39,9 +41,10 @@ public sealed class Annotator: IFx {
 
         var info = _getInfo(img);
         var tgtH = _textRatio * bPx;
+        IDrawables<ushort>? pen = null;
         var (textW, textH, ascent) = string.IsNullOrWhiteSpace(info)
             ? (0, tgtH, 0)
-            : MeasureText(info, tgtH);
+            : MeasureText(info, tgtH, out pen);
         var y = (int)Round(h - (bPx + textH) / 2);
         var textX = (w - textW) / 2;
         var iconH = (uint)Round(textH);
@@ -58,12 +61,16 @@ public sealed class Annotator: IFx {
 
         if (textW < 1) return;
         ct.ThrowIfCancellationRequested();
-        _pen.Text(textX, y + ascent, info).Draw(img);
+        pen!.Text(textX, y + ascent, info).Draw(img);
     }
 
-    private (double, double, double) MeasureText(string text, double tgtH) {
+    private (double, double, double) MeasureText(
+        string text,
+        double tgtH,
+        out IDrawables<ushort> pen) {
+        pen = new Drawables().Font(_font).FillColor(_c).StrokeColor(_c).StrokeOpacity(new(37));
         for (var (i, size) = (0, 14d); i < 3; i++) {
-            var m = _pen.FontPointSize(size).StrokeWidth(.03 * size).FontTypeMetrics(text)
+            var m = pen.FontPointSize(size).StrokeWidth(.03 * size).FontTypeMetrics(text)
                  ?? throw new OpEx("无法测量文字尺寸");
             if (Abs(m.TextHeight - tgtH) < .1 * tgtH) return (m.TextWidth, m.TextHeight, m.Ascent);
             size *= tgtH / m.TextHeight;

@@ -14,6 +14,7 @@ public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, M
         var r = rcRatio * Math.Min(w, h);
         if (r == 0 || c.A == 0) return;
         ct.ThrowIfCancellationRequested();
+
         var notA = (ushort)~c.A;
         using Img corners = new(new MagickColor(c) { A = notA }, w, h);
         ct.ThrowIfCancellationRequested();
@@ -22,10 +23,12 @@ public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, M
             .Draw(corners); // 中间不透明，四角 Alpha 反相
         ct.ThrowIfCancellationRequested();
         corners.Negate(Channels.Alpha); // 中间透明，四角 Alpha 还原
+
         if (notA == 0) { // 若A为0，RGB会被置0，需重新上色
             ct.ThrowIfCancellationRequested();
             corners.Colorize(c, new(100));
         }
+
         ct.ThrowIfCancellationRequested();
         img.Composite(corners, CompositeOperator.Over);
     }

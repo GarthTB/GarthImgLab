@@ -29,7 +29,7 @@ public sealed class Saturator: IFx {
                 SM.JzCzhz => Boost<JzCzhz>,
                 SM.OkLCh => Boost<OkLCh>,
                 SM.OkLrCh => Boost<OkLrCh>,
-                _ => throw new NeverEx()
+                _ => throw new Never()
             },
             < 0 => mode switch {
                 SM.HSV => Reduce<Hsv>,
@@ -38,7 +38,7 @@ public sealed class Saturator: IFx {
                 SM.JzCzhz => Reduce<JzCzhz>,
                 SM.OkLCh => Reduce<OkLCh>,
                 SM.OkLrCh => Reduce<OkLrCh>,
-                _ => throw new NeverEx()
+                _ => throw new Never()
             },
             _ => null
         };

@@ -49,7 +49,7 @@ public static class ExifExtractor {
             镜头型号 => GetStr(img, LensModel, "exif:LensModel"),
             镜头序号 => GetStr(img, LensSerialNumber, "exif:LensSerialNumber"),
             软件 => GetStr(img, Software, "tiff:software"),
-            _ => throw new NeverEx()
+            _ => throw new Never()
         };
 
     private static string GetExposureTime(Img img) {
