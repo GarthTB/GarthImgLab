@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-<meta charset='utf-8' />
-<title>GarthImgLab.Benchmarks.PixelParallelTuning-20260711-160351</title>
+    <meta charset='utf-8'/>
+    <title>GarthImgLab.Benchmarks.PixelParallelTuning-20260711-160351</title>
 
-<style type="text/css">
-	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
-	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
-	tr { background-color: #fff; border-top: 1px solid #ccc; }
-	tr:nth-child(even) { background: #f8f8f8; }
-</style>
+    <style type="text/css">
+        table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+        td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+        tr { background-color: #fff; border-top: 1px solid #ccc; }
+        tr:nth-child(even) { background: #f8f8f8; }
+    </style>
 </head>
 <body>
 <pre><code>
@@ -23,18 +23,153 @@ Memory: 15.69 GB Total, 5.39 GB Available
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>Method         </th><th>FileName</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
-</tr>
-</thead><tbody><tr><td>Sequential</td><td>RGB16.tif</td><td>222.79 μs</td><td>2.880 μs</td><td>2.694 μs</td><td>223.22 μs</td><td>1.00</td><td>0.00</td><td>-</td><td>64 B</td><td>1.00</td>
-</tr><tr><td>ForPixel</td><td>RGB16.tif</td><td>164.55 μs</td><td>3.279 μs</td><td>8.696 μs</td><td>165.31 μs</td><td>0.74</td><td>0.04</td><td>0.4883</td><td>4861 B</td><td>75.95</td>
-</tr><tr><td>ForEachPixelPartition</td><td>RGB16.tif</td><td>82.27 μs</td><td>1.608 μs</td><td>1.652 μs</td><td>81.61 μs</td><td>0.37</td><td>0.01</td><td>0.7324</td><td>7143 B</td><td>111.61</td>
-</tr><tr><td>ForLine</td><td>RGB16.tif</td><td>81.63 μs</td><td>1.404 μs</td><td>1.172 μs</td><td>81.39 μs</td><td>0.37</td><td>0.01</td><td>0.3662</td><td>3807 B</td><td>59.48</td>
-</tr><tr><td>ForEachLinePartition</td><td>RGB16.tif</td><td>82.29 μs</td><td>1.280 μs</td><td>1.069 μs</td><td>82.59 μs</td><td>0.37</td><td>0.01</td><td>0.7324</td><td>7528 B</td><td>117.62</td>
-</tr><tr><td>Sequential</td><td>RGB8.tif</td><td>228.35 μs</td><td>1.631 μs</td><td>1.526 μs</td><td>228.56 μs</td><td>1.00</td><td>0.00</td><td>-</td><td>64 B</td><td>1.00</td>
-</tr><tr><td>ForPixel</td><td>RGB8.tif</td><td>161.91 μs</td><td>3.821 μs</td><td>11.086 μs</td><td>165.96 μs</td><td>0.71</td><td>0.05</td><td>0.4883</td><td>4857 B</td><td>75.89</td>
-</tr><tr><td>ForEachPixelPartition</td><td>RGB8.tif</td><td>79.97 μs</td><td>0.743 μs</td><td>0.695 μs</td><td>79.95 μs</td><td>0.35</td><td>0.00</td><td>0.7324</td><td>7402 B</td><td>115.66</td>
-</tr><tr><td>ForLine</td><td>RGB8.tif</td><td>83.51 μs</td><td>1.125 μs</td><td>0.997 μs</td><td>83.28 μs</td><td>0.37</td><td>0.00</td><td>0.3662</td><td>3825 B</td><td>59.77</td>
-</tr><tr><td>ForEachLinePartition</td><td>RGB8.tif</td><td>79.16 μs</td><td>1.133 μs</td><td>0.946 μs</td><td>78.93 μs</td><td>0.35</td><td>0.00</td><td>0.7324</td><td>7258 B</td><td>113.41</td>
-</tr></tbody></table>
+    <thead>
+    <tr>
+        <th>Method</th>
+        <th>FileName</th>
+        <th>Mean</th>
+        <th>Error</th>
+        <th>StdDev</th>
+        <th>Median</th>
+        <th>Ratio</th>
+        <th>RatioSD</th>
+        <th>Gen0</th>
+        <th>Allocated</th>
+        <th>Alloc Ratio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Sequential</td>
+        <td>RGB16.tif</td>
+        <td>222.79 μs</td>
+        <td>2.880 μs</td>
+        <td>2.694 μs</td>
+        <td>223.22 μs</td>
+        <td>1.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td>64 B</td>
+        <td>1.00</td>
+    </tr>
+    <tr>
+        <td>ForPixel</td>
+        <td>RGB16.tif</td>
+        <td>164.55 μs</td>
+        <td>3.279 μs</td>
+        <td>8.696 μs</td>
+        <td>165.31 μs</td>
+        <td>0.74</td>
+        <td>0.04</td>
+        <td>0.4883</td>
+        <td>4861 B</td>
+        <td>75.95</td>
+    </tr>
+    <tr>
+        <td>ForEachPixelPartition</td>
+        <td>RGB16.tif</td>
+        <td>82.27 μs</td>
+        <td>1.608 μs</td>
+        <td>1.652 μs</td>
+        <td>81.61 μs</td>
+        <td>0.37</td>
+        <td>0.01</td>
+        <td>0.7324</td>
+        <td>7143 B</td>
+        <td>111.61</td>
+    </tr>
+    <tr>
+        <td>ForLine</td>
+        <td>RGB16.tif</td>
+        <td>81.63 μs</td>
+        <td>1.404 μs</td>
+        <td>1.172 μs</td>
+        <td>81.39 μs</td>
+        <td>0.37</td>
+        <td>0.01</td>
+        <td>0.3662</td>
+        <td>3807 B</td>
+        <td>59.48</td>
+    </tr>
+    <tr>
+        <td>ForEachLinePartition</td>
+        <td>RGB16.tif</td>
+        <td>82.29 μs</td>
+        <td>1.280 μs</td>
+        <td>1.069 μs</td>
+        <td>82.59 μs</td>
+        <td>0.37</td>
+        <td>0.01</td>
+        <td>0.7324</td>
+        <td>7528 B</td>
+        <td>117.62</td>
+    </tr>
+    <tr>
+        <td>Sequential</td>
+        <td>RGB8.tif</td>
+        <td>228.35 μs</td>
+        <td>1.631 μs</td>
+        <td>1.526 μs</td>
+        <td>228.56 μs</td>
+        <td>1.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td>64 B</td>
+        <td>1.00</td>
+    </tr>
+    <tr>
+        <td>ForPixel</td>
+        <td>RGB8.tif</td>
+        <td>161.91 μs</td>
+        <td>3.821 μs</td>
+        <td>11.086 μs</td>
+        <td>165.96 μs</td>
+        <td>0.71</td>
+        <td>0.05</td>
+        <td>0.4883</td>
+        <td>4857 B</td>
+        <td>75.89</td>
+    </tr>
+    <tr>
+        <td>ForEachPixelPartition</td>
+        <td>RGB8.tif</td>
+        <td>79.97 μs</td>
+        <td>0.743 μs</td>
+        <td>0.695 μs</td>
+        <td>79.95 μs</td>
+        <td>0.35</td>
+        <td>0.00</td>
+        <td>0.7324</td>
+        <td>7402 B</td>
+        <td>115.66</td>
+    </tr>
+    <tr>
+        <td>ForLine</td>
+        <td>RGB8.tif</td>
+        <td>83.51 μs</td>
+        <td>1.125 μs</td>
+        <td>0.997 μs</td>
+        <td>83.28 μs</td>
+        <td>0.37</td>
+        <td>0.00</td>
+        <td>0.3662</td>
+        <td>3825 B</td>
+        <td>59.77</td>
+    </tr>
+    <tr>
+        <td>ForEachLinePartition</td>
+        <td>RGB8.tif</td>
+        <td>79.16 μs</td>
+        <td>1.133 μs</td>
+        <td>0.946 μs</td>
+        <td>78.93 μs</td>
+        <td>0.35</td>
+        <td>0.00</td>
+        <td>0.7324</td>
+        <td>7258 B</td>
+        <td>113.41</td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

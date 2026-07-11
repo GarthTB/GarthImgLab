@@ -6,12 +6,12 @@ using static Math;
 
 public sealed class Annotator: IFx {
     private readonly double _bRatio, _textRatio, _margin;
-    private readonly Func<MagickImage, string> _getInfo;
-    private readonly MagickImage? _icon;
+    private readonly Func<Img, string> _getInfo;
+    private readonly Img? _icon;
     private readonly IDrawables<ushort> _pen;
 
     public Annotator(
-        MagickImage? icon,
+        Img? icon,
         double margin,
         double ltrRatio,
         double bRatio,
@@ -22,17 +22,16 @@ public sealed class Annotator: IFx {
         IEnumerable<string> tagInfoUnions) {
         _pen = new Drawables().Font(font).FillColor(c).StrokeColor(c).StrokeOpacity(new(37));
         var funcs = tagInfoUnions.Select(ExifExtractor.GetExtractor).ToArray();
-        _getInfo = img => {
-            var parts = funcs.Select(x => x(img)).Where(static x => !string.IsNullOrWhiteSpace(x));
-            return string.Join(separator, parts);
-        };
+        _getInfo = img => string.Join(
+            separator,
+            funcs.Select(x => x(img)).Where(static x => !string.IsNullOrWhiteSpace(x)));
         _bRatio = bRatio / (ltrRatio + 1 + bRatio);
         _textRatio = textRatio;
         _icon = icon;
         _margin = margin;
     }
 
-    public void Apply(MagickImage img, CancellationToken ct) {
+    public void Apply(Img img, CT ct) {
         uint w = img.Width, h = img.Height;
         var bPx = (uint)Round(_bRatio * Min(w, h));
         if (bPx == 0) return;
@@ -65,10 +64,10 @@ public sealed class Annotator: IFx {
     private (double, double, double) MeasureText(string text, double tgtH) {
         for (var (i, size) = (0, 14d); i < 3; i++) {
             var m = _pen.FontPointSize(size).StrokeWidth(.03 * size).FontTypeMetrics(text)
-                 ?? throw new InvalidOperationException("无法测量文字尺寸");
+                 ?? throw new OpEx("无法测量文字尺寸");
             if (Abs(m.TextHeight - tgtH) < .1 * tgtH) return (m.TextWidth, m.TextHeight, m.Ascent);
             size *= tgtH / m.TextHeight;
         }
-        throw new InvalidOperationException("无法自动调整字号");
+        throw new OpEx("无法自动调整字号");
     }
 }

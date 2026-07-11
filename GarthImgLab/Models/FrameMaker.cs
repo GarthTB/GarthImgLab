@@ -4,18 +4,18 @@ using ImageMagick;
 using ImageMagick.Drawing;
 
 public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, MagickColor c): IFx {
-    public void Apply(MagickImage img, CancellationToken ct) {
+    public void Apply(Img img, CT ct) {
         RoundCorner(img, ct);
         AddFrame(img, ct);
     }
 
-    private void RoundCorner(MagickImage img, CancellationToken ct) {
+    private void RoundCorner(Img img, CT ct) {
         uint w = img.Width, h = img.Height;
         var r = rcRatio * Math.Min(w, h);
         if (r == 0 || c.A == 0) return;
         ct.ThrowIfCancellationRequested();
         var notA = (ushort)~c.A;
-        using MagickImage corners = new(new MagickColor(c) { A = notA }, w, h);
+        using Img corners = new(new MagickColor(c) { A = notA }, w, h);
         ct.ThrowIfCancellationRequested();
         new Drawables().FillColor(new MagickColor(c) { A = 65535 })
             .RoundRectangle(0, 0, w, h, r, r)
@@ -30,7 +30,7 @@ public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, M
         img.Composite(corners, CompositeOperator.Over);
     }
 
-    private void AddFrame(MagickImage img, CancellationToken ct) {
+    private void AddFrame(Img img, CT ct) {
         uint w = img.Width, h = img.Height;
         var minSide = Math.Min(w, h);
         var ltrPx = (uint)Math.Round(ltrRatio * minSide);

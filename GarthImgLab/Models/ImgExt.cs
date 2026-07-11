@@ -3,8 +3,8 @@ namespace GarthImgLab.Models;
 using ImageMagick;
 
 public static class ImgExt {
-    extension(MagickImage img) {
-        public void ToThumb(double maxPx, CancellationToken ct) {
+    extension(Img img) {
+        public void ToThumb(double maxPx, CT ct) {
             var w = img.Width;
             var w2 = (uint)Math.Round(Math.Sqrt(maxPx / w / img.Height) * w);
             if (w2 >= w) return;
@@ -13,8 +13,8 @@ public static class ImgExt {
             img.Resize(w2, 0);
         }
 
-        public void MapPixel(Action<nint> f, CancellationToken ct) {
-            if (img.ColorSpace != ColorSpace.sRGB) throw new InvalidOperationException("不支持此色空间");
+        public void MapPixel(Action<nint> f, CT ct) {
+            if (img.ColorSpace != ColorSpace.sRGB) throw new OpEx("不支持此色空间");
             ct.ThrowIfCancellationRequested();
 
             uint w = img.Width, h = img.Height;
