@@ -27,7 +27,7 @@ public sealed partial class FrameTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
     #region 图标
 
     // ReSharper disable once MemberCanBeMadeStatic.Local
-    [ObservableProperty] private partial MagickImage? Icon { get; set; }
+    [ObservableProperty] private partial Img? Icon { get; set; }
     [ObservableProperty] public partial bool UseIcon { get; set; }
     [ObservableProperty] public partial double Margin { get; set; } = 1;
     [ObservableProperty] public partial string IconPath { get; set; } = "";

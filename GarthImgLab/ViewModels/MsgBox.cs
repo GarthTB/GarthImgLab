@@ -17,7 +17,7 @@ public static class MsgBox {
     private static Window GetTopWindow() {
         if (Application.Current?.ApplicationLifetime is
             not IClassicDesktopStyleApplicationLifetime { MainWindow: {} w })
-            throw new InvalidOperationException("无法获取主窗口");
+            throw new OpEx("无法获取主窗口");
         while (w.OwnedWindows is [.., var last]) w = last;
         return w;
     }

@@ -2,7 +2,6 @@
 
 namespace GarthImgLab.Models;
 
-using System.Diagnostics;
 using ImageMagick;
 using static ImageMagick.ExifTag;
 using static AvailableExifTag;
@@ -28,12 +27,12 @@ public enum AvailableExifTag: byte {
 public static class ExifExtractor {
     private const string PlaceHolder = "????";
 
-    public static Func<MagickImage, string> GetExtractor(string s) =>
+    public static Func<Img, string> GetExtractor(string s) =>
         Enum.TryParse(s, out AvailableExifTag tag)
             ? img => img.ExtractExif(tag)
             : _ => s;
 
-    private static string ExtractExif(this MagickImage img, AvailableExifTag tag) =>
+    private static string ExtractExif(this Img img, AvailableExifTag tag) =>
         tag switch {
             快门 => GetExposureTime(img),
             焦距 => GetFocalLength(img),
@@ -50,10 +49,10 @@ public static class ExifExtractor {
             镜头型号 => GetStr(img, LensModel, "exif:LensModel"),
             镜头序号 => GetStr(img, LensSerialNumber, "exif:LensSerialNumber"),
             软件 => GetStr(img, Software, "tiff:software"),
-            _ => throw new UnreachableException()
+            _ => throw new Never()
         };
 
-    private static string GetExposureTime(MagickImage img) {
+    private static string GetExposureTime(Img img) {
         var v = img.GetExifProfile()?.GetValue(ExposureTime)?.Value.ToDouble();
         if (v is null) {
             var s = img.GetAttribute("exif:ExposureTime");
@@ -67,7 +66,7 @@ public static class ExifExtractor {
         return v switch { 0 => "0 s", < .3 => $"1/{1 / v:0} s", _ => $"{v:0.#} s" };
     }
 
-    private static string GetFocalLength(MagickImage img) {
+    private static string GetFocalLength(Img img) {
         var v = img.GetExifProfile()?.GetValue(FocalLength)?.Value.ToDouble();
         if (v is null) {
             var s = img.GetAttribute("exif:FocalLength");
@@ -81,7 +80,7 @@ public static class ExifExtractor {
         return $"{v:0.##} mm";
     }
 
-    private static string GetFocalLengthIn35MMFilm(MagickImage img) {
+    private static string GetFocalLengthIn35MMFilm(Img img) {
         var v = img.GetExifProfile()?.GetValue(FocalLengthIn35mmFilm)?.Value;
         if (v is null) {
             var s = img.GetAttribute("exif:FocalLengthIn35mmFilm");
@@ -95,7 +94,7 @@ public static class ExifExtractor {
         return $"{v} mm";
     }
 
-    private static string GetFNumber(MagickImage img) {
+    private static string GetFNumber(Img img) {
         var v = img.GetExifProfile()?.GetValue(FNumber)?.Value.ToDouble();
         if (v is null) {
             var s = img.GetAttribute("exif:FNumber");
@@ -109,7 +108,7 @@ public static class ExifExtractor {
         return $"f/{v:0.##}";
     }
 
-    private static string GetIsoSpeedRatings(MagickImage img) {
+    private static string GetIsoSpeedRatings(Img img) {
         var v = img.GetExifProfile()?.GetValue(ISOSpeedRatings)?.Value.FirstOrDefault();
         if (v is null or 0) {
             var s = img.GetAttribute("exif:ISOSpeedRatings");
@@ -123,7 +122,7 @@ public static class ExifExtractor {
         return $"ISO {v}";
     }
 
-    private static string GetDateTimeOriginal(MagickImage img) {
+    private static string GetDateTimeOriginal(Img img) {
         var v = img.GetExifProfile()?.GetValue(DateTimeOriginal)?.Value;
         if (string.IsNullOrWhiteSpace(v)) {
             var s = img.GetAttribute("exif:DateTimeOriginal");
@@ -135,7 +134,7 @@ public static class ExifExtractor {
             : v;
     }
 
-    private static string GetStr(MagickImage img, ExifTag<string> tag, string attribute) {
+    private static string GetStr(Img img, ExifTag<string> tag, string attribute) {
         var v = img.GetExifProfile()?.GetValue(tag)?.Value;
         if (!string.IsNullOrWhiteSpace(v)) return v;
         var s = img.GetAttribute(attribute);

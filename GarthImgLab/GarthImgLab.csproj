@@ -31,6 +31,6 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <PackageReference Include="Magick.NET-Q16-arm64" Version="14.14.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
         <PackageReference Include="Magick.NET-Q16-x64" Version="14.14.0" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
-        <PackageReference Include="Semi.Avalonia" Version="12.0.3"/>
+        <PackageReference Include="Semi.Avalonia" Version="12.1.0"/>
     </ItemGroup>
 </Project>

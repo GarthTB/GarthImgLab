@@ -23,7 +23,6 @@ public sealed partial class HomeTabView: UserControl {
             if (DataContext is not HomeTabVm vm || sp is null) return;
             var files = await sp.OpenFilePickerAsync(_openOptions);
             if (files.Count == 0) return;
-
             foreach (var file in files)
                 using (file)
                     vm.AddPathAsync(file.TryGetLocalPath() ?? file.Path.LocalPath);

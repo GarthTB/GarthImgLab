@@ -10,9 +10,9 @@ using Models;
 public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
     private const int ThumbSize = 1024 * 1024, DebounceMs = 150;
     private bool _active, _enabled;
-    private MagickImage? _bef, _aft;
+    private Img? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
-    private CancellationTokenSource _befCts = new(), _aftCts = new();
+    private CTS _befCts = new(), _aftCts = new();
 
     public IImage? DisplayImg =>
         _enabled
@@ -43,7 +43,7 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         if (!_active) return;
         var ct = CancelAndGetNewCt(ref _befCts);
         CancelAndGetNewCt(ref _aftCts);
-        MagickImage? bef = null;
+        Img? bef = null;
         Bitmap? bmp = null;
         try {
             bef = new();
@@ -61,7 +61,7 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         } catch (Exception ex) {
             bef?.Dispose();
             bmp?.Dispose();
-            if (ex is not OperationCanceledException) Clear();
+            if (ex is not OCEx) Clear();
         }
     }
 
@@ -69,13 +69,13 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         if (!_active) return;
         var ct = CancelAndGetNewCt(ref _aftCts);
         if (_bef is null) return;
-        MagickImage? aft = null;
+        Img? aft = null;
         Bitmap? bmp = null;
         try {
             await Task.Delay(DebounceMs, ct);
             aft = await Task.Run(
                 () => {
-                    var img = (MagickImage)_bef.CloneArea(_bef.Width, _bef.Height);
+                    var img = (Img)_bef.CloneArea(_bef.Width, _bef.Height);
                     try {
                         foreach (var fx in fxs) fx.Apply(img, ct);
                         return img;
@@ -99,20 +99,20 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         }
     }
 
-    private static CancellationToken CancelAndGetNewCt(ref CancellationTokenSource cts) {
+    private static CT CancelAndGetNewCt(ref CTS cts) {
         cts.Cancel();
         cts.Dispose();
         return (cts = new()).Token;
     }
 
-    private static void DisposeImg(ref MagickImage? img, ref Bitmap? bmp) {
+    private static void DisposeImg(ref Img? img, ref Bitmap? bmp) {
         img?.Dispose();
         img = null;
         bmp?.Dispose();
         bmp = null;
     }
 
-    private static async Task<Bitmap> ToBmpAsync(MagickImage img, CancellationToken ct) {
+    private static async Task<Bitmap> ToBmpAsync(Img img, CT ct) {
         using MemoryStream ms = new();
         await img.WriteAsync(ms, MagickFormat.Bmp, ct);
         ms.Seek(0, SeekOrigin.Begin);

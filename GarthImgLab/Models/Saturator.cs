@@ -1,9 +1,7 @@
 namespace GarthImgLab.Models;
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using ColorConverters;
-using ImageMagick;
 using SM = SaturateMode;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -31,7 +29,7 @@ public sealed class Saturator: IFx {
                 SM.JzCzhz => Boost<JzCzhz>,
                 SM.OkLCh => Boost<OkLCh>,
                 SM.OkLrCh => Boost<OkLrCh>,
-                _ => throw new UnreachableException()
+                _ => throw new Never()
             },
             < 0 => mode switch {
                 SM.HSV => Reduce<Hsv>,
@@ -40,13 +38,13 @@ public sealed class Saturator: IFx {
                 SM.JzCzhz => Reduce<JzCzhz>,
                 SM.OkLCh => Reduce<OkLCh>,
                 SM.OkLrCh => Reduce<OkLrCh>,
-                _ => throw new UnreachableException()
+                _ => throw new Never()
             },
             _ => null
         };
     }
 
-    public void Apply(MagickImage img, CancellationToken ct) {
+    public void Apply(Img img, CT ct) {
         if (_proc is {}) img.MapPixel(_proc, ct);
     }
 
