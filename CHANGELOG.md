@@ -4,6 +4,11 @@
 
 ## [开发中]
 
+## [2.0.0] - 2026-07-12
+
+- **Breaking**: 使用 AvaloniaUI 框架与 Semi.Avalonia 主题重构
+- Added: `win-x64` `osx-arm64` `linux-x64` 跨平台支持
+
 ## [1.0.4] - 2026-05-05
 
 更新依赖库
@@ -34,7 +39,9 @@
 
 [语义化版本]: https://semver.org
 
-[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v1.0.4...HEAD
+[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.0.0...HEAD
+
+[2.0.0]: https://github.com/GarthTB/GarthImgLab/compare/v1.0.4...v2.0.0
 
 [1.0.4]: https://github.com/GarthTB/GarthImgLab/compare/v1.0.3...v1.0.4
 
