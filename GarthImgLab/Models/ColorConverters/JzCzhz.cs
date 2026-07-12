@@ -4,8 +4,10 @@ using static Math;
 using static PQ;
 
 public readonly struct JzCzhz: IColorSpace<JzCzhz> {
-    public static double MaxSat { get; } = FromSRgb(0, 0, 1).C;
     private const double B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
+
+    private static readonly double[] Cusps = CuspLut.Build<JzCzhz>(1, FromSRgb(0, 0, 1).C);
+    public static double GetCusp(double l, double h) => CuspLut.Sample(Cusps, 1, l, h);
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var (x, y, z) = Xyz.FromSRgb(r, g, b);

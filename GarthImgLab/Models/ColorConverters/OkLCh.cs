@@ -4,7 +4,8 @@ using static Math;
 using static SRgb;
 
 public readonly struct OkLCh: IColorSpace<OkLCh> {
-    public static double MaxSat { get; } = FromSRgb(1, 0, 1).C;
+    private static readonly double[] Cusps = CuspLut.Build<OkLCh>(1, FromSRgb(1, 0, 1).C);
+    public static double GetCusp(double l, double h) => CuspLut.Sample(Cusps, 1, l, h);
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var lr = SRgbToLinear(r);

@@ -5,7 +5,7 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 
 public readonly struct Hsv: IColorSpace<Hsv> {
-    public static double MaxSat => 1;
+    public static double GetCusp(double l, double h) => 1;
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var max = Max(r, Max(g, b));

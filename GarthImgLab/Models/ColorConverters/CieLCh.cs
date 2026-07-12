@@ -3,8 +3,10 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 
 public readonly struct CieLCh: IColorSpace<CieLCh> {
-    public static double MaxSat { get; } = FromSRgb(0, 0, 1).C;
     private const double Xn = .9504559270516717, Yn = 1, Zn = 1.0890577507598784, D = 6d / 29;
+
+    private static readonly double[] Cusps = CuspLut.Build<CieLCh>(100, 135);
+    public static double GetCusp(double l, double h) => CuspLut.Sample(Cusps, 100, l, h);
 
     private static double F(double t) =>
         t > D * D * D

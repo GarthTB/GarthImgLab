@@ -5,13 +5,13 @@ namespace GarthImgLab.Models.ColorConverters;
 using static Math;
 
 public readonly struct Hsl: IColorSpace<Hsl> {
-    public static double MaxSat => 1;
+    public static double GetCusp(double l, double h) => 1;
 
     public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
         var max = Max(r, Max(g, b));
         var min = Min(r, Min(g, b));
         var c = max - min;
-        var l = (max + min) / 2;
+        var l = .5 * (max + min);
 
         var h = 0d;
         if (c != 0) {
@@ -35,7 +35,7 @@ public readonly struct Hsl: IColorSpace<Hsl> {
         if (h < 0) h += 360;
         var c = (1 - Abs(2 * l - 1)) * s;
         var x = c * (1 - Abs(h / 60 % 2 - 1));
-        var m = l - c / 2;
+        var m = l - .5 * c;
 
         double r, g, b;
         if (h < 60) {
