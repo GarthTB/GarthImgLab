@@ -45,8 +45,8 @@ public sealed class Annotator: IFx {
         var (textW, textH, ascent) = string.IsNullOrWhiteSpace(info)
             ? (0, tgtH, 0)
             : MeasureText(info, tgtH, out pen);
-        var y = (int)Round(h - (bPx + textH) / 2);
-        var textX = (w - textW) / 2;
+        var y = (int)Round(h - .5 * (bPx + textH));
+        var textX = .5 * (w - textW);
         var iconH = (uint)Round(textH);
 
         if (_icon is {} && iconH > 0) {
@@ -55,7 +55,7 @@ public sealed class Annotator: IFx {
 
             ct.ThrowIfCancellationRequested();
             var margin = _margin * textH;
-            textX -= (margin + mIcon.Width) / 2;
+            textX -= .5 * (margin + mIcon.Width);
             img.Composite(mIcon, (int)Round(textX + textW + margin), y, CompositeOperator.Over);
         }
 

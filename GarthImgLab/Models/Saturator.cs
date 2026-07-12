@@ -62,10 +62,11 @@ public sealed class Saturator: IFx {
 
         var (l, c, h) = T.FromSRgb(r, g, b);
 
-        var x = c / T.MaxSat;
+        var maxC = T.GetCusp(l, h);
+        var x = c / maxC;
         var s = _strength * mask;
         var y = x / (1 - s + s * x);
-        c = y * T.MaxSat;
+        c = y * maxC;
 
         (r, g, b) = T.ToSRgb(l, c, h);
 
