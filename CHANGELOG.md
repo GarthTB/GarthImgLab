@@ -4,6 +4,10 @@
 
 ## [开发中]
 
+### Fixed
+
+- 饱和度增强时的断层问题
+
 ## [2.0.0] - 2026-07-12
 
 - **Breaking**: 使用 AvaloniaUI 框架与 Semi.Avalonia 主题重构
