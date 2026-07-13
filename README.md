@@ -12,7 +12,7 @@
 [![Gitee](https://img.shields.io/badge/Gitee-C71D23?logo=gitee)](https://gitee.com/tb0/GarthImgLab)
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet)](https://dotnet.microsoft.com)
 [![C# 14](https://img.shields.io/badge/C%23-14-682A7A)](https://github.com/dotnet/csharplang)
-[![AvaloniaUI 12.1](https://img.shields.io/badge/AvaloniaUI-12.1-3F8DF2?logo=avaloniaui)](https://avaloniaui.net)
+[![AvaloniaUI 12](https://img.shields.io/badge/AvaloniaUI-12-3F8DF2?logo=avaloniaui)](https://avaloniaui.net)
 
 一个轻量 GUI 应用，用于数字摄影图像的末级非线性处理
 

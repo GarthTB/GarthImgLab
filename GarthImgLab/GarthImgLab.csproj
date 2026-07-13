@@ -8,7 +8,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <ApplicationIcon>Assets\Windows\icon.ico</ApplicationIcon>
-        <Version>2.0.0</Version>
+        <Version>2.1.0</Version>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <Authors>Garth TB | 天卜 &lt;g-art-h@outlook.com&gt;</Authors>
         <Description>Garth's image-processing tools</Description>
@@ -29,7 +29,7 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" Condition="'$(Configuration)'=='Debug'"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="Magick.NET-Q16-arm64" Version="14.14.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
+        <PackageReference Include="Magick.NET-Q16-arm64" Version="14.15.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
         <PackageReference Include="Magick.NET-Q16-x64" Version="14.15.0" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
         <PackageReference Include="Semi.Avalonia" Version="12.1.0"/>
     </ItemGroup>

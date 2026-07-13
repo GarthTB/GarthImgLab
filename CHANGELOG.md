@@ -4,14 +4,17 @@
 
 ## [开发中]
 
-### Fixed
+## [2.1.0] - 2026-07-14
 
-- 饱和度增强时的断层问题
+- **Added**: 图像和图标的拖放支持
+- **Fixed**: 饱和度增强时的断层问题
+- **Fixed**: 图像未加载完成时效果预览失效的问题
+- **Fixed**: 图像列表允许重复项的问题
 
 ## [2.0.0] - 2026-07-12
 
 - **Breaking**: 使用 AvaloniaUI 框架与 Semi.Avalonia 主题重构
-- Added: `win-x64` `osx-arm64` `linux-x64` 跨平台支持
+- **Added**: `win-x64` `osx-arm64` `linux-x64` 跨平台支持
 
 ## [1.0.4] - 2026-05-05
 
@@ -43,7 +46,9 @@
 
 [语义化版本]: https://semver.org
 
-[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.0.0...HEAD
+[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.1.0...HEAD
+
+[2.1.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.0.0...v2.1.0
 
 [2.0.0]: https://github.com/GarthTB/GarthImgLab/compare/v1.0.4...v2.0.0
 

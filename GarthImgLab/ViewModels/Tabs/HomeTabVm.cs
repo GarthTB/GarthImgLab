@@ -34,7 +34,9 @@ public sealed partial class HomeTabVm: TabVm {
             Pc.Clear();
     }
 
-    public void AddPathAsync(string path) => Paths.Add(path);
+    public void AddPath(string path) {
+        if (!Paths.Contains(path)) Paths.Add(path);
+    }
 
     [RelayCommand(CanExecute = nameof(HasSelPath))]
     private async Task RemPathAsync() {
