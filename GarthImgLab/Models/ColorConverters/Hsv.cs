@@ -36,32 +36,14 @@ public readonly struct Hsv: IColorSpace<Hsv> {
         var x = c * (1 - Abs(h / 60 % 2 - 1));
         var m = v - c;
 
-        double r, g, b;
-        if (h < 60) {
-            r = c;
-            g = x;
-            b = 0;
-        } else if (h < 120) {
-            r = x;
-            g = c;
-            b = 0;
-        } else if (h < 180) {
-            r = 0;
-            g = c;
-            b = x;
-        } else if (h < 240) {
-            r = 0;
-            g = x;
-            b = c;
-        } else if (h < 300) {
-            r = x;
-            g = 0;
-            b = c;
-        } else {
-            r = c;
-            g = 0;
-            b = x;
-        }
+        var (r, g, b) = h switch {
+            < 60 => (c, x, 0d),
+            < 120 => (x, c, 0),
+            < 180 => (0, c, x),
+            < 240 => (0, x, c),
+            < 300 => (x, 0, c),
+            _ => (c, 0, x)
+        };
 
         return (r + m, g + m, b + m);
     }

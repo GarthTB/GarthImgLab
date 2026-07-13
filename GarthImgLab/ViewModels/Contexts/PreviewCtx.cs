@@ -13,6 +13,7 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
     private Img? _bef, _aft;
     private Bitmap? _befBmp, _aftBmp;
     private CTS _befCts = new(), _aftCts = new();
+    private Task _loadBefTask = Task.CompletedTask;
 
     public IImage? DisplayImg =>
         _enabled
@@ -24,6 +25,7 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         DisposeImg(ref _bef, ref _befBmp);
         CancelAndGetNewCt(ref _aftCts);
         DisposeImg(ref _aft, ref _aftBmp);
+        _loadBefTask = Task.CompletedTask;
         OnPropertyChanged(nameof(DisplayImg));
     }
 
@@ -39,35 +41,18 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         OnPropertyChanged(nameof(DisplayImg));
     }
 
-    public async Task LoadBefAsync(string path) {
-        if (!_active) return;
+    public Task LoadBefAsync(string path) {
+        if (!_active) return Task.CompletedTask;
         var ct = CancelAndGetNewCt(ref _befCts);
         CancelAndGetNewCt(ref _aftCts);
-        Img? bef = null;
-        Bitmap? bmp = null;
-        try {
-            bef = new();
-            await bef.ReadAsync(path, ct);
-            await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
-            bmp = await ToBmpAsync(bef, ct);
-            await Dispatcher.UIThread.InvokeAsync(() => {
-                ct.ThrowIfCancellationRequested();
-                DisposeImg(ref _bef, ref _befBmp);
-                DisposeImg(ref _aft, ref _aftBmp);
-                _bef = bef;
-                _befBmp = bmp;
-                OnPropertyChanged(nameof(DisplayImg));
-            });
-        } catch (Exception ex) {
-            bef?.Dispose();
-            bmp?.Dispose();
-            if (ex is not OCEx) Clear();
-        }
+        _loadBefTask = LoadBefCoreAsync(path, ct);
+        return _loadBefTask;
     }
 
     public async Task UpdateAftAsync(IReadOnlyList<IFx> fxs) {
         if (!_active) return;
         var ct = CancelAndGetNewCt(ref _aftCts);
+        try { await _loadBefTask.WaitAsync(ct); } catch { return; }
         if (_bef is null) return;
         Img? aft = null;
         Bitmap? bmp = null;
@@ -96,6 +81,29 @@ public sealed class PreviewCtx: ObservableObject, IPreviewCtx {
         } catch {
             aft?.Dispose();
             bmp?.Dispose();
+        }
+    }
+
+    private async Task LoadBefCoreAsync(string path, CT ct) {
+        Img? bef = null;
+        Bitmap? bmp = null;
+        try {
+            bef = new();
+            await bef.ReadAsync(path, ct);
+            await Task.Run(() => bef.ToThumb(ThumbSize, ct), ct);
+            bmp = await ToBmpAsync(bef, ct);
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                ct.ThrowIfCancellationRequested();
+                DisposeImg(ref _bef, ref _befBmp);
+                DisposeImg(ref _aft, ref _aftBmp);
+                _bef = bef;
+                _befBmp = bmp;
+                OnPropertyChanged(nameof(DisplayImg));
+            });
+        } catch (Exception ex) {
+            bef?.Dispose();
+            bmp?.Dispose();
+            if (ex is not OCEx) Clear();
         }
     }
 
