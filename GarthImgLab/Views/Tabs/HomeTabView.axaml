@@ -5,10 +5,12 @@
     x:DataType="vm:HomeTabVm">
     <Grid Margin="16"
         RowDefinitions="*,14,*">
-        <ListBox Width="600"
+        <ListBox x:Name="ImgList"
+            Width="600"
             Height="256"
             ItemsSource="{Binding Paths, Mode=OneTime}"
-            SelectedItem="{Binding SelPath}"/>
+            SelectedItem="{Binding SelPath}"
+            DragDrop.AllowDrop="True"/>
         <Grid Grid.Row="2"
             ColumnDefinitions="*,14,*,14,*,14,*,14,*,14,*">
             <Button Content="添加"
