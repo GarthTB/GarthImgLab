@@ -14,7 +14,7 @@ public sealed class ImgExtTests {
 
         Action f = id switch {
             0 => () => img.ToThumb(512, cts.Token),
-            1 => () => img.MapPixel(static p => ((ushort*)p)[0] = 0, cts.Token),
+            1 => () => img.MapPx(static p => ((ushort*)p)[0] = 0, cts.Token),
             _ => throw new UnreachableException()
         };
 
@@ -52,7 +52,7 @@ public sealed class ImgExtTests {
         using MagickImage img = new(MagickColors.Red, 64, 32);
         var cnt = 0;
 
-        img.MapPixel(_ => Interlocked.Increment(ref cnt), CancellationToken.None);
+        img.MapPx(_ => Interlocked.Increment(ref cnt), CancellationToken.None);
 
         Equal(2048, cnt);
     }
@@ -65,7 +65,7 @@ public sealed class ImgExtTests {
         var sign = img.Signature;
         img.RemoveAttribute("signature");
 
-        Throws<InvalidOperationException>(() => img.MapPixel(
+        Throws<InvalidOperationException>(() => img.MapPx(
             static p => ((ushort*)p)[0] = 0,
             CancellationToken.None));
 

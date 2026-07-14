@@ -11,7 +11,7 @@ public sealed partial class ColorTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
     public override TabTag Tag => TabTag.色彩;
 
     protected override IReadOnlyList<IFx> Fxs => [
-        new Saturator(SelMode, CGain, RGain, GGain, BGain)
+        new RgbMapper(SelMode, CGain, RGain, GGain, BGain)
     ];
 
     public static IReadOnlyDictionary<SaturateMode, string> SaturateModes =>

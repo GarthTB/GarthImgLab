@@ -14,12 +14,12 @@ public enum SaturateMode: byte {
     OkLrCh
 }
 
-public sealed class Saturator: IFx {
+public sealed class RgbMapper: IFx {
     private const double Max16 = 65535;
     private readonly double _cGain, _rGain, _gGain, _bGain;
     private readonly Action<nint> _proc;
 
-    public unsafe Saturator(SM mode, double cGain, double rGain, double gGain, double bGain) {
+    public unsafe RgbMapper(SM mode, double cGain, double rGain, double gGain, double bGain) {
         _cGain = cGain;
         _rGain = rGain;
         _gGain = gGain;
@@ -55,7 +55,7 @@ public sealed class Saturator: IFx {
         };
     }
 
-    public void Apply(Img img, CT ct) => img.MapPixel(_proc, ct);
+    public void Apply(Img img, CT ct) => img.MapPx(_proc, ct);
 
     private unsafe void Boost<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;

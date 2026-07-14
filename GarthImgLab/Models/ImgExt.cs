@@ -14,7 +14,7 @@ public static class ImgExt {
             img.Resize(w2, 0);
         }
 
-        public void MapPixel(Action<nint> f, CT ct) {
+        public void MapPx(Action<nint> f, CT ct) {
             if (img.ColorSpace != ColorSpace.sRGB) throw new OpEx("不支持此色空间");
             ct.ThrowIfCancellationRequested();
 
