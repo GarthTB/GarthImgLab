@@ -7,7 +7,11 @@ using static Math;
 public readonly struct Hsv: IColorSpace<Hsv> {
     public static double GetCusp(double l, double h) => 1;
 
-    public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
+    public static (double L, double C, double H) FromLinearSRgb(double r, double g, double b) {
+        r = SRgb.LinearToSRgb(r);
+        g = SRgb.LinearToSRgb(g);
+        b = SRgb.LinearToSRgb(b);
+
         var max = Max(r, Max(g, b));
         var min = Min(r, Min(g, b));
         var c = max - min;
@@ -23,16 +27,15 @@ public readonly struct Hsv: IColorSpace<Hsv> {
             if (h < 0) h += 360;
         }
 
-        var s = max == 0
-            ? 0
-            : c / max;
-        return (max, s, h);
+        if (max > 0) c /= max;
+        return (max, c, h);
     }
 
-    public static (double R, double G, double B) ToSRgb(double v, double s, double h) {
+    public static (double R, double G, double B) ToLinearSRgb(double v, double s, double h) {
         h %= 360;
         if (h < 0) h += 360;
         var c = v * s;
+
         var x = c * (1 - Abs(h / 60 % 2 - 1));
         var m = v - c;
 
@@ -45,6 +48,10 @@ public readonly struct Hsv: IColorSpace<Hsv> {
             _ => (c, 0, x)
         };
 
-        return (r + m, g + m, b + m);
+        r = SRgb.SRgbToLinear(r + m);
+        g = SRgb.SRgbToLinear(g + m);
+        b = SRgb.SRgbToLinear(b + m);
+
+        return (r, g, b);
     }
 }

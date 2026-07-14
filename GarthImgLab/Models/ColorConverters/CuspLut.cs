@@ -17,12 +17,12 @@ public static class CuspLut {
     private static double FindCusp<T>(double l, double h, double maxC) where T: IColorSpace<T> {
         const double loLim = -1e-4, hiLim = 1.0001;
         double lo = 0, hi = maxC;
-        var (r, g, b) = T.ToSRgb(l, hi, h);
+        var (r, g, b) = T.ToLinearSRgb(l, hi, h);
         if (r is > loLim and < hiLim && g is > loLim and < hiLim && b is > loLim and < hiLim)
             return hi;
         for (var i = 0; i < 20; i++) {
             var mid = .5 * (lo + hi);
-            (r, g, b) = T.ToSRgb(l, mid, h);
+            (r, g, b) = T.ToLinearSRgb(l, mid, h);
             if (r is > loLim and < hiLim && g is > loLim and < hiLim && b is > loLim and < hiLim)
                 lo = mid;
             else

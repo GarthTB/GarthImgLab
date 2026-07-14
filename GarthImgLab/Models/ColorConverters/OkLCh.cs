@@ -1,20 +1,15 @@
 namespace GarthImgLab.Models.ColorConverters;
 
 using static Math;
-using static SRgb;
 
 public readonly struct OkLCh: IColorSpace<OkLCh> {
-    private static readonly double[] Cusps = CuspLut.Build<OkLCh>(1, FromSRgb(1, 0, 1).C);
+    private static readonly double[] Cusps = CuspLut.Build<OkLCh>(1, FromLinearSRgb(1, 0, 1).C);
     public static double GetCusp(double l, double h) => CuspLut.Sample(Cusps, 1, l, h);
 
-    public static (double L, double C, double H) FromSRgb(double r, double g, double b) {
-        var lr = SRgbToLinear(r);
-        var lg = SRgbToLinear(g);
-        var lb = SRgbToLinear(b);
-
-        var l = 0.41222147014600025 * lr + .53633253814027138 * lg + .05144599335177303 * lb;
-        var m = 0.21190349584501836 * lr + .68069955068061472 * lg + .10739695354033429 * lb;
-        var s = .088302459229775782 * lr + .28171883918779955 * lg + .62997870167877923 * lb;
+    public static (double L, double C, double H) FromLinearSRgb(double r, double g, double b) {
+        var l = 0.41222147014600025 * r + .53633253814027138 * g + .05144599335177303 * b;
+        var m = 0.21190349584501836 * r + .68069955068061472 * g + .10739695354033429 * b;
+        var s = .088302459229775782 * r + .28171883918779955 * g + .62997870167877923 * b;
 
         var lc = Cbrt(l);
         var mc = Cbrt(m);
@@ -31,7 +26,7 @@ public readonly struct OkLCh: IColorSpace<OkLCh> {
         return (okL, c, h);
     }
 
-    public static (double R, double G, double B) ToSRgb(double okL, double c, double h) {
+    public static (double R, double G, double B) ToLinearSRgb(double okL, double c, double h) {
         var hRad = h * (PI / 180);
         var okA = c * Cos(hRad);
         var okB = c * Sin(hRad);
@@ -44,10 +39,10 @@ public readonly struct OkLCh: IColorSpace<OkLCh> {
         var m = mc * mc * mc;
         var s = sc * sc * sc;
 
-        var lr = +4.07674162959401800 * l - 3.3077115392580612 * m + .23096990318210434 * s;
-        var lg = -1.26843797134654460 * l + 2.6097573492876887 * m - .34131937600265722 * s;
-        var lb = -.004196076249935685 * l - 0.7034186179359363 * m + 1.7076146940746117 * s;
+        var r = +4.07674162959401800 * l - 3.3077115392580612 * m + .23096990318210434 * s;
+        var g = -1.26843797134654460 * l + 2.6097573492876887 * m - .34131937600265722 * s;
+        var b = -.004196076249935685 * l - 0.7034186179359363 * m + 1.7076146940746117 * s;
 
-        return (LinearToSRgb(lr), LinearToSRgb(lg), LinearToSRgb(lb));
+        return (r, g, b);
     }
 }
