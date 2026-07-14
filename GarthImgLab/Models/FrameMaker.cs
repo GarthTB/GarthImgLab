@@ -11,7 +11,7 @@ public sealed class FrameMaker(double ltrRatio, double bRatio, double rcRatio, M
 
     private void RoundCorner(Img img, CT ct) {
         uint w = img.Width, h = img.Height;
-        var r = rcRatio * Math.Min(w, h);
+        var r = .5 * rcRatio * Math.Max(w, h);
         if (r == 0 || c.A == 0) return;
         ct.ThrowIfCancellationRequested();
 

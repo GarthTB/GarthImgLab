@@ -45,7 +45,7 @@ public sealed partial class FrameTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
 
     [ObservableProperty] public partial double LtrRatio { get; set; } = .03;
     [ObservableProperty] public partial double BRatio { get; set; } = .06;
-    [ObservableProperty] public partial double RcRatio { get; set; } = .03;
+    [ObservableProperty] public partial double RcRatio { get; set; } = .05;
     [ObservableProperty] public partial double TextRatio { get; set; } = .36;
     [ObservableProperty] public partial string FrameColor { get; set; } = "#080808";
     [ObservableProperty] public partial string TextColor { get; set; } = "#B88E00";

@@ -27,18 +27,30 @@
                 Value="Stretch"/>
         </Style>
         <Style Selector="NumericUpDown">
+            <Setter Property="FormatString"
+                Value="0.####"/>
             <Setter Property="HorizontalContentAlignment"
                 Value="Center"/>
-        </Style>
-        <Style Selector="Slider">
+            <Setter Property="Increment"
+                Value=".01"/>
             <Setter Property="Maximum"
                 Value="1"/>
+            <Setter Property="Minimum"
+                Value="0"/>
+        </Style>
+        <Style Selector="Slider">
+            <Setter Property="IsSnapToTickEnabled"
+                Value="True"/>
+            <Setter Property="LargeChange"
+                Value=".1"/>
+            <Setter Property="Maximum"
+                Value="1"/>
+            <Setter Property="SmallChange"
+                Value=".01"/>
             <Setter Property="TickFrequency"
                 Value=".05"/>
             <Setter Property="TickPlacement"
                 Value="TopLeft"/>
-            <Setter Property="IsSnapToTickEnabled"
-                Value="True"/>
         </Style>
     </Application.Styles>
     <Application.DataTemplates>

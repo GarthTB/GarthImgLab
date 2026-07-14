@@ -12,7 +12,6 @@
             SelectedItem="{Binding SelOption}"/>
         <NumericUpDown Grid.Column="4"
             InnerLeftContent="质量"
-            Minimum="0"
             Maximum="100"
             FormatString="0"
             Value="{Binding Quality}"/>

@@ -16,14 +16,14 @@ public enum SaturateMode: byte {
 
 public sealed class RgbMapper: IFx {
     private const double Max16 = 65535;
-    private readonly double _cGain, _rGain, _gGain, _bGain;
+    private readonly double _cGain;
+    private readonly double[] _gainParams, _mixParams;
     private readonly Action<nint> _proc;
 
-    public unsafe RgbMapper(SM mode, double cGain, double rGain, double gGain, double bGain) {
+    public unsafe RgbMapper(SM mode, double cGain, double[] gainParams, double[] mixParams) {
         _cGain = cGain;
-        _rGain = rGain;
-        _gGain = gGain;
-        _bGain = bGain;
+        _gainParams = gainParams;
+        _mixParams = mixParams;
         _proc = cGain switch {
             > 0 => mode switch {
                 SM.HSV => Boost<Hsv>,
@@ -45,9 +45,10 @@ public sealed class RgbMapper: IFx {
             },
             _ => p => {
                 var rgb = (ushort*)p;
-                var r = SRgb.SRgbToLinear(rgb[0] / Max16) * _rGain;
-                var g = SRgb.SRgbToLinear(rgb[1] / Max16) * _gGain;
-                var b = SRgb.SRgbToLinear(rgb[2] / Max16) * _bGain;
+                var r = SRgb.SRgbToLinear(rgb[0] / Max16);
+                var g = SRgb.SRgbToLinear(rgb[1] / Max16);
+                var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+                GainAndMix(ref r, ref g, ref b);
                 rgb[0] = (ushort)(SRgb.LinearToSRgb(r) * Max16 + .5);
                 rgb[1] = (ushort)(SRgb.LinearToSRgb(g) * Max16 + .5);
                 rgb[2] = (ushort)(SRgb.LinearToSRgb(b) * Max16 + .5);
@@ -57,12 +58,23 @@ public sealed class RgbMapper: IFx {
 
     public void Apply(Img img, CT ct) => img.MapPx(_proc, ct);
 
+    private void GainAndMix(ref double r, ref double g, ref double b) {
+        var r0 = r * _gainParams[0];
+        var g0 = g * _gainParams[1];
+        var b0 = b * _gainParams[2];
+        r = r0 * _mixParams[0] + g0 * _mixParams[1] + b0 * _mixParams[2];
+        g = r0 * _mixParams[3] + g0 * _mixParams[4] + b0 * _mixParams[5];
+        b = r0 * _mixParams[6] + g0 * _mixParams[7] + b0 * _mixParams[8];
+    }
+
     private unsafe void Boost<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;
 
-        var r = SRgb.SRgbToLinear(rgb[0] / Max16) * _rGain;
-        var g = SRgb.SRgbToLinear(rgb[1] / Max16) * _gGain;
-        var b = SRgb.SRgbToLinear(rgb[2] / Max16) * _bGain;
+        var r = SRgb.SRgbToLinear(rgb[0] / Max16);
+        var g = SRgb.SRgbToLinear(rgb[1] / Max16);
+        var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+
+        GainAndMix(ref r, ref g, ref b);
 
         var (l, c, h) = T.FromLinearSRgb(r, g, b);
 
@@ -97,9 +109,11 @@ public sealed class RgbMapper: IFx {
     private unsafe void Reduce<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;
 
-        var r = SRgb.SRgbToLinear(rgb[0] / Max16) * _rGain;
-        var g = SRgb.SRgbToLinear(rgb[1] / Max16) * _gGain;
-        var b = SRgb.SRgbToLinear(rgb[2] / Max16) * _bGain;
+        var r = SRgb.SRgbToLinear(rgb[0] / Max16);
+        var g = SRgb.SRgbToLinear(rgb[1] / Max16);
+        var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+
+        GainAndMix(ref r, ref g, ref b);
 
         var (l, c, h) = T.FromLinearSRgb(r, g, b);
         c *= 1 + _cGain;
