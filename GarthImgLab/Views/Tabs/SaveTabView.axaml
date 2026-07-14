@@ -4,7 +4,7 @@
     x:Class="GarthImgLab.Views.Tabs.SaveTabView"
     x:DataType="vm:SaveTabVm">
     <Grid Margin="16"
-        ColumnDefinitions="100,14,100,14,120">
+        ColumnDefinitions="86,14,102,14,116">
         <ComboBox ItemsSource="{Binding Formats, Mode=OneTime}"
             SelectedItem="{Binding SelFormat}"/>
         <ComboBox Grid.Column="2"

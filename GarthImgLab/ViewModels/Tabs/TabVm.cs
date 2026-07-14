@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Contexts;
 using Models;
 
-public enum TabTag: byte { 主页, 饱和度, 边框, 保存 }
+public enum TabTag: byte { 主页, 色彩, 边框, 保存 }
 
 public abstract class TabVm: ObservableObject {
     public abstract TabTag Tag { get; }

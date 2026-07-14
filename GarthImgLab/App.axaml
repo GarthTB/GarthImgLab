@@ -30,13 +30,23 @@
             <Setter Property="HorizontalContentAlignment"
                 Value="Center"/>
         </Style>
+        <Style Selector="Slider">
+            <Setter Property="Maximum"
+                Value="1"/>
+            <Setter Property="TickFrequency"
+                Value=".05"/>
+            <Setter Property="TickPlacement"
+                Value="TopLeft"/>
+            <Setter Property="IsSnapToTickEnabled"
+                Value="True"/>
+        </Style>
     </Application.Styles>
     <Application.DataTemplates>
         <DataTemplate DataType="tabvm:HomeTabVm">
             <tabv:HomeTabView/>
         </DataTemplate>
-        <DataTemplate DataType="tabvm:SaturateTabVm">
-            <tabv:SaturateTabView/>
+        <DataTemplate DataType="tabvm:ColorTabVm">
+            <tabv:ColorTabView/>
         </DataTemplate>
         <DataTemplate DataType="tabvm:FrameTabVm">
             <tabv:FrameTabView/>

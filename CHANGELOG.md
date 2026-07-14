@@ -4,10 +4,12 @@
 
 ## [开发中]
 
+- **Added**: 三原色增益功能
+
 ## [2.1.0] - 2026-07-14
 
 - **Added**: 图像和图标的拖放支持
-- **Fixed**: 饱和度增强时的断层问题
+- **Fixed**: 色度增强时的断层问题
 - **Fixed**: 图像未加载完成时效果预览失效的问题
 - **Fixed**: 图像列表允许重复项的问题
 
@@ -40,7 +42,7 @@
 ## 前身
 
 - [FrameSeal] 边框工具
-- [OkSaturate] 饱和度工具
+- [OkSaturate] 色度工具
 
 [Keep a Changelog]: https://keepachangelog.com/en/2.0.0
 

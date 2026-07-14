@@ -7,7 +7,7 @@ using Tabs;
 public sealed partial class MainVm: ObservableObject {
     public MainVm() {
         var home = new HomeTabVm(Pb, Pc);
-        Tabs = [home, new SaturateTabVm(Pb, Pc), new FrameTabVm(Pb, Pc), new SaveTabVm(Pb)];
+        Tabs = [home, new ColorTabVm(Pb, Pc), new FrameTabVm(Pb, Pc), new SaveTabVm(Pb)];
         SelTab = home;
     }
 
