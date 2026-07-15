@@ -20,7 +20,7 @@
                 Content="移除"
                 Command="{Binding RemPathCommand, Mode=OneTime}"/>
             <CheckBox Grid.Column="4"
-                Content="完成时移除"
+                Content="完成后移除"
                 IsChecked="{Binding AutoRem}"/>
             <Button Grid.Column="6"
                 Content="预览"

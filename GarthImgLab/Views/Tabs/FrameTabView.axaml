@@ -22,6 +22,8 @@
                 DragDrop.AllowDrop="True"/>
             <NumericUpDown Grid.Column="6"
                 InnerLeftContent="图标间距"
+                Maximum="100"
+                Minimum="-100"
                 Increment=".1"
                 Value="{Binding Margin}"/>
         </Grid>

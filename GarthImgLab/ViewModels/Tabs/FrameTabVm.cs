@@ -29,7 +29,7 @@ public sealed partial class FrameTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
     // ReSharper disable once MemberCanBeMadeStatic.Local
     [ObservableProperty] private partial Img? Icon { get; set; }
     [ObservableProperty] public partial bool UseIcon { get; set; }
-    [ObservableProperty] public partial double Margin { get; set; } = 1.2;
+    [ObservableProperty] public partial double Margin { get; set; } = 1.25;
     [ObservableProperty] public partial string IconPath { get; set; } = "";
 
     public async Task LoadIconAsync(string path) {

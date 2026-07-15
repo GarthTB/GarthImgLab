@@ -3,7 +3,7 @@
     xmlns:vm="using:GarthImgLab.ViewModels.Tabs"
     x:Class="GarthImgLab.Views.Tabs.ColorTabView"
     x:DataType="vm:ColorTabVm"
-    Width="480">
+    Width="500">
     <Grid Margin="16"
         RowDefinitions="*,14,*,14,*,14,*,14,*,14,*"
         ColumnDefinitions="*,14,*,14,*">
