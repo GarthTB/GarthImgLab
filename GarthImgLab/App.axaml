@@ -38,20 +38,6 @@
             <Setter Property="Minimum"
                 Value="0"/>
         </Style>
-        <Style Selector="Slider">
-            <Setter Property="IsSnapToTickEnabled"
-                Value="True"/>
-            <Setter Property="LargeChange"
-                Value=".1"/>
-            <Setter Property="Maximum"
-                Value="1"/>
-            <Setter Property="SmallChange"
-                Value=".01"/>
-            <Setter Property="TickFrequency"
-                Value=".1"/>
-            <Setter Property="TickPlacement"
-                Value="TopLeft"/>
-        </Style>
     </Application.Styles>
     <Application.DataTemplates>
         <DataTemplate DataType="tabvm:HomeTabVm">

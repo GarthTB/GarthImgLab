@@ -4,6 +4,11 @@
 
 ## [开发中]
 
+## [2.2.1] - 2026-07-15
+
+- **Changed**: 修改色彩参数范围限制
+- **Changed**: 优化界面布局
+
 ## [2.2.0] - 2026-07-15
 
 - **Added**: RGB 增益功能
@@ -52,7 +57,9 @@
 
 [语义化版本]: https://semver.org
 
-[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.0...HEAD
+[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.1...HEAD
+
+[2.2.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.0...v2.2.1
 
 [2.2.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.1.0...v2.2.0
 
