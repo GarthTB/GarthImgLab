@@ -16,6 +16,8 @@ public readonly struct OkLrCh: IColorSpace<OkLrCh> {
         return (toe, c, h);
     }
 
-    public static (double R, double G, double B) ToLinearSRgb(double l, double c, double h) =>
-        OkLCh.ToLinearSRgb((l * l + K1 * l) / (K3 * (l + K2)), c, h);
+    public static (double R, double G, double B) ToLinearSRgb(double l, double c, double h) {
+        l = (l * l + K1 * l) / (K3 * (l + K2));
+        return OkLCh.ToLinearSRgb(l, c, h);
+    }
 }

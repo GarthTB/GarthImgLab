@@ -11,6 +11,7 @@ public enum SaturateMode: byte {
     CIELCh,
     JzCzhz,
     OkLCh,
+    OkLChPlus,
     OkLrCh
 }
 
@@ -31,6 +32,7 @@ public sealed class RgbMapper: IFx {
                 SM.CIELCh => Boost<CieLCh>,
                 SM.JzCzhz => Boost<JzCzhz>,
                 SM.OkLCh => Boost<OkLCh>,
+                SM.OkLChPlus => Boost<OkLChPlus>,
                 SM.OkLrCh => Boost<OkLrCh>,
                 _ => throw new Never()
             },
@@ -40,6 +42,7 @@ public sealed class RgbMapper: IFx {
                 SM.CIELCh => Reduce<CieLCh>,
                 SM.JzCzhz => Reduce<JzCzhz>,
                 SM.OkLCh => Reduce<OkLCh>,
+                SM.OkLChPlus => Reduce<OkLChPlus>,
                 SM.OkLrCh => Reduce<OkLrCh>,
                 _ => throw new Never()
             },
