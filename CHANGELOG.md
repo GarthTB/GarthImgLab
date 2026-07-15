@@ -4,6 +4,8 @@
 
 ## [开发中]
 
+## [2.2.0] - 2026-07-15
+
 - **Added**: RGB 增益功能
 - **Added**: RGB 混合功能
 - **Added**: OkLCh+ 色空间
@@ -50,7 +52,9 @@
 
 [语义化版本]: https://semver.org
 
-[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.1.0...HEAD
+[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.0...HEAD
+
+[2.2.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.1.0...v2.2.0
 
 [2.1.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.0.0...v2.1.0
 
