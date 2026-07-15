@@ -4,6 +4,10 @@
 
 ## [开发中]
 
+## [2.2.2] - 2026-07-16
+
+**Fixed**: 数字上下调节器失效的问题
+
 ## [2.2.1] - 2026-07-15
 
 - **Changed**: 修改色彩参数范围限制
@@ -57,9 +61,11 @@
 
 [语义化版本]: https://semver.org
 
-[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.1...HEAD
+[开发中]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.2...HEAD
 
-[2.2.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.0...v2.2.1
+[2.2.2]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.1...v2.2.2
+
+[2.2.1]: https://github.com/GarthTB/GarthImgLab/compare/v2.2.0...v2.2.1
 
 [2.2.0]: https://github.com/GarthTB/GarthImgLab/compare/v2.1.0...v2.2.0
 
