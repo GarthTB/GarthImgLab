@@ -48,7 +48,7 @@
             <Setter Property="SmallChange"
                 Value=".01"/>
             <Setter Property="TickFrequency"
-                Value=".05"/>
+                Value=".1"/>
             <Setter Property="TickPlacement"
                 Value="TopLeft"/>
         </Style>

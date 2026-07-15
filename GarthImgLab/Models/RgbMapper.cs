@@ -2,6 +2,8 @@ namespace GarthImgLab.Models;
 
 using System.Diagnostics.CodeAnalysis;
 using ColorConverters;
+using static ColorConverters.SRgb;
+using static Math;
 using SM = SaturateMode;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -48,13 +50,13 @@ public sealed class RgbMapper: IFx {
             },
             _ => p => {
                 var rgb = (ushort*)p;
-                var r = SRgb.SRgbToLinear(rgb[0] / Max16);
-                var g = SRgb.SRgbToLinear(rgb[1] / Max16);
-                var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+                var r = SRgbToLinear(rgb[0] / Max16);
+                var g = SRgbToLinear(rgb[1] / Max16);
+                var b = SRgbToLinear(rgb[2] / Max16);
                 GainAndMix(ref r, ref g, ref b);
-                rgb[0] = (ushort)(SRgb.LinearToSRgb(r) * Max16 + .5);
-                rgb[1] = (ushort)(SRgb.LinearToSRgb(g) * Max16 + .5);
-                rgb[2] = (ushort)(SRgb.LinearToSRgb(b) * Max16 + .5);
+                rgb[0] = (ushort)(LinearToSRgb(r) * Max16 + .5);
+                rgb[1] = (ushort)(LinearToSRgb(g) * Max16 + .5);
+                rgb[2] = (ushort)(LinearToSRgb(b) * Max16 + .5);
             }
         };
     }
@@ -65,26 +67,26 @@ public sealed class RgbMapper: IFx {
         var r0 = r * _gainParams[0];
         var g0 = g * _gainParams[1];
         var b0 = b * _gainParams[2];
-        r = r0 * _mixParams[0] + g0 * _mixParams[1] + b0 * _mixParams[2];
-        g = r0 * _mixParams[3] + g0 * _mixParams[4] + b0 * _mixParams[5];
-        b = r0 * _mixParams[6] + g0 * _mixParams[7] + b0 * _mixParams[8];
+        r = Clamp(r0 * _mixParams[0] + g0 * _mixParams[1] + b0 * _mixParams[2], 0, 1);
+        g = Clamp(r0 * _mixParams[3] + g0 * _mixParams[4] + b0 * _mixParams[5], 0, 1);
+        b = Clamp(r0 * _mixParams[6] + g0 * _mixParams[7] + b0 * _mixParams[8], 0, 1);
     }
 
     private unsafe void Boost<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;
 
-        var r = SRgb.SRgbToLinear(rgb[0] / Max16);
-        var g = SRgb.SRgbToLinear(rgb[1] / Max16);
-        var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+        var r = SRgbToLinear(rgb[0] / Max16);
+        var g = SRgbToLinear(rgb[1] / Max16);
+        var b = SRgbToLinear(rgb[2] / Max16);
 
         GainAndMix(ref r, ref g, ref b);
 
         var (l, c, h) = T.FromLinearSRgb(r, g, b);
 
-        var min = Math.Min(r, Math.Min(g, b));
-        var max = Math.Max(r, Math.Max(g, b));
-        var d = 2 * Math.Min(min, 1 - max);
-        var mask = Math.Pow(d, .2);
+        var min = Min(r, Min(g, b));
+        var max = Max(r, Max(g, b));
+        var d = 2 * Min(min, 1 - max);
+        var mask = Pow(d, .2);
 
         var maxC = T.GetCusp(l, h);
         var x = c / maxC;
@@ -97,24 +99,24 @@ public sealed class RgbMapper: IFx {
         if (r < 0) r = 0;
         if (g < 0) g = 0;
         if (b < 0) b = 0;
-        max = Math.Max(r, Math.Max(g, b));
+        max = Max(r, Max(g, b));
         if (max > 1) {
             r /= max;
             g /= max;
             b /= max;
         }
 
-        rgb[0] = (ushort)(SRgb.LinearToSRgb(r) * Max16 + .5);
-        rgb[1] = (ushort)(SRgb.LinearToSRgb(g) * Max16 + .5);
-        rgb[2] = (ushort)(SRgb.LinearToSRgb(b) * Max16 + .5);
+        rgb[0] = (ushort)(LinearToSRgb(r) * Max16 + .5);
+        rgb[1] = (ushort)(LinearToSRgb(g) * Max16 + .5);
+        rgb[2] = (ushort)(LinearToSRgb(b) * Max16 + .5);
     }
 
     private unsafe void Reduce<T>(nint p) where T: struct, IColorSpace<T> {
         var rgb = (ushort*)p;
 
-        var r = SRgb.SRgbToLinear(rgb[0] / Max16);
-        var g = SRgb.SRgbToLinear(rgb[1] / Max16);
-        var b = SRgb.SRgbToLinear(rgb[2] / Max16);
+        var r = SRgbToLinear(rgb[0] / Max16);
+        var g = SRgbToLinear(rgb[1] / Max16);
+        var b = SRgbToLinear(rgb[2] / Max16);
 
         GainAndMix(ref r, ref g, ref b);
 
@@ -122,8 +124,8 @@ public sealed class RgbMapper: IFx {
         c *= 1 + _cGain;
         (r, g, b) = T.ToLinearSRgb(l, c, h);
 
-        rgb[0] = (ushort)(SRgb.LinearToSRgb(r) * Max16 + .5);
-        rgb[1] = (ushort)(SRgb.LinearToSRgb(g) * Max16 + .5);
-        rgb[2] = (ushort)(SRgb.LinearToSRgb(b) * Max16 + .5);
+        rgb[0] = (ushort)(LinearToSRgb(r) * Max16 + .5);
+        rgb[1] = (ushort)(LinearToSRgb(g) * Max16 + .5);
+        rgb[2] = (ushort)(LinearToSRgb(b) * Max16 + .5);
     }
 }
