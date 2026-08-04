@@ -24,13 +24,13 @@
         <AvaloniaResource Include="Assets\icon_48.png"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0"/>
+        <PackageReference Include="Avalonia" Version="12.1.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.1"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" Condition="'$(Configuration)'=='Debug'"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="Magick.NET-Q16-arm64" Version="14.15.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
-        <PackageReference Include="Magick.NET-Q16-x64" Version="14.15.0" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
-        <PackageReference Include="Semi.Avalonia" Version="12.1.0"/>
+        <PackageReference Include="Magick.NET-Q16-arm64" Version="14.16.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
+        <PackageReference Include="Magick.NET-Q16-x64" Version="14.16.0" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
+        <PackageReference Include="Semi.Avalonia" Version="12.1.0.1"/>
     </ItemGroup>
 </Project>

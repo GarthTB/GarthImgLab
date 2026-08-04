@@ -32,8 +32,7 @@
 
 ### macOS
 
-下载 .dmg 后双击挂载，将 `GarthImgLab.app` 拖拽到 `Applications` 即可。
-首次打开需绕过系统限制（未签名应用）：
+下载 .dmg 后双击挂载，将 `GarthImgLab.app` 拖拽到 `Applications` 即可。首次打开需绕过系统限制（未签名应用）：
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/GarthImgLab.app
