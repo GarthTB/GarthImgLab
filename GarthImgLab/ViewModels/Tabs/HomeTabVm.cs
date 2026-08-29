@@ -58,21 +58,27 @@ public sealed partial class HomeTabVm: TabVm {
             var pipeline = _pb.Build();
             var saver = _pb.Saver ?? throw new OpEx("未配置保存参数");
             List<string> done = new(Paths.Count);
-            foreach (var path in Paths) {
-                ct.ThrowIfCancellationRequested();
-                using Img img = new();
-                await img.ReadAsync(path, ct);
-                foreach (var fx in pipeline) fx.Apply(img, ct);
-                await saver.SaveAsync(img, path, ct);
-                done.Add(path);
-            }
-            if (AutoRem && done.Count > 0)
-                if (done.Any(path => !Paths.Remove(path)))
-                    throw new OpEx("UI 移除图像失败");
+
+            try { // ReSharper disable once ForCanBeConvertedToForeach 防止集合修改异常
+                for (var i = 0; i < Paths.Count; i++) {
+                    ct.ThrowIfCancellationRequested();
+                    var path = Paths[i];
+                    using Img img = new();
+                    await img.ReadAsync(path, ct);
+                    await Task.Run(
+                        () => {
+                            foreach (var fx in pipeline) fx.Apply(img, ct);
+                        },
+                        ct);
+                    await saver.SaveAsync(img, path, ct);
+                    done.Add(path);
+                }
+            } catch (OCEx) {}
+
+            if (AutoRem && done.Count > 0 && done.Any(p => !Paths.Remove(p)))
+                throw new OpEx("UI 移除图像失败");
             await MsgBox.InfoAsync($"批处理完成，共{done.Count}张图像");
-        } catch (Exception ex) {
-            if (ex is not OCEx) await ex.AlertAsync("批处理");
-        }
+        } catch (Exception ex) { await ex.AlertAsync("批处理"); }
     }
 
     #endregion 批处理
