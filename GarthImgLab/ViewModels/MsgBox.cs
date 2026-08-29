@@ -2,8 +2,8 @@ namespace GarthImgLab.ViewModels;
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Views;
+using Desktop = Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
 
 public static class MsgBox {
     public static Task InfoAsync(string msg, Window? owner = null) =>
@@ -15,8 +15,7 @@ public static class MsgBox {
     }
 
     private static Window GetTopWindow() {
-        if (Application.Current?.ApplicationLifetime is
-            not IClassicDesktopStyleApplicationLifetime { MainWindow: {} w })
+        if (Application.Current?.ApplicationLifetime is not Desktop { MainWindow: {} w })
             throw new OpEx("无法获取主窗口");
         while (w.OwnedWindows is [.., var last]) w = last;
         return w;
