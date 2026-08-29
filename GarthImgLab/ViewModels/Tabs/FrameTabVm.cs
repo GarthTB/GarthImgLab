@@ -12,7 +12,7 @@ public sealed partial class FrameTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
         new FrameMaker(LtrRatio, BRatio, RcRatio, ParseColor(FrameColor)),
         new Annotator(
             UseIcon
-                ? Icon
+                ? _icon
                 : null,
             Margin,
             LtrRatio,
@@ -26,16 +26,15 @@ public sealed partial class FrameTabVm(IPipelineBuilder pb, IPreviewCtx pc): FxT
 
     #region 图标
 
-    // ReSharper disable once MemberCanBeMadeStatic.Local
-    [ObservableProperty] private partial Img? Icon { get; set; }
+    private Img? _icon;
     [ObservableProperty] public partial bool UseIcon { get; set; }
     [ObservableProperty] public partial double Margin { get; set; } = 1.25;
     [ObservableProperty] public partial string IconPath { get; set; } = "";
 
     public async Task LoadIconAsync(string path) {
-        Icon?.Dispose();
-        Icon = new();
-        await Icon.ReadAsync(path);
+        _icon?.Dispose();
+        _icon = new();
+        await _icon.ReadAsync(path);
         IconPath = path;
     }
 

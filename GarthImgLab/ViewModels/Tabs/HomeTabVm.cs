@@ -54,25 +54,30 @@ public sealed partial class HomeTabVm: TabVm {
 
     [RelayCommand(CanExecute = nameof(HasPaths), IncludeCancelCommand = true)]
     private async Task StartBatchAsync(CT ct) {
+        HashSet<string> done = new(Paths.Count);
         try {
             var pipeline = _pb.Build();
             var saver = _pb.Saver ?? throw new OpEx("未配置保存参数");
-            List<string> done = new(Paths.Count);
-            foreach (var path in Paths) {
+            while (Paths.FirstOrDefault(p => !done.Contains(p)) is {} path) {
                 ct.ThrowIfCancellationRequested();
                 using Img img = new();
                 await img.ReadAsync(path, ct);
-                foreach (var fx in pipeline) fx.Apply(img, ct);
+                await Task.Run(
+                    () => {
+                        foreach (var fx in pipeline) fx.Apply(img, ct);
+                    },
+                    ct);
                 await saver.SaveAsync(img, path, ct);
                 done.Add(path);
+                if (AutoRem) Paths.Remove(path);
             }
-            if (AutoRem && done.Count > 0)
-                if (done.Any(path => !Paths.Remove(path)))
-                    throw new OpEx("UI 移除图像失败");
             await MsgBox.InfoAsync($"批处理完成，共{done.Count}张图像");
-        } catch (Exception ex) {
-            if (ex is not OCEx) await ex.AlertAsync("批处理");
-        }
+        } catch (OCEx) {
+            var msg = done.Count > 0
+                ? $"已处理{done.Count}张图像"
+                : "未处理图像";
+            await MsgBox.InfoAsync($"批处理打断，{msg}");
+        } catch (Exception ex) { await ex.AlertAsync("批处理"); }
     }
 
     #endregion 批处理

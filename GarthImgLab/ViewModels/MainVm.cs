@@ -5,16 +5,14 @@ using Contexts;
 using Tabs;
 
 public sealed partial class MainVm: ObservableObject {
+    private readonly PipelineBuilder _pb = new();
+    private readonly PreviewCtx _pc = new();
+
     public MainVm() {
-        var home = new HomeTabVm(Pb, Pc);
-        Tabs = [home, new ColorTabVm(Pb, Pc), new FrameTabVm(Pb, Pc), new SaveTabVm(Pb)];
+        var home = new HomeTabVm(_pb, _pc);
+        Tabs = [home, new ColorTabVm(_pb, _pc), new FrameTabVm(_pb, _pc), new SaveTabVm(_pb)];
         SelTab = home;
     }
-
-    private PipelineBuilder Pb { get; } = new();
-    private PreviewCtx Pc { get; } = new();
-
-    #region 选项卡
 
     public IReadOnlyList<TabVm> Tabs { get; }
     [ObservableProperty] public partial TabVm SelTab { get; set; }
@@ -23,8 +21,6 @@ public sealed partial class MainVm: ObservableObject {
         if (value is FxTabVm tab)
             tab.OnActivated();
         else
-            Pc.SetEnabled(false);
+            _pc.SetEnabled(false);
     }
-
-    #endregion 选项卡
 }
