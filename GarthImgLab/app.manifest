@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Avalonia 模板生成，勿移除 -->
+<!-- 勿移除：可能影响透明背景和控件效果 -->
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
     <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
         <application>

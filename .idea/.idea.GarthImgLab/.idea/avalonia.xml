@@ -4,13 +4,9 @@
     <option name="projectPerEditor">
       <map>
         <entry key="GarthImgLab/App.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/MainWindow.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/MsgWindow.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/PreviewWindow.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/Tabs/ColorTabView.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/Tabs/FrameTabView.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/Tabs/HomeTabView.axaml" value="GarthImgLab/GarthImgLab.csproj" />
-        <entry key="GarthImgLab/Views/Tabs/SaveTabView.axaml" value="GarthImgLab/GarthImgLab.csproj" />
+        <entry key="GarthImgLab/Views/MainWin.axaml" value="GarthImgLab/GarthImgLab.csproj" />
+        <entry key="GarthImgLab/Views/MsgWin.axaml" value="GarthImgLab/GarthImgLab.csproj" />
+        <entry key="GarthImgLab/Views/PreviewWin.axaml" value="GarthImgLab/GarthImgLab.csproj" />
       </map>
     </option>
   </component>

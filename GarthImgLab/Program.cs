@@ -2,13 +2,13 @@
 
 using Avalonia;
 
-internal static class Program {
+file static class Program {
     [STAThread]
     public static void Main(string[] args) =>
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
-    /// <summary> 设计器用 </summary>
-    private static AppBuilder BuildAvaloniaApp() =>
+    // 勿移除：设计器用
+    static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
 #if DEBUG

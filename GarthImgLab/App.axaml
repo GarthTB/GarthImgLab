@@ -1,66 +1,14 @@
 <Application xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:semi="https://irihi.tech/semi"
-    xmlns:tabv="using:GarthImgLab.Views.Tabs"
-    xmlns:tabvm="using:GarthImgLab.ViewModels.Tabs"
     x:Class="GarthImgLab.App">
     <Application.Styles>
         <semi:SemiTheme/>
-        <Style Selector="Button">
-            <Setter Property="HorizontalAlignment"
-                Value="Stretch"/>
-            <Setter Property="VerticalAlignment"
-                Value="Stretch"/>
-        </Style>
-        <Style Selector="CheckBox">
-            <Setter Property="HorizontalAlignment"
-                Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment"
-                Value="Center"/>
-            <Setter Property="VerticalAlignment"
-                Value="Center"/>
-        </Style>
-        <Style Selector="ComboBox">
-            <Setter Property="HorizontalAlignment"
-                Value="Stretch"/>
-            <Setter Property="VerticalAlignment"
-                Value="Stretch"/>
-        </Style>
-        <Style Selector="NumericUpDown">
-            <Setter Property="FormatString"
-                Value="0.####"/>
-            <Setter Property="HorizontalContentAlignment"
-                Value="Center"/>
-            <Setter Property="Increment"
-                Value=".01"/>
-            <Setter Property="Maximum"
-                Value="1"/>
-            <Setter Property="Minimum"
-                Value="0"/>
+        <Style Selector="Window">
+            <Setter Property="Padding" Value="0,32,0,0"/>
+            <Setter Property="Background" Value="#0000"/>
+            <Setter Property="ExtendClientAreaToDecorationsHint" Value="True"/>
+            <Setter Property="TransparencyLevelHint" Value="Mica"/>
         </Style>
     </Application.Styles>
-    <Application.DataTemplates>
-        <DataTemplate DataType="tabvm:HomeTabVm">
-            <tabv:HomeTabView/>
-        </DataTemplate>
-        <DataTemplate DataType="tabvm:ColorTabVm">
-            <tabv:ColorTabView/>
-        </DataTemplate>
-        <DataTemplate DataType="tabvm:FrameTabVm">
-            <tabv:FrameTabView/>
-        </DataTemplate>
-        <DataTemplate DataType="tabvm:SaveTabVm">
-            <tabv:SaveTabView/>
-        </DataTemplate>
-    </Application.DataTemplates>
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="WindowDefaultBackground"
-                        Color="#A000"/>
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
 </Application>

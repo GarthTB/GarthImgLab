@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="GarthImgLab.Views.MsgWin"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterOwner">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollViewer>
+            <SelectableTextBlock x:Name="Msg"
+                Padding="12,4"
+                TextWrapping="Wrap"/>
+        </ScrollViewer>
+        <Button x:Name="Btn"
+            Grid.Row="1"
+            Margin="16,8,16,15"
+            HorizontalAlignment="Right"
+            Content="知道了"
+            Theme="{DynamicResource SolidButton}"/>
+    </Grid>
+</Window>

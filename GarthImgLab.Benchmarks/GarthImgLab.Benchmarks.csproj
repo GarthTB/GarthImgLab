@@ -1,23 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <TargetFramework>net11.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <InvariantGlobalization>true</InvariantGlobalization>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-    <ItemGroup>
-        <Using Include="BenchmarkDotNet.Attributes"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="Data\RGB8.tif" CopyToOutputDirectory="PreserveNewest" Link="RGB8.tif"/>
-        <None Include="Data\RGB16.tif" CopyToOutputDirectory="PreserveNewest" Link="RGB16.tif"/>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.16.0-preview.1"/>
-    </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\GarthImgLab\GarthImgLab.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.16.0-preview.2"/>
     </ItemGroup>
 </Project>

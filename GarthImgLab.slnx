@@ -1,19 +1,9 @@
 <Solution>
-    <Folder Name="/CI/">
-        <File Path=".github/workflows/release.yml"/>
-        <File Path=".github/workflows/test.yml"/>
-    </Folder>
-    <Folder Name="/Configs/">
-        <File Path=".gitattributes"/>
-        <File Path=".gitignore"/>
-        <File Path="global.json"/>
-    </Folder>
+    <Project Path="GarthImgLab.Benchmarks/GarthImgLab.Benchmarks.csproj"/>
+    <Project Path="GarthImgLab.Tests/GarthImgLab.Tests.csproj"/>
+    <Project Path="GarthImgLab/GarthImgLab.csproj"/>
     <Folder Name="/Docs/">
         <File Path="CHANGELOG.md"/>
         <File Path="README.md"/>
     </Folder>
-    <Project Path="GarthImgLab.Benchmarks/GarthImgLab.Benchmarks.csproj"/>
-    <Project Path="GarthImgLab.Tests/GarthImgLab.Tests.csproj"/>
-    <Project Path="GarthImgLab.Tools/GarthImgLab.Tools.csproj"/>
-    <Project Path="GarthImgLab/GarthImgLab.csproj"/>
 </Solution>
