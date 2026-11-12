@@ -20,19 +20,29 @@ file readonly record struct CieLab(double L, double A, double B) {
     public static CieLab FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
         var (wx, wy, wz) = Xyz.D65;
+
         var fx = F(x / wx);
         var fy = F(y / wy);
         var fz = F(z / wz);
-        return new(116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz));
+
+        var l = 116 * fy - 16;
+        var a = 500 * (fx - fy);
+        var b = 200 * (fy - fz);
+        return new(l, a, b);
     }
 
     public static Xyz ToXyz(CieLab lab) {
         var (l, a, b) = lab;
         var (wx, wy, wz) = Xyz.D65;
+
         var fy = (l + 16) / 116;
         var fx = fy + a / 500;
         var fz = fy - b / 200;
-        return new(wx * InvF(fx), wy * InvF(fy), wz * InvF(fz));
+
+        var x = wx * InvF(fx);
+        var y = wy * InvF(fy);
+        var z = wz * InvF(fz);
+        return new(x, y, z);
     }
 
     static double F(double t) =>

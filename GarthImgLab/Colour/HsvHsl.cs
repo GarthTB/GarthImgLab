@@ -7,6 +7,7 @@ readonly record struct Hsv(double H, double S, double V) {
     public static Hsv FromSrgb(SRgb rgb) {
         var (max, _, c) = MaxMinC(rgb);
         if (c == 0) return new(0, 0, max);
+
         return new(Hue(rgb, max, c), c / max, max);
     }
 
@@ -21,15 +22,17 @@ readonly record struct Hsv(double H, double S, double V) {
 readonly record struct Hsl(double H, double S, double L) {
     public static Hsl FromSrgb(SRgb rgb) {
         var (max, min, c) = MaxMinC(rgb);
-        var l = (max + min) / 2;
+        var l = .5 * (max + min);
         if (c == 0) return new(0, 0, l);
-        return new(Hue(rgb, max, c), c / (1 - Abs(2 * l - 1)), l);
+
+        var s = c / (1 - Abs(2 * l - 1));
+        return new(Hue(rgb, max, c), s, l);
     }
 
     public static SRgb ToSrgb(Hsl hsl) {
         var (h, s, l) = hsl;
         var c = (1 - Abs(2 * l - 1)) * s;
-        var min = l - c / 2;
+        var min = l - .5 * c;
         return Reconstruct(h, c, min);
     }
 }
