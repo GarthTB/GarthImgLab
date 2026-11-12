@@ -3,21 +3,28 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 readonly record struct SRgb(double R, double G, double B) {
+    const double Xr = 12831d / 3959, Yr = -329d / 214, Zr = -1974d / 3959;
+    const double Xg = -851781d / 878810, Yg = 1648619d / 878810, Zg = 36519d / 878810;
+    const double Xb = 705d / 12673, Yb = -2585d / 12673, Zb = 705d / 667;
+
+    const double Rx = 506752d / 1228815, Gx = 87881d / 245763, Bx = 12673d / 70218;
+    const double Ry = 87098d / 409605, Gy = 175762d / 245763, By = 12673d / 175545;
+    const double Rz = 7918d / 409605, Gz = 87881d / 737289, Bz = 1001167d / 1053270;
+
     public static SRgb FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
-        var lr = 3.2409699419045213 * x - 1.5373831775700935 * y - .49861076029300330 * z;
-        var lg = -.9692436362808798 * x + 1.8759675015077206 * y + .04155505740717561 * z;
-        var lb = 0.0556300796969936 * x - .20397695888897657 * y + 1.0569715142428786 * z;
+        var lr = Xr * x + Yr * y + Zr * z;
+        var lg = Xg * x + Yg * y + Zg * z;
+        var lb = Xb * x + Yb * y + Zb * z;
         return new(ToNonLinear(lr), ToNonLinear(lg), ToNonLinear(lb));
     }
 
     public static Xyz ToXyz(SRgb rgb) {
-        var (r, g, b) = rgb;
-        double lr = ToLinear(r), lg = ToLinear(g), lb = ToLinear(b);
+        double lr = ToLinear(rgb.R), lg = ToLinear(rgb.G), lb = ToLinear(rgb.B);
         return new(
-            .41239079926595950 * lr + .35758433938387796 * lg + .18048078840183430 * lb,
-            .21263900587151036 * lr + .71516867876775590 * lg + .07219231536073371 * lb,
-            .01933081871559185 * lr + .11919477979462598 * lg + .95053215224966060 * lb);
+            Rx * lr + Gx * lg + Bx * lb,
+            Ry * lr + Gy * lg + By * lb,
+            Rz * lr + Gz * lg + Bz * lb);
     }
 
     static double ToNonLinear(double v) =>
