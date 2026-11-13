@@ -7,8 +7,7 @@ readonly record struct OkLChPlus(double L, double C, double H) {
     static readonly double SigmaN = Pow(Sigma, N);
 
     public static OkLChPlus FromXyz(Xyz xyz) {
-        var (l, a, b) = OkLab.FromXyz(xyz);
-        var (c, h) = Polar.AbToCh(a, b);
+        var (l, c, h) = OkLCh.FromXyz(xyz);
 
         var lp = Pow(l, Alpha);
         var cn = Pow(c, N);
@@ -21,7 +20,6 @@ readonly record struct OkLChPlus(double L, double C, double H) {
         var l = Pow(L, 1 / Alpha);
         var c = Pow(SigmaN * C / (1 - C), 1 / N);
 
-        var (a, b) = Polar.ChToAb(c, H);
-        return new OkLab(l, a, b).ToXyz();
+        return new OkLCh(l, c, H).ToXyz();
     }
 }
