@@ -7,9 +7,8 @@ readonly record struct OkLCh(double L, double C, double H) {
         return new(l, c, h);
     }
 
-    public static Xyz ToXyz(OkLCh lch) {
-        var (l, c, h) = lch;
-        var (a, b) = Polar.ChToAb(c, h);
-        return OkLab.ToXyz(new(l, a, b));
+    public Xyz ToXyz() {
+        var (a, b) = Polar.ChToAb(C, H);
+        return new OkLab(L, a, b).ToXyz();
     }
 }

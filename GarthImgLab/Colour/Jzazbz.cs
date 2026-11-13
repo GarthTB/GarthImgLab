@@ -46,13 +46,12 @@ readonly record struct Jzazbz(double Jz, double Az, double Bz) {
         return new(j, a, b);
     }
 
-    public static Xyz ToXyz(Jzazbz jab) {
-        var (j, a, b) = jab;
-        var i = (j + D0) / (1 + D - D * (j + D0));
+    public Xyz ToXyz() {
+        var i = (Jz + D0) / (1 + D - D * (Jz + D0));
 
-        var l = i + Al * a + Bl * b;
-        var m = i + Am * a + Bm * b;
-        var s = i + As * a + Bs * b;
+        var l = i + Al * Az + Bl * Bz;
+        var m = i + Am * Az + Bm * Bz;
+        var s = i + As * Az + Bs * Bz;
 
         l = InvPq(l);
         m = InvPq(m);

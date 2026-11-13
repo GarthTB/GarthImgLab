@@ -17,13 +17,11 @@ readonly record struct OkLChPlus(double L, double C, double H) {
         return new(lp, cp, h);
     }
 
-    public static Xyz ToXyz(OkLChPlus lch) {
-        var (lp, cp, h) = lch;
+    public Xyz ToXyz() {
+        var l = Pow(L, 1 / Alpha);
+        var c = Pow(SigmaN * C / (1 - C), 1 / N);
 
-        var l = Pow(lp, 1 / Alpha);
-        var c = Pow(SigmaN * cp / (1 - cp), 1 / N);
-
-        var (a, b) = Polar.ChToAb(c, h);
-        return OkLab.ToXyz(new(l, a, b));
+        var (a, b) = Polar.ChToAb(c, H);
+        return new OkLab(l, a, b).ToXyz();
     }
 }

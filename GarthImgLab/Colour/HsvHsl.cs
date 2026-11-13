@@ -11,11 +11,9 @@ readonly record struct Hsv(double H, double S, double V) {
         return new(Hue(rgb, max, c), c / max, max);
     }
 
-    public static SRgb ToSrgb(Hsv hsv) {
-        var (h, s, max) = hsv;
-        var c = max * s;
-        var min = max - c;
-        return Reconstruct(h, c, min);
+    public SRgb ToSrgb() {
+        var c = V * S;
+        return Reconstruct(H, c, V - c);
     }
 }
 
@@ -29,11 +27,9 @@ readonly record struct Hsl(double H, double S, double L) {
         return new(Hue(rgb, max, c), s, l);
     }
 
-    public static SRgb ToSrgb(Hsl hsl) {
-        var (h, s, l) = hsl;
-        var c = (1 - Abs(2 * l - 1)) * s;
-        var min = l - .5 * c;
-        return Reconstruct(h, c, min);
+    public SRgb ToSrgb() {
+        var c = (1 - Abs(2 * L - 1)) * S;
+        return Reconstruct(H, c, L - .5 * c);
     }
 }
 
@@ -57,9 +53,9 @@ file static class Hexagon {
     }
 
     public static SRgb Reconstruct(double h, double c, double min) {
-        h /= 60;
-        var x = c * (1 - Abs(h % 2 - 1));
-        var (r, g, b) = h switch {
+        var seg = h / 60;
+        var x = c * (1 - Abs(seg % 2 - 1));
+        var (r, g, b) = seg switch {
             < 1 => (c, x, 0d),
             < 2 => (x, c, 0),
             < 3 => (0, c, x),

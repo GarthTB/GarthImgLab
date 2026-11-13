@@ -5,20 +5,18 @@ readonly record struct OkLrCh(double L, double C, double H) {
 
     public static OkLrCh FromXyz(Xyz xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
+        var (c, h) = Polar.AbToCh(a, b);
 
         var d = K3 * l - K1;
         var lr = .5 * (d + Math.Sqrt(d * d + 4 * K2 * K3 * l));
 
-        var (c, h) = Polar.AbToCh(a, b);
         return new(lr, c, h);
     }
 
-    public static Xyz ToXyz(OkLrCh lch) {
-        var (lr, c, h) = lch;
+    public Xyz ToXyz() {
+        var l = L * (L + K1) / K3 / (L + K2);
 
-        var l = lr * (lr + K1) / K3 / (lr + K2);
-
-        var (a, b) = Polar.ChToAb(c, h);
-        return OkLab.ToXyz(new(l, a, b));
+        var (a, b) = Polar.ChToAb(C, H);
+        return new OkLab(l, a, b).ToXyz();
     }
 }

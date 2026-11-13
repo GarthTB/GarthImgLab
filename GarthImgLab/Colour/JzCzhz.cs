@@ -7,9 +7,8 @@ readonly record struct JzCzhz(double J, double C, double H) {
         return new(j, c, h);
     }
 
-    public static Xyz ToXyz(JzCzhz jch) {
-        var (j, c, h) = jch;
-        var (a, b) = Polar.ChToAb(c, h);
-        return Jzazbz.ToXyz(new(j, a, b));
+    public Xyz ToXyz() {
+        var (a, b) = Polar.ChToAb(C, H);
+        return new Jzazbz(J, a, b).ToXyz();
     }
 }

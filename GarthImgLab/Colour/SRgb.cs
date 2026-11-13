@@ -19,8 +19,8 @@ readonly record struct SRgb(double R, double G, double B) {
         return new(ToNonLinear(lr), ToNonLinear(lg), ToNonLinear(lb));
     }
 
-    public static Xyz ToXyz(SRgb rgb) {
-        double lr = ToLinear(rgb.R), lg = ToLinear(rgb.G), lb = ToLinear(rgb.B);
+    public Xyz ToXyz() {
+        double lr = ToLinear(R), lg = ToLinear(G), lb = ToLinear(B);
         return new(
             Rx * lr + Gx * lg + Bx * lb,
             Ry * lr + Gy * lg + By * lb,

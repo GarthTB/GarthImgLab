@@ -18,12 +18,10 @@ readonly record struct OkLab(double L, double A, double B) {
             0.0259040424655478 * l + 0.7827717124575296 * m - .8086757549230774 * s);
     }
 
-    public static Xyz ToXyz(OkLab lab) {
-        var (okl, a, b) = lab;
-
-        var l = okl + .3963377773761749 * a + 0.2158037573099136 * b;
-        var m = okl - .1055613458156586 * a - 0.0638541728258133 * b;
-        var s = okl - .0894841775298119 * a - 1.2914855480194092 * b;
+    public Xyz ToXyz() {
+        var l = L + .3963377773761749 * A + 0.2158037573099136 * B;
+        var m = L - .1055613458156586 * A - 0.0638541728258133 * B;
+        var s = L - .0894841775298119 * A - 1.2914855480194092 * B;
 
         l = l * l * l;
         m = m * m * m;

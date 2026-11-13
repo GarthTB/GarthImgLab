@@ -20,7 +20,7 @@ static class Polar {
 
     public static double NormHue(double h) {
         h %= 360;
-        while (h < 0) h += 360;
+        if (h < 0) h += 360;
         return h;
     }
 }
