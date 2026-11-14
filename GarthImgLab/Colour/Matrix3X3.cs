@@ -17,11 +17,7 @@ readonly record struct Matrix3X3(
         var c11 = M22 * M33 - M23 * M32;
         var c12 = M23 * M31 - M21 * M33;
         var c13 = M21 * M32 - M22 * M31;
-
-        var det = M11 * c11 + M12 * c12 + M13 * c13;
-        if (Math.Abs(det) < 1e-12) throw new InvalidOperationException("矩阵不可逆");
-
-        var invDet = 1 / det;
+        var invDet = 1 / (M11 * c11 + M12 * c12 + M13 * c13);
         return new(
             c11 * invDet,
             (M32 * M13 - M33 * M12) * invDet,

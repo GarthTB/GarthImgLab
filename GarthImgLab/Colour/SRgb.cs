@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 readonly record struct SRgb(double R, double G, double B) {
-    static readonly Matrix3X3 XyzToLinearRgb = new(
+    static readonly Matrix3X3 XyzToLinRgb = new(
         12831d / 3959,
         -329d / 214,
         -1974d / 3959,
@@ -14,7 +14,7 @@ readonly record struct SRgb(double R, double G, double B) {
         -2585d / 12673,
         705d / 667);
 
-    static readonly Matrix3X3 LinearRgbToXyz = new(
+    static readonly Matrix3X3 LinRgbToXyz = new(
         506752d / 1228815,
         87881d / 245763,
         12673d / 70218,
@@ -26,22 +26,21 @@ readonly record struct SRgb(double R, double G, double B) {
         1001167d / 1053270);
 
     public static SRgb FromXyz(Xyz xyz) {
-        var (lr, lg, lb) = XyzToLinearRgb.Multiply(xyz.X, xyz.Y, xyz.Z);
-        return new(ToNonLinear(lr), ToNonLinear(lg), ToNonLinear(lb));
+        var (lr, lg, lb) = XyzToLinRgb.Multiply(xyz.X, xyz.Y, xyz.Z);
+        return new(ToNonLin(lr), ToNonLin(lg), ToNonLin(lb));
     }
 
     public Xyz ToXyz() {
-        double lr = ToLinear(R), lg = ToLinear(G), lb = ToLinear(B);
-        var (x, y, z) = LinearRgbToXyz.Multiply(lr, lg, lb);
+        var (x, y, z) = LinRgbToXyz.Multiply(ToLin(R), ToLin(G), ToLin(B));
         return new(x, y, z);
     }
 
-    static double ToNonLinear(double v) =>
+    static double ToNonLin(double v) =>
         v <= .0031308
             ? v * 12.92
             : 1.055 * Pow(v, 1 / 2.4) - .055;
 
-    static double ToLinear(double v) =>
+    static double ToLin(double v) =>
         v <= .04045
             ? v / 12.92
             : Pow((v + .055) / 1.055, 2.4);

@@ -50,9 +50,9 @@ file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
 
     public static Jzazbz FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
-        x *= 100;
-        y *= 100;
-        z *= 100;
+        x *= 80;
+        y *= 80;
+        z *= 80;
 
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
@@ -73,7 +73,7 @@ file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;
 
-        return new(x / 100, y / 100, z / 100);
+        return new(x / 80, y / 80, z / 80);
     }
 
     static double Pq(double v) {

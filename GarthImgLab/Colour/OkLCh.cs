@@ -36,27 +36,7 @@ file readonly record struct OkLab(double L, double A, double B) {
         .7827717124575296,
         -.8086757549230774);
 
-    static readonly Matrix3X3 LmsToXyz = new(
-        1.2268798758459243,
-        -.5578149944602171,
-        .2813910456659647,
-        -.0405757452148008,
-        1.112286803280317,
-        -.0717110580655164,
-        -.0763729366746601,
-        -.4214933324022432,
-        1.5869240198367816);
-
-    static readonly Matrix3X3 LabToLms = new(
-        1,
-        .3963377773761749,
-        .2158037573099136,
-        1,
-        -.1055613458156586,
-        -.0638541728258133,
-        1,
-        -.0894841775298119,
-        -1.2914855480194092);
+    static readonly Matrix3X3 LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
 
     public static OkLab FromXyz(Xyz xyz) {
         var (l, m, s) = XyzToLms.Multiply(xyz.X, xyz.Y, xyz.Z);

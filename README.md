@@ -1,18 +1,18 @@
 # GarthImgLab | Garth 的图像工具
 
-[![GitHub repo](https://img.shields.io/badge/repo-GitHub-0fbf3e?logo=github)](https://github.com/GarthTB/GarthImgLab)
-[![Gitee repo](https://img.shields.io/badge/repo-Gitee-c71d23?logo=gitee)](https://gitee.com/tb0/GarthImgLab)
-[![latest release](https://img.shields.io/github/v/release/GarthTB/GarthImgLab?color=0fbf3e&label=latest&logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
-![downloads](https://img.shields.io/github/downloads/GarthTB/GarthImgLab/total?color=0fbf3e&label=downloads&logo=github)
-
-[![MIT License](https://img.shields.io/badge/License-MIT-750014)](https://mit-license.org)
-[![.NET 10](https://img.shields.io/badge/.NET-10-512bd4?logo=dotnet)](https://dotnet.microsoft.com)
-[![C# 14](https://img.shields.io/badge/C%23-14-7253dc)](https://github.com/dotnet/csharplang)
-[![AvaloniaUI 12](https://img.shields.io/badge/AvaloniaUI-12-007df9?logo=avaloniaui)](https://avaloniaui.net)
-
 ![Windows x64](https://img.shields.io/badge/Windows-x64-0078d4)
 ![macOS arm64](https://img.shields.io/badge/macOS-arm64-0088ff?logo=macos)
 ![Linux x64](https://img.shields.io/badge/Linux-x64-e95420?logo=linux)
+
+[![MIT License](https://img.shields.io/badge/MIT%20License-750014)](https://mit-license.org)
+[![latest release](https://img.shields.io/github/v/release/GarthTB/GarthImgLab?color=0fbf3e&label=latest&logo=github)](https://github.com/GarthTB/GarthImgLab/releases/latest)
+![downloads](https://img.shields.io/github/downloads/GarthTB/GarthImgLab/total?color=0fbf3e&label=downloads&logo=github)
+
+[![GitHub repo](https://img.shields.io/badge/GitHub-0fbf3e?logo=github)](https://github.com/GarthTB/GarthImgLab)
+[![Gitee repo](https://img.shields.io/badge/Gitee-c71d23?logo=gitee)](https://gitee.com/tb0/GarthImgLab)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512bd4?logo=dotnet)](https://dotnet.microsoft.com)
+[![C# 14](https://img.shields.io/badge/C%23-14-7253dc)](https://github.com/dotnet/csharplang)
+[![AvaloniaUI 12](https://img.shields.io/badge/AvaloniaUI-12-007df9?logo=avaloniaui)](https://avaloniaui.net)
 
 一个轻量 GUI 应用，用于数字摄影图像的末级非线性处理
 
