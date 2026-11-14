@@ -1,6 +1,7 @@
 namespace GarthImgLab.Colour;
 
 using static Math;
+using static SRgb;
 
 readonly record struct JzCzhz(double J, double C, double H) {
     public static JzCzhz FromXyz(Xyz xyz) {
@@ -50,9 +51,9 @@ file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
 
     public static Jzazbz FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
-        x *= 80;
-        y *= 80;
-        z *= 80;
+        x *= RefWhiteLum;
+        y *= RefWhiteLum;
+        z *= RefWhiteLum;
 
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
@@ -73,7 +74,7 @@ file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;
 
-        return new(x / 80, y / 80, z / 80);
+        return new(x / RefWhiteLum, y / RefWhiteLum, z / RefWhiteLum);
     }
 
     static double Pq(double v) {

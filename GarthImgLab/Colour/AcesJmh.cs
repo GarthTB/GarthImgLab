@@ -7,18 +7,20 @@ readonly record struct AcesJmh(double J, double M, double H) {
     public static AcesJmh FromXyz(Xyz xyz) {
         var (j, a, b) = AcesJab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
-        return new(j, .9 * c, h);
+        return new(j, AcesJab.SurroundNc * c, h);
     }
 
     public Xyz ToXyz() {
-        var (a, b) = Polar.ChToAb(M / .9, H);
+        var (a, b) = Polar.ChToAb(M / AcesJab.SurroundNc, H);
         return new AcesJab(J, a, b).ToXyz();
     }
 }
 
 file readonly record struct AcesJab(double J, double A, double B) {
-    const double SurroundC = .9, YbOverYw = .2;
-    static readonly double Cz = SurroundC * (1.48 + Sqrt(YbOverYw)), Aw = 61d / 20 * F(1);
+    public const double SurroundNc = .9;
+
+    const double YbOverYw = .2;
+    static readonly double Cz = SurroundNc * (1.48 + Sqrt(YbOverYw)), Aw = 61d / 20 * F(1);
 
     static readonly Matrix3X3 XyzToLms = new(
         .401288,
@@ -41,14 +43,14 @@ file readonly record struct AcesJab(double J, double A, double B) {
         var ga = F(m / D65Lms.M);
         var ba = F(s / D65Lms.S);
 
-        var j = 100 * Pow(Max((2 * ra + ga + ba / 20) / Aw, 0), Cz);
+        var j = 100 * Pow((2 * ra + ga + ba / 20) / Aw, Cz);
         var a = ra - 12 * ga / 11 + ba / 11;
         var b = (ra + ga - 2 * ba) / 9;
         return new(j, a, b);
     }
 
     public Xyz ToXyz() {
-        var aw = Aw * Pow(Max(J, 0) / 100, 1 / Cz);
+        var aw = Aw * Pow(J / 100, 1 / Cz);
         var d = 11d / 23 * (9 * B - A);
         var ga = (aw - 2 * A - 29d / 220 * d) * 220 / 671;
         var ra = A + ga + d / 11;
@@ -68,8 +70,6 @@ file readonly record struct AcesJab(double J, double A, double B) {
     }
 
     static double InvF(double v) {
-        if (v == 0) return 0;
-
         var av = Abs(v);
         var xp = av * 27.13 / (400 - av);
         return CopySign(Pow(xp, 1 / .42), v);

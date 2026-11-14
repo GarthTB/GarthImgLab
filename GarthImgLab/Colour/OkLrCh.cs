@@ -11,7 +11,7 @@ readonly record struct OkLrCh(double Lr, double C, double H) {
     }
 
     public Xyz ToXyz() {
-        var l = Lr * (Lr + K1) / K3 / (Lr + K2);
+        var l = Lr * (Lr + K1) / (K3 * (Lr + K2));
         return new OkLCh(l, C, H).ToXyz();
     }
 }

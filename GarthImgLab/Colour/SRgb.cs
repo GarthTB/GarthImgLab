@@ -3,6 +3,8 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 readonly record struct SRgb(double R, double G, double B) {
+    public const double RefWhiteLum = 80;
+
     static readonly Matrix3X3 XyzToLinRgb = new(
         12831d / 3959,
         -329d / 214,
