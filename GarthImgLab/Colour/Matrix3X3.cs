@@ -1,16 +1,16 @@
 namespace GarthImgLab.Colour;
 
 readonly record struct Matrix3X3(
-    double M11,
-    double M12,
-    double M13,
-    double M21,
-    double M22,
-    double M23,
-    double M31,
-    double M32,
-    double M33) {
-    public (double X, double Y, double Z) Multiply(double x, double y, double z) =>
+    f64 M11,
+    f64 M12,
+    f64 M13,
+    f64 M21,
+    f64 M22,
+    f64 M23,
+    f64 M31,
+    f64 M32,
+    f64 M33) {
+    public (f64 X, f64 Y, f64 Z) Multiply(f64 x, f64 y, f64 z) =>
         (M11 * x + M12 * y + M13 * z, M21 * x + M22 * y + M23 * z, M31 * x + M32 * y + M33 * z);
 
     public Matrix3X3 Inverse() {

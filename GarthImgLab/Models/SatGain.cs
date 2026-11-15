@@ -12,8 +12,8 @@ enum SatGainMode: byte {
     AcesJmh
 }
 
-sealed class SatGain(SatGainMode mode, double gain) {
-    double Gain(double sat) {
+sealed class SatGain(SatGainMode mode, f64 gain) {
+    f64 Gain(f64 sat) {
         var t = 1 - sat;
         var tp = Math.Pow(t, 2.8);
         return sat + 2 * gain * t * (1 - tp) / (2 - tp);

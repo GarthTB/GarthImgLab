@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 using static Math;
 using static SRgb;
 
-readonly record struct JzCzhz(double J, double C, double H) {
+readonly record struct JzCzhz(f64 J, f64 C, f64 H) {
     public static JzCzhz FromXyz(Xyz xyz) {
         var (j, a, b) = Jzazbz.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
@@ -16,10 +16,10 @@ readonly record struct JzCzhz(double J, double C, double H) {
     }
 }
 
-file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
-    const double B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
+file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
+    const f64 B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
 
-    const double C1 = 3424d / 4096,
+    const f64 C1 = 3424d / 4096,
         C2 = 2413d / 128,
         C3 = 2392d / 128,
         N = 2610d / 16384,
@@ -77,12 +77,12 @@ file readonly record struct Jzazbz(double Jz, double Az, double Bz) {
         return new(x / RefWhiteLum, y / RefWhiteLum, z / RefWhiteLum);
     }
 
-    static double Pq(double v) {
+    static f64 Pq(f64 v) {
         var vn = Pow(v / 10000, N);
         return Pow((C1 + C2 * vn) / (1 + C3 * vn), P);
     }
 
-    static double InvPq(double v) {
+    static f64 InvPq(f64 v) {
         var vp = Pow(v, 1 / P);
         return 10000 * Pow(Max(vp - C1, 0) / (C2 - C3 * vp), 1 / N);
     }

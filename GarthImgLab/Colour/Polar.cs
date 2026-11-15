@@ -3,22 +3,22 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 static class Polar {
-    public static (double C, double H) AbToCh(double a, double b) {
-        var c = double.Hypot(a, b);
+    public static (f64 C, f64 H) AbToCh(f64 a, f64 b) {
+        var c = f64.Hypot(a, b);
         if (c == 0) return (0, 0);
 
-        var h = double.RadiansToDegrees(Atan2(b, a));
+        var h = f64.RadiansToDegrees(Atan2(b, a));
         return (c, NormHue(h));
     }
 
-    public static (double A, double B) ChToAb(double c, double h) {
+    public static (f64 A, f64 B) ChToAb(f64 c, f64 h) {
         if (c == 0) return (0, 0);
 
-        var (sin, cos) = SinCos(double.DegreesToRadians(h));
+        var (sin, cos) = SinCos(f64.DegreesToRadians(h));
         return (c * cos, c * sin);
     }
 
-    public static double NormHue(double h) {
+    public static f64 NormHue(f64 h) {
         h %= 360;
         if (h < 0) h += 360;
         return h;

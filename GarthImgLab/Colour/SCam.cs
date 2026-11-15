@@ -2,9 +2,9 @@ namespace GarthImgLab.Colour;
 
 using static Math;
 
-readonly record struct SCam(double Ia, double C, double H) {
-    const double SurroundC = .52, YbOverYw = .2;
-    static readonly double Cz = SurroundC * (1.48 + Sqrt(YbOverYw));
+readonly record struct SCam(f64 Ia, f64 C, f64 H) {
+    const f64 SurroundC = .52, YbOverYw = .2;
+    static readonly f64 Cz = SurroundC * (1.48 + Sqrt(YbOverYw));
 
     public static SCam FromXyz(Xyz xyz) {
         var (i, a, b) = SUcs.FromXyz(xyz);
@@ -22,7 +22,7 @@ readonly record struct SCam(double Ia, double C, double H) {
     }
 }
 
-file readonly record struct SUcs(double I, double A, double B) {
+file readonly record struct SUcs(f64 I, f64 A, f64 B) {
     static readonly Matrix3X3 XyzToLms = new(.4002, .7075, -.0807, -.228, 1.15, .0612, 0, 0, .9184);
 
     static readonly Matrix3X3 LmsToIab = new(
@@ -50,6 +50,6 @@ file readonly record struct SUcs(double I, double A, double B) {
         return new(x, y, z);
     }
 
-    static double F(double v) => CopySign(Pow(Abs(v), .43), v);
-    static double InvF(double v) => CopySign(Pow(Abs(v), 1 / .43), v);
+    static f64 F(f64 v) => CopySign(Pow(Abs(v), .43), v);
+    static f64 InvF(f64 v) => CopySign(Pow(Abs(v), 1 / .43), v);
 }

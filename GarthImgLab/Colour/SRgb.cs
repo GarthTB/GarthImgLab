@@ -2,8 +2,8 @@ namespace GarthImgLab.Colour;
 
 using static Math;
 
-readonly record struct SRgb(double R, double G, double B) {
-    public const double RefWhiteLum = 80;
+readonly record struct SRgb(f64 R, f64 G, f64 B) {
+    public const f64 RefWhiteLum = 80;
 
     static readonly Matrix3X3 XyzToLinRgb = new(
         12831d / 3959,
@@ -37,12 +37,12 @@ readonly record struct SRgb(double R, double G, double B) {
         return new(x, y, z);
     }
 
-    static double ToNonLin(double v) =>
+    static f64 ToNonLin(f64 v) =>
         v <= .0031308
             ? v * 12.92
             : 1.055 * Pow(v, 1 / 2.4) - .055;
 
-    static double ToLin(double v) =>
+    static f64 ToLin(f64 v) =>
         v <= .04045
             ? v / 12.92
             : Pow((v + .055) / 1.055, 2.4);

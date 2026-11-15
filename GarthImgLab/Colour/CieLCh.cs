@@ -2,7 +2,7 @@ namespace GarthImgLab.Colour;
 
 using static Xyz;
 
-readonly record struct CieLCh(double L, double C, double H) {
+readonly record struct CieLCh(f64 L, f64 C, f64 H) {
     public static CieLCh FromXyz(Xyz xyz) {
         var (l, a, b) = CieLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
@@ -15,8 +15,8 @@ readonly record struct CieLCh(double L, double C, double H) {
     }
 }
 
-file readonly record struct CieLab(double L, double A, double B) {
-    const double Epsilon = 216d / 24389, Kappa = 24389d / 27;
+file readonly record struct CieLab(f64 L, f64 A, f64 B) {
+    const f64 Epsilon = 216d / 24389, Kappa = 24389d / 27;
 
     public static CieLab FromXyz(Xyz xyz) {
         var fx = F(xyz.X / D65.X);
@@ -40,12 +40,12 @@ file readonly record struct CieLab(double L, double A, double B) {
         return new(x, y, z);
     }
 
-    static double F(double t) =>
+    static f64 F(f64 t) =>
         t > Epsilon
             ? Math.Cbrt(t)
             : (Kappa * t + 16) / 116;
 
-    static double InvF(double t) {
+    static f64 InvF(f64 t) {
         var t3 = t * t * t;
         return t3 > Epsilon
             ? t3

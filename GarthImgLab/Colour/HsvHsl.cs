@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 using static Hexagon;
 using static Math;
 
-readonly record struct Hsv(double H, double S, double V) {
+readonly record struct Hsv(f64 H, f64 S, f64 V) {
     public static Hsv FromSrgb(SRgb rgb) {
         var (max, _, c) = MaxMinC(rgb);
         if (c == 0) return new(0, 0, max);
@@ -17,7 +17,7 @@ readonly record struct Hsv(double H, double S, double V) {
     }
 }
 
-readonly record struct Hsl(double H, double S, double L) {
+readonly record struct Hsl(f64 H, f64 S, f64 L) {
     public static Hsl FromSrgb(SRgb rgb) {
         var (max, min, c) = MaxMinC(rgb);
         var l = .5 * (max + min);
@@ -34,7 +34,7 @@ readonly record struct Hsl(double H, double S, double L) {
 }
 
 file static class Hexagon {
-    public static (double Max, double Min, double C) MaxMinC(SRgb rgb) {
+    public static (f64 Max, f64 Min, f64 C) MaxMinC(SRgb rgb) {
         var (r, g, b) = rgb;
         var max = Max(r, Max(g, b));
         var min = Min(r, Min(g, b));
@@ -42,7 +42,7 @@ file static class Hexagon {
     }
 
     // ReSharper disable CompareOfFloatsByEqualityOperator
-    public static double Hue(SRgb rgb, double max, double c) {
+    public static f64 Hue(SRgb rgb, f64 max, f64 c) {
         var (r, g, b) = rgb;
         var h = max switch {
             _ when max == r => 60 * ((g - b) / c),
@@ -52,7 +52,7 @@ file static class Hexagon {
         return Polar.NormHue(h);
     }
 
-    public static SRgb Reconstruct(double h, double c, double min) {
+    public static SRgb Reconstruct(f64 h, f64 c, f64 min) {
         var seg = h / 60;
         var x = c * (1 - Abs(seg % 2 - 1));
         var (r, g, b) = seg switch {

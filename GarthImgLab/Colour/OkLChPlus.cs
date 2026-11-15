@@ -2,9 +2,9 @@ namespace GarthImgLab.Colour;
 
 using static Math;
 
-readonly record struct OkLChPlus(double L, double C, double H) {
-    const double Alpha = .73, N = .87, Sigma = .34;
-    static readonly double SigmaN = Pow(Sigma, N);
+readonly record struct OkLChPlus(f64 L, f64 C, f64 H) {
+    const f64 Alpha = .73, N = .87, Sigma = .34;
+    static readonly f64 SigmaN = Pow(Sigma, N);
 
     public static OkLChPlus FromXyz(Xyz xyz) {
         var (l, c, h) = OkLCh.FromXyz(xyz);

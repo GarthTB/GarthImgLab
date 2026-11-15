@@ -1,6 +1,6 @@
 namespace GarthImgLab.Colour;
 
-readonly record struct OkLCh(double L, double C, double H) {
+readonly record struct OkLCh(f64 L, f64 C, f64 H) {
     public static OkLCh FromXyz(Xyz xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
@@ -13,7 +13,7 @@ readonly record struct OkLCh(double L, double C, double H) {
     }
 }
 
-file readonly record struct OkLab(double L, double A, double B) {
+file readonly record struct OkLab(f64 L, f64 A, f64 B) {
     static readonly Matrix3X3 XyzToLms = new(
         .819022437996703,
         .3619062600528904,

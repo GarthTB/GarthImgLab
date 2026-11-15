@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 using static Math;
 using static Xyz;
 
-readonly record struct AcesJmh(double J, double M, double H) {
+readonly record struct AcesJmh(f64 J, f64 M, f64 H) {
     public static AcesJmh FromXyz(Xyz xyz) {
         var (j, a, b) = AcesJab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
@@ -16,11 +16,11 @@ readonly record struct AcesJmh(double J, double M, double H) {
     }
 }
 
-file readonly record struct AcesJab(double J, double A, double B) {
-    public const double SurroundNc = .9;
+file readonly record struct AcesJab(f64 J, f64 A, f64 B) {
+    public const f64 SurroundNc = .9;
 
-    const double YbOverYw = .2;
-    static readonly double Cz = SurroundNc * (1.48 + Sqrt(YbOverYw)), Aw = 61d / 20 * F(1);
+    const f64 YbOverYw = .2;
+    static readonly f64 Cz = SurroundNc * (1.48 + Sqrt(YbOverYw)), Aw = 61d / 20 * F(1);
 
     static readonly Matrix3X3 XyzToLms = new(
         .401288,
@@ -34,7 +34,7 @@ file readonly record struct AcesJab(double J, double A, double B) {
         .953127);
 
     static readonly Matrix3X3 LmsToXyz = XyzToLms.Inverse();
-    static readonly (double L, double M, double S) D65Lms = XyzToLms.Multiply(D65.X, D65.Y, D65.Z);
+    static readonly (f64 L, f64 M, f64 S) D65Lms = XyzToLms.Multiply(D65.X, D65.Y, D65.Z);
 
     public static AcesJab FromXyz(Xyz xyz) {
         var (l, m, s) = XyzToLms.Multiply(xyz.X, xyz.Y, xyz.Z);
@@ -64,12 +64,12 @@ file readonly record struct AcesJab(double J, double A, double B) {
         return new(x, y, z);
     }
 
-    static double F(double v) {
+    static f64 F(f64 v) {
         var xp = Pow(Abs(v), .42);
         return CopySign(400 * xp / (xp + 27.13), v);
     }
 
-    static double InvF(double v) {
+    static f64 InvF(f64 v) {
         var av = Abs(v);
         var xp = av * 27.13 / (400 - av);
         return CopySign(Pow(xp, 1 / .42), v);

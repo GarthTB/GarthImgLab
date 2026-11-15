@@ -1,7 +1,7 @@
 namespace GarthImgLab.Colour;
 
-readonly record struct OkLrCh(double Lr, double C, double H) {
-    const double K1 = .206, K2 = .03, K3 = (1 + K1) / (1 + K2);
+readonly record struct OkLrCh(f64 Lr, f64 C, f64 H) {
+    const f64 K1 = .206, K2 = .03, K3 = (1 + K1) / (1 + K2);
 
     public static OkLrCh FromXyz(Xyz xyz) {
         var (l, c, h) = OkLCh.FromXyz(xyz);
