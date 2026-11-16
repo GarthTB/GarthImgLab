@@ -1,8 +1,8 @@
 namespace GarthImgLab.Colour;
 
 using static Math;
-using static Xyz;
 
+/// <summary> https://docs.acescentral.com/system-components/output-transforms/technical-details/rendering-overview </summary>
 readonly record struct AcesJmh(f64 J, f64 M, f64 H) {
     public static AcesJmh FromXyz(Xyz xyz) {
         var (j, a, b) = AcesJab.FromXyz(xyz);
@@ -16,13 +16,14 @@ readonly record struct AcesJmh(f64 J, f64 M, f64 H) {
     }
 }
 
+/// <summary> https://docs.acescentral.com/system-components/output-transforms/technical-details/rendering-overview </summary>
 file readonly record struct AcesJab(f64 J, f64 A, f64 B) {
     public const f64 SurroundNc = .9;
 
     const f64 YbOverYw = .2;
     static readonly f64 Cz = SurroundNc * (1.48 + Sqrt(YbOverYw)), Aw = 61d / 20 * F(1);
 
-    static readonly Matrix3X3 XyzToLms = new(
+    static readonly Mat3X3 XyzToLms = new(
         .401288,
         .650173,
         -.051461,
@@ -33,11 +34,11 @@ file readonly record struct AcesJab(f64 J, f64 A, f64 B) {
         .048952,
         .953127);
 
-    static readonly Matrix3X3 LmsToXyz = XyzToLms.Inverse();
-    static readonly (f64 L, f64 M, f64 S) D65Lms = XyzToLms.Multiply(D65.X, D65.Y, D65.Z);
+    static readonly Mat3X3 LmsToXyz = XyzToLms.Inverse();
+    static readonly (f64 L, f64 M, f64 S) D65Lms = XyzToLms.Mul3X1(D65.W.X, D65.W.Y, D65.W.Z);
 
     public static AcesJab FromXyz(Xyz xyz) {
-        var (l, m, s) = XyzToLms.Multiply(xyz.X, xyz.Y, xyz.Z);
+        var (l, m, s) = XyzToLms.Mul3X1(xyz.X, xyz.Y, xyz.Z);
 
         var ra = F(l / D65Lms.L);
         var ga = F(m / D65Lms.M);
@@ -60,7 +61,7 @@ file readonly record struct AcesJab(f64 J, f64 A, f64 B) {
         var m = InvF(ga) * D65Lms.M;
         var s = InvF(ba) * D65Lms.S;
 
-        var (x, y, z) = LmsToXyz.Multiply(l, m, s);
+        var (x, y, z) = LmsToXyz.Mul3X1(l, m, s);
         return new(x, y, z);
     }
 

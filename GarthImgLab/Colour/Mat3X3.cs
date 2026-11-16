@@ -1,6 +1,6 @@
 namespace GarthImgLab.Colour;
 
-readonly record struct Matrix3X3(
+readonly record struct Mat3X3(
     f64 M11,
     f64 M12,
     f64 M13,
@@ -10,10 +10,13 @@ readonly record struct Matrix3X3(
     f64 M31,
     f64 M32,
     f64 M33) {
-    public (f64 X, f64 Y, f64 Z) Multiply(f64 x, f64 y, f64 z) =>
+    public (f64 X, f64 Y, f64 Z) Mul3X1(f64 x, f64 y, f64 z) =>
         (M11 * x + M12 * y + M13 * z, M21 * x + M22 * y + M23 * z, M31 * x + M32 * y + M33 * z);
 
-    public Matrix3X3 Inverse() {
+    public Mat3X3 ScaleCols(f64 x, f64 y, f64 z) =>
+        new(M11 * x, M12 * y, M13 * z, M21 * x, M22 * y, M23 * z, M31 * x, M32 * y, M33 * z);
+
+    public Mat3X3 Inverse() {
         var c11 = M22 * M33 - M23 * M32;
         var c12 = M23 * M31 - M21 * M33;
         var c13 = M21 * M32 - M22 * M31;

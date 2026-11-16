@@ -3,6 +3,7 @@ namespace GarthImgLab.Colour;
 using static Hexagon;
 using static Math;
 
+/// <summary> DOI: 10.1145/965139.807361 </summary>
 readonly record struct Hsv(f64 H, f64 S, f64 V) {
     public static Hsv FromSrgb(SRgb rgb) {
         var (max, _, c) = MaxMinC(rgb);
@@ -17,6 +18,7 @@ readonly record struct Hsv(f64 H, f64 S, f64 V) {
     }
 }
 
+/// <summary> DOI: 10.1145/800248.807362 </summary>
 readonly record struct Hsl(f64 H, f64 S, f64 L) {
     public static Hsl FromSrgb(SRgb rgb) {
         var (max, min, c) = MaxMinC(rgb);
