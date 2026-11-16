@@ -1,5 +1,6 @@
 namespace GarthImgLab.Colour;
 
+/// <summary> https://bottosson.github.io/posts/oklab/ </summary>
 readonly record struct OkLCh(f64 L, f64 C, f64 H) {
     public static OkLCh FromXyz(Xyz xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
@@ -13,8 +14,10 @@ readonly record struct OkLCh(f64 L, f64 C, f64 H) {
     }
 }
 
+/// <summary> https://bottosson.github.io/posts/oklab/ </summary>
 file readonly record struct OkLab(f64 L, f64 A, f64 B) {
-    static readonly Matrix3X3 XyzToLms = new(
+    /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
+    static readonly Mat3X3 XyzToLms = new(
         .819022437996703,
         .3619062600528904,
         -.1288737815209879,
@@ -25,7 +28,8 @@ file readonly record struct OkLab(f64 L, f64 A, f64 B) {
         .2642395317527308,
         .6335478284694309);
 
-    static readonly Matrix3X3 LmsToLab = new(
+    /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
+    static readonly Mat3X3 LmsToLab = new(
         .210454268309314,
         .7936177747023054,
         -.0040720430116193,
@@ -36,17 +40,17 @@ file readonly record struct OkLab(f64 L, f64 A, f64 B) {
         .7827717124575296,
         -.8086757549230774);
 
-    static readonly Matrix3X3 LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
+    static readonly Mat3X3 LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
 
     public static OkLab FromXyz(Xyz xyz) {
-        var (l, m, s) = XyzToLms.Multiply(xyz.X, xyz.Y, xyz.Z);
-        var (okl, a, b) = LmsToLab.Multiply(Math.Cbrt(l), Math.Cbrt(m), Math.Cbrt(s));
+        var (l, m, s) = XyzToLms.Mul3X1(xyz.X, xyz.Y, xyz.Z);
+        var (okl, a, b) = LmsToLab.Mul3X1(Math.Cbrt(l), Math.Cbrt(m), Math.Cbrt(s));
         return new(okl, a, b);
     }
 
     public Xyz ToXyz() {
-        var (l, m, s) = LabToLms.Multiply(L, A, B);
-        var (x, y, z) = LmsToXyz.Multiply(l * l * l, m * m * m, s * s * s);
+        var (l, m, s) = LabToLms.Mul3X1(L, A, B);
+        var (x, y, z) = LmsToXyz.Mul3X1(l * l * l, m * m * m, s * s * s);
         return new(x, y, z);
     }
 }

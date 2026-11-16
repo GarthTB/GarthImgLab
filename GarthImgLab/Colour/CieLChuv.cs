@@ -1,7 +1,8 @@
 namespace GarthImgLab.Colour;
 
-using static Xyz;
+using static D65;
 
+/// <summary> ISO/CIE 11664-5:2024 </summary>
 readonly record struct CieLChuv(f64 L, f64 C, f64 H) {
     public static CieLChuv FromXyz(Xyz xyz) {
         var (l, u, v) = CieLuv.FromXyz(xyz);
@@ -15,10 +16,11 @@ readonly record struct CieLChuv(f64 L, f64 C, f64 H) {
     }
 }
 
+/// <summary> ISO/CIE 11664-5:2024 </summary>
 file readonly record struct CieLuv(f64 L, f64 U, f64 V) {
     const f64 Epsilon = 216d / 24389, Kappa = 24389d / 27;
-    static readonly f64 Un = 4 * D65.X / Den(D65.X, D65.Y, D65.Z);
-    static readonly f64 Vn = 9 * D65.Y / Den(D65.X, D65.Y, D65.Z);
+    static readonly f64 Un = 4 * W.X / Den(W.X, W.Y, W.Z);
+    static readonly f64 Vn = 9 * W.Y / Den(W.X, W.Y, W.Z);
 
     public static CieLuv FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
@@ -28,7 +30,7 @@ file readonly record struct CieLuv(f64 L, f64 U, f64 V) {
         var up = 4 * x / den;
         var vp = 9 * y / den;
 
-        var l = 116 * F(y / D65.Y) - 16;
+        var l = 116 * F(y / W.Y) - 16;
         var u = 13 * l * (up - Un);
         var v = 13 * l * (vp - Vn);
         return new(l, u, v);
@@ -40,7 +42,7 @@ file readonly record struct CieLuv(f64 L, f64 U, f64 V) {
         var up = U / (13 * L) + Un;
         var vp = V / (13 * L) + Vn;
 
-        var y = D65.Y * InvF((L + 16) / 116);
+        var y = W.Y * InvF((L + 16) / 116);
         var x = 9 * y * up / (4 * vp);
         var z = y * (12 - 3 * up - 20 * vp) / (4 * vp);
         return new(x, y, z);
