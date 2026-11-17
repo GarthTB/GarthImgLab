@@ -4,6 +4,8 @@ using static Math;
 
 /// <summary> IEC 61966-2-1:1999 </summary>
 readonly record struct SRgb(f64 R, f64 G, f64 B) {
+    public (f64 Min, f64 Max) MinMax => (Min(R, Min(G, B)), Max(R, Max(G, B)));
+
     public static SRgb FromXyz(Xyz xyz) {
         var (lr, lg, lb) = LinSRgb.FromXyz(xyz);
         return new(ToNonLin(lr), ToNonLin(lg), ToNonLin(lb));

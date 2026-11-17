@@ -1,50 +1,46 @@
 namespace GarthImgLab.Colour;
 
-using static Hexagon;
 using static Math;
 
 /// <summary> DOI: 10.1145/965139.807361 </summary>
 readonly record struct Hsv(f64 H, f64 S, f64 V) {
     public static Hsv FromSrgb(SRgb rgb) {
-        var (max, _, c) = MaxMinC(rgb);
+        var (min, max) = rgb.MinMax;
+        var c = max - min;
         if (c == 0) return new(0, 0, max);
 
-        return new(Hue(rgb, max, c), c / max, max);
+        var h = Hue.FromRgb(rgb, max, c);
+        return new(h, c / max, max);
     }
 
     public SRgb ToSrgb() {
         var c = V * S;
-        return Reconstruct(H, c, V - c);
+        return Hue.ToRgb(H, c, V - c);
     }
 }
 
 /// <summary> DOI: 10.1145/800248.807362 </summary>
 readonly record struct Hsl(f64 H, f64 S, f64 L) {
     public static Hsl FromSrgb(SRgb rgb) {
-        var (max, min, c) = MaxMinC(rgb);
+        var (min, max) = rgb.MinMax;
+        var c = max - min;
         var l = .5 * (max + min);
         if (c == 0) return new(0, 0, l);
 
+        var h = Hue.FromRgb(rgb, max, c);
         var s = c / (1 - Abs(2 * l - 1));
-        return new(Hue(rgb, max, c), s, l);
+        return new(h, s, l);
     }
 
     public SRgb ToSrgb() {
         var c = (1 - Abs(2 * L - 1)) * S;
-        return Reconstruct(H, c, L - .5 * c);
+        return Hue.ToRgb(H, c, L - .5 * c);
     }
 }
 
-file static class Hexagon {
-    public static (f64 Max, f64 Min, f64 C) MaxMinC(SRgb rgb) {
-        var (r, g, b) = rgb;
-        var max = Max(r, Max(g, b));
-        var min = Min(r, Min(g, b));
-        return (max, min, max - min);
-    }
-
+file static class Hue {
     // ReSharper disable CompareOfFloatsByEqualityOperator
-    public static f64 Hue(SRgb rgb, f64 max, f64 c) {
+    public static f64 FromRgb(SRgb rgb, f64 max, f64 c) {
         var (r, g, b) = rgb;
         var h = max switch {
             _ when max == r => 60 * ((g - b) / c),
@@ -54,7 +50,7 @@ file static class Hexagon {
         return Polar.NormHue(h);
     }
 
-    public static SRgb Reconstruct(f64 h, f64 c, f64 min) {
+    public static SRgb ToRgb(f64 h, f64 c, f64 min) {
         var seg = h / 60;
         var x = c * (1 - Abs(seg % 2 - 1));
         var (r, g, b) = seg switch {

@@ -1,7 +1,7 @@
 namespace GarthImgLab.Colour;
 
 /// <summary> https://bottosson.github.io/posts/colorpicker/ </summary>
-readonly record struct OkLrCh(f64 L, f64 C, f64 H) {
+readonly record struct OkLrCh(f64 Lr, f64 C, f64 H) {
     const f64 K1 = .206, K2 = .03, K3 = (1 + K1) / (1 + K2);
 
     public static OkLrCh FromXyz(Xyz xyz) {
@@ -12,7 +12,7 @@ readonly record struct OkLrCh(f64 L, f64 C, f64 H) {
     }
 
     public Xyz ToXyz() {
-        var l = L * (L + K1) / (K3 * (L + K2));
+        var l = Lr * (Lr + K1) / (K3 * (Lr + K2));
         return new OkLCh(l, C, H).ToXyz();
     }
 }

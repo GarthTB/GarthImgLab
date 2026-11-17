@@ -1,5 +1,6 @@
 namespace GarthImgLab.Colour;
 
+using static Bt2408;
 using static Math;
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
@@ -18,9 +19,6 @@ readonly record struct JzCzhz(f64 J, f64 C, f64 H) {
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
 file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
-    /// <summary> ITU-R BT.2408-9 </summary>
-    const f64 L = 203;
-
     const f64 B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
 
     const f64 C1 = 3424d / 4096,
@@ -55,9 +53,9 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
 
     public static Jzazbz FromXyz(Xyz xyz) {
         var (x, y, z) = xyz;
-        x *= L;
-        y *= L;
-        z *= L;
+        x *= SdrWhiteLum;
+        y *= SdrWhiteLum;
+        z *= SdrWhiteLum;
 
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
@@ -78,7 +76,7 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;
 
-        return new(x / L, y / L, z / L);
+        return new(x / SdrWhiteLum, y / SdrWhiteLum, z / SdrWhiteLum);
     }
 
     static f64 Pq(f64 v) {
