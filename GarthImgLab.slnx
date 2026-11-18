@@ -1,5 +1,6 @@
 <Solution>
     <Project Path="GarthImgLab.Benchmarks/GarthImgLab.Benchmarks.csproj"/>
+    <Project Path="GarthImgLab.Precompute/GarthImgLab.Precompute.csproj"/>
     <Project Path="GarthImgLab.Tests/GarthImgLab.Tests.csproj"/>
     <Project Path="GarthImgLab/GarthImgLab.csproj"/>
     <Folder Name="/Docs/">

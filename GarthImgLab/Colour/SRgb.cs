@@ -6,9 +6,12 @@ using static Math;
 readonly record struct SRgb(f64 R, f64 G, f64 B) {
     public (f64 Min, f64 Max) MinMax => (Min(R, Min(G, B)), Max(R, Max(G, B)));
 
+    public static bool IsValid(Xyz xyz) =>
+        LinSRgb.FromXyz(xyz) is (>= 0 and <= 1, >= 0 and <= 1, >= 0 and <= 1);
+
     public static SRgb FromXyz(Xyz xyz) {
         var (lr, lg, lb) = LinSRgb.FromXyz(xyz);
-        return new(ToNonLin(lr), ToNonLin(lg), ToNonLin(lb));
+        return new(Clamp(ToNonLin(lr), 0, 1), Clamp(ToNonLin(lg), 0, 1), Clamp(ToNonLin(lb), 0, 1));
     }
 
     public Xyz ToXyz() =>
