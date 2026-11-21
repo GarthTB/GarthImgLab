@@ -48,10 +48,7 @@ file static class OkLab {
 
     static readonly Mat LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
 
-    public static Tri FromXyz(in Tri xyz) {
-        var (l, m, s) = XyzToLms * xyz;
-        return LmsToLab * new Tri(Math.Cbrt(l), Math.Cbrt(m), Math.Cbrt(s));
-    }
+    public static Tri FromXyz(in Tri xyz) => LmsToLab * (XyzToLms * xyz).Apply(Math.Cbrt);
 
     public static Tri ToXyz(in Tri lab) {
         var (l, m, s) = LabToLms * lab;

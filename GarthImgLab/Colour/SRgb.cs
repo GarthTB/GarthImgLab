@@ -1,33 +1,24 @@
 namespace GarthImgLab.Colour;
 
-using static Math;
-
 /// <summary> IEC 61966-2-1:1999 </summary>
 static class SRgb {
     public static bool Contains(in Tri xyz) =>
         LinSRgb.FromXyz(xyz) is (>= 0 and <= 1, >= 0 and <= 1, >= 0 and <= 1);
 
-    public static Tri FromXyz(in Tri xyz) {
-        var (lr, lg, lb) = LinSRgb.FromXyz(xyz);
-        return new(Clamp01(ToNonLin(lr)), Clamp01(ToNonLin(lg)), Clamp01(ToNonLin(lb)));
-    }
+    public static Tri FromXyz(in Tri xyz) => LinSRgb.FromXyz(xyz).Apply(ToNonLin).Apply(Clamp01);
+    public static Tri ToXyz(in Tri rgb) => LinSRgb.ToXyz(rgb.Apply(Clamp01).Apply(ToLin));
 
-    public static Tri ToXyz(in Tri rgb) {
-        var (r, g, b) = rgb;
-        return LinSRgb.ToXyz(new(Clamp01(ToLin(r)), Clamp01(ToLin(g)), Clamp01(ToLin(b))));
-    }
-
-    static f64 Clamp01(f64 v) => Clamp(v, 0, 1);
+    static f64 Clamp01(f64 v) => Math.Clamp(v, 0, 1);
 
     static f64 ToNonLin(f64 v) =>
         v <= .0031308
             ? v * 12.92
-            : 1.055 * Pow(v, 1 / 2.4) - .055;
+            : 1.055 * Math.Pow(v, 1 / 2.4) - .055;
 
     static f64 ToLin(f64 v) =>
         v <= .04045
             ? v / 12.92
-            : Pow((v + .055) / 1.055, 2.4);
+            : Math.Pow((v + .055) / 1.055, 2.4);
 }
 
 /// <summary> IEC 61966-2-1:1999 </summary>

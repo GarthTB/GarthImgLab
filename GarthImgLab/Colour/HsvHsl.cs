@@ -1,14 +1,14 @@
 namespace GarthImgLab.Colour;
 
-using static Math;
-
 /// <summary> DOI: 10.1145/965139.807361 </summary>
 static class Hsv {
     public static Tri FromSrgb(in Tri rgb) {
         var max = rgb.Max;
         var c = max - rgb.Min;
         if (c == 0) return new(0, 0, max);
-        return new(Hue.FromRgb(rgb, max, c), c / max, max);
+
+        var h = Hue.FromRgb(rgb, max, c);
+        return new(h, c / max, max);
     }
 
     public static Tri ToSrgb(in Tri hsv) {
@@ -28,13 +28,13 @@ static class Hsl {
         if (c == 0) return new(0, 0, l);
 
         var h = Hue.FromRgb(rgb, max, c);
-        var s = c / (1 - Abs(2 * l - 1));
+        var s = c / (1 - Math.Abs(2 * l - 1));
         return new(h, s, l);
     }
 
     public static Tri ToSrgb(in Tri hsl) {
         var (h, s, l) = hsl;
-        var c = (1 - Abs(2 * l - 1)) * s;
+        var c = (1 - Math.Abs(2 * l - 1)) * s;
         return Hue.ToRgb(h, c, l - .5 * c);
     }
 }
@@ -53,7 +53,7 @@ file static class Hue {
 
     public static Tri ToRgb(f64 h, f64 c, f64 min) {
         var seg = h / 60;
-        var x = c * (1 - Abs(seg % 2 - 1));
+        var x = c * (1 - Math.Abs(seg % 2 - 1));
         var (r, g, b) = seg switch {
             < 1 => (c, x, 0d),
             < 2 => (x, c, 0),

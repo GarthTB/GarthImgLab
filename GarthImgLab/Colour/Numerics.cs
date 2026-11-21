@@ -5,6 +5,7 @@ using static Math;
 readonly record struct Tri(f64 C1, f64 C2, f64 C3) {
     public f64 Min => Min(C1, Min(C2, C3));
     public f64 Max => Max(C1, Max(C2, C3));
+    public Tri Apply(Func<f64, f64> f) => new(f(C1), f(C2), f(C3));
 }
 
 readonly record struct Mat(

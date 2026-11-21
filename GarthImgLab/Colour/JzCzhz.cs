@@ -1,6 +1,5 @@
 namespace GarthImgLab.Colour;
 
-using static Bt2408;
 using static Math;
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
@@ -58,16 +57,12 @@ file static class Jzazbz {
     static readonly Mat LmsToXyz = XyzToLms.Inverse(), IabToLms = LmsToIab.Inverse();
 
     public static Tri FromXyz(in Tri xyz) {
-        var (x, y, z) = xyz;
-        x *= SdrWhiteLum;
-        y *= SdrWhiteLum;
-        z *= SdrWhiteLum;
+        var (x, y, z) = xyz.Apply(static c => c * Bt2408.SdrWhiteLum);
 
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
 
-        var (l, m, s) = XyzToLms * new Tri(xp, yp, z);
-        var (i, a, b) = LmsToIab * new Tri(Pq(l), Pq(m), Pq(s));
+        var (i, a, b) = LmsToIab * (XyzToLms * new Tri(xp, yp, z)).Apply(Pq);
 
         var j = (1 + D) * i / (1 + D * i) - D0;
         return new(j, a, b);
@@ -78,13 +73,12 @@ file static class Jzazbz {
 
         var i = (j + D0) / (1 + D - D * (j + D0));
 
-        var (l, m, s) = IabToLms * new Tri(i, a, b);
-        var (xp, yp, z) = LmsToXyz * new Tri(InvPq(l), InvPq(m), InvPq(s));
+        var (xp, yp, z) = LmsToXyz * (IabToLms * new Tri(i, a, b)).Apply(InvPq);
 
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;
 
-        return new(x / SdrWhiteLum, y / SdrWhiteLum, z / SdrWhiteLum);
+        return new Tri(x, y, z).Apply(static c => c / Bt2408.SdrWhiteLum);
     }
 
     static f64 Pq(f64 v) {

@@ -25,8 +25,7 @@ static class SUcs {
         ToXyz);
 
     public static Tri FromXyz(in Tri xyz) {
-        var (l, m, s) = XyzToLms * xyz;
-        var (i, a, b) = LmsToIab * new Tri(F(l), F(m), F(s));
+        var (i, a, b) = LmsToIab * (XyzToLms * xyz).Apply(F);
         var (r, h) = Polar.AbToCh(a, b);
         var c = Log(1 + .0447 * r) / .0252;
         return new(i, c, h);
@@ -36,8 +35,7 @@ static class SUcs {
         var (i, c, h) = ich;
         var r = (Exp(.0252 * c) - 1) / .0447;
         var (a, b) = Polar.ChToAb(r, h);
-        var (l, m, s) = IabToLms * new Tri(i, a, b);
-        return LmsToXyz * new Tri(InvF(l), InvF(m), InvF(s));
+        return LmsToXyz * (IabToLms * new Tri(i, a, b)).Apply(InvF);
     }
 
     static f64 F(f64 v) => CopySign(Pow(Abs(v), .43), v);
