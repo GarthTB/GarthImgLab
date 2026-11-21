@@ -4,6 +4,11 @@ using static CubeRoot;
 
 /// <summary> ISO/CIE 11664-4:2019 </summary>
 readonly record struct CieLChab(f64 L, f64 C, f64 H) {
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
+        FromXyz(new SRgb(0, 0, 1).ToXyz()).C,
+        static (l, c, h) => new CieLChab(l, c, h).ToXyz());
+
     public static CieLChab FromXyz(Xyz xyz) {
         var (l, a, b) = CieLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
@@ -18,6 +23,11 @@ readonly record struct CieLChab(f64 L, f64 C, f64 H) {
 
 /// <summary> ISO/CIE 11664-5:2024 </summary>
 readonly record struct CieLChuv(f64 L, f64 C, f64 H) {
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
+        FromXyz(new SRgb(1, 0, 0).ToXyz()).C,
+        static (l, c, h) => new CieLChuv(l, c, h).ToXyz());
+
     public static CieLChuv FromXyz(Xyz xyz) {
         var (l, u, v) = CieLuv.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(u, v);

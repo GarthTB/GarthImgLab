@@ -2,6 +2,11 @@ namespace GarthImgLab.Colour;
 
 /// <summary> https://bottosson.github.io/posts/oklab/ </summary>
 readonly record struct OkLCh(f64 L, f64 C, f64 H) {
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
+        FromXyz(new SRgb(1, 0, 1).ToXyz()).C,
+        static (l, c, h) => new OkLCh(l, c, h).ToXyz());
+
     public static OkLCh FromXyz(Xyz xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);

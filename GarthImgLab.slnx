@@ -1,9 +1,13 @@
 <Solution>
-    <Project Path="Benchmarks/Benchmarks.csproj"/>
     <Project Path="GarthImgLab/GarthImgLab.csproj"/>
+    <Project Path="Benchmarks/Benchmarks.csproj"/>
+    <Project Path="Tests/Tests.csproj"/>
     <Folder Name="/Docs/">
         <File Path="CHANGELOG.md"/>
         <File Path="README.md"/>
     </Folder>
-    <Project Path="Tests/Tests.csproj"/>
+    <Folder Name="/Precompute/">
+        <File Path="Precompute/D65.cs"/>
+        <File Path="Precompute/MaxC.cs"/>
+    </Folder>
 </Solution>

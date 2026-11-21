@@ -4,6 +4,11 @@ namespace GarthImgLab.Colour;
 readonly record struct OkLrCh(f64 Lr, f64 C, f64 H) {
     const f64 K1 = .206, K2 = .03, K3 = (1 + K1) / (1 + K2);
 
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).Lr,
+        FromXyz(new SRgb(1, 0, 1).ToXyz()).C,
+        static (lr, c, h) => new OkLrCh(lr, c, h).ToXyz());
+
     public static OkLrCh FromXyz(Xyz xyz) {
         var (l, c, h) = OkLCh.FromXyz(xyz);
         var d = K3 * l - K1;

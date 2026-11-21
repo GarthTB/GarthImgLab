@@ -5,6 +5,11 @@ using static Math;
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
 readonly record struct JzCzhz(f64 J, f64 C, f64 H) {
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).J,
+        FromXyz(new SRgb(0, 0, 1).ToXyz()).C,
+        static (j, c, h) => new JzCzhz(j, c, h).ToXyz());
+
     public static JzCzhz FromXyz(Xyz xyz) {
         var (j, a, b) = Jzazbz.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);

@@ -19,6 +19,11 @@ readonly record struct SUcs(f64 I, f64 C, f64 H) {
 
     static readonly Mat3X3 LmsToXyz = XyzToLms.Inverse(), IabToLms = LmsToIab.Inverse();
 
+    public static readonly MaxCLut MaxC = MaxCLut.Create(
+        FromXyz(new SRgb(1, 1, 1).ToXyz()).I,
+        FromXyz(new SRgb(1, 0, 0).ToXyz()).C,
+        static (i, c, h) => new SUcs(i, c, h).ToXyz());
+
     public static SUcs FromXyz(Xyz xyz) {
         var (l, m, s) = XyzToLms.Mul3X1(xyz.X, xyz.Y, xyz.Z);
         var (i, a, b) = LmsToIab.Mul3X1(F(l), F(m), F(s));
