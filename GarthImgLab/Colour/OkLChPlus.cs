@@ -3,16 +3,16 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 /// <summary> arXiv:2606.05255 </summary>
-readonly record struct OkLChPlus(f64 L, f64 C, f64 H) {
+static class OkLChPlus {
     const f64 Alpha = .73, N = .87, Sigma = .34;
     static readonly f64 SigmaN = Pow(Sigma, N);
 
     public static readonly MaxCLut MaxC = MaxCLut.Create(
-        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
-        FromXyz(new SRgb(1, 0, 1).ToXyz()).C,
-        static (l, c, h) => new OkLChPlus(l, c, h).ToXyz());
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(1, 0, 1))).C2,
+        ToXyz);
 
-    public static OkLChPlus FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (l, c, h) = OkLCh.FromXyz(xyz);
         var lp = Pow(l, Alpha);
         var cn = Pow(c, N);
@@ -20,9 +20,10 @@ readonly record struct OkLChPlus(f64 L, f64 C, f64 H) {
         return new(lp, cp, h);
     }
 
-    public Xyz ToXyz() {
-        var l = Pow(L, 1 / Alpha);
-        var c = Pow(SigmaN * C / (1 - C), 1 / N);
-        return new OkLCh(l, c, H).ToXyz();
+    public static Tri ToXyz(in Tri lch) {
+        var (lp, cp, h) = lch;
+        var l = Pow(lp, 1 / Alpha);
+        var c = Pow(SigmaN * cp / (1 - cp), 1 / N);
+        return OkLCh.ToXyz(new(l, c, h));
     }
 }

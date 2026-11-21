@@ -23,15 +23,15 @@ Parallel.ForEach(
                 var vg = v[g];
                 var fg = fr || g >= cut;
                 for (var b = 0; b <= n; b++) {
-                    var xyz = new SRgb(vr, vg, v[b]).ToXyz();
+                    var xyz = SRgb.ToXyz(new(vr, vg, v[b]));
 
-                    Take(ref local[2], JzCzhz.FromXyz(xyz).C, r, g, b);
+                    Take(ref local[2], JzCzhz.FromXyz(xyz).C2, r, g, b);
                     if (!fg && b < cut) continue;
 
-                    Take(ref local[0], CieLChab.FromXyz(xyz).C, r, g, b);
-                    Take(ref local[1], CieLChuv.FromXyz(xyz).C, r, g, b);
-                    Take(ref local[3], OkLCh.FromXyz(xyz).C, r, g, b);
-                    Take(ref local[4], SUcs.FromXyz(xyz).C, r, g, b);
+                    Take(ref local[0], CieLChab.FromXyz(xyz).C2, r, g, b);
+                    Take(ref local[1], CieLChuv.FromXyz(xyz).C2, r, g, b);
+                    Take(ref local[3], OkLCh.FromXyz(xyz).C2, r, g, b);
+                    Take(ref local[4], SUcs.FromXyz(xyz).C2, r, g, b);
                 }
             }
         }
@@ -45,9 +45,9 @@ Parallel.ForEach(
     });
 
 var okTup = global[3];
-var okXyz = new SRgb(v[okTup.R], v[okTup.G], v[okTup.B]).ToXyz();
-var okLrChTup = okTup with { C = OkLrCh.FromXyz(okXyz).C };
-var okLChPlusTup = okTup with { C = OkLChPlus.FromXyz(okXyz).C };
+var okXyz = SRgb.ToXyz(new(v[okTup.R], v[okTup.G], v[okTup.B]));
+var okLrChTup = okTup with { C = OkLrCh.FromXyz(okXyz).C2 };
+var okLChPlusTup = okTup with { C = OkLChPlus.FromXyz(okXyz).C2 };
 
 Print("CIELCh(ab)", global[0]);
 Print("CIELCh(uv)", global[1]);
@@ -62,4 +62,4 @@ static void Take(ref MaxTup tup, double c, int r, int g, int b) {
 }
 
 static void Print(string name, MaxTup tup) =>
-    Console.WriteLine($"{name,-10}\tRGB=({tup.R,4}, {tup.G,4}, {tup.B,4})\tC={tup.C:R}");
+    Console.WriteLine($"{name,-10}  RGB=({tup.R,4}, {tup.G,4}, {tup.B,4})  C={tup.C:R}");

@@ -3,49 +3,52 @@ namespace GarthImgLab.Colour;
 using static CubeRoot;
 
 /// <summary> ISO/CIE 11664-4:2019 </summary>
-readonly record struct CieLChab(f64 L, f64 C, f64 H) {
+static class CieLChab {
     public static readonly MaxCLut MaxC = MaxCLut.Create(
-        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
-        FromXyz(new SRgb(0, 0, 1).ToXyz()).C,
-        static (l, c, h) => new CieLChab(l, c, h).ToXyz());
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2,
+        ToXyz);
 
-    public static CieLChab FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (l, a, b) = CieLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
         return new(l, c, h);
     }
 
-    public Xyz ToXyz() {
-        var (a, b) = Polar.ChToAb(C, H);
-        return new CieLab(L, a, b).ToXyz();
+    public static Tri ToXyz(in Tri lch) {
+        var (l, c, h) = lch;
+        var (a, b) = Polar.ChToAb(c, h);
+        return CieLab.ToXyz(new(l, a, b));
     }
 }
 
 /// <summary> ISO/CIE 11664-5:2024 </summary>
-readonly record struct CieLChuv(f64 L, f64 C, f64 H) {
+static class CieLChuv {
     public static readonly MaxCLut MaxC = MaxCLut.Create(
-        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
-        FromXyz(new SRgb(1, 0, 0).ToXyz()).C,
-        static (l, c, h) => new CieLChuv(l, c, h).ToXyz());
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(1, 0, 0))).C2,
+        ToXyz);
 
-    public static CieLChuv FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (l, u, v) = CieLuv.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(u, v);
         return new(l, c, h);
     }
 
-    public Xyz ToXyz() {
-        var (u, v) = Polar.ChToAb(C, H);
-        return new CieLuv(L, u, v).ToXyz();
+    public static Tri ToXyz(in Tri lch) {
+        var (l, c, h) = lch;
+        var (u, v) = Polar.ChToAb(c, h);
+        return CieLuv.ToXyz(new(l, u, v));
     }
 }
 
 /// <summary> ISO/CIE 11664-4:2019 </summary>
-file readonly record struct CieLab(f64 L, f64 A, f64 B) {
-    public static CieLab FromXyz(Xyz xyz) {
-        var fx = F(xyz.X / D65.X);
-        var fy = F(xyz.Y / D65.Y);
-        var fz = F(xyz.Z / D65.Z);
+file static class CieLab {
+    public static Tri FromXyz(in Tri xyz) {
+        var (x, y, z) = xyz;
+        var fx = F(x / D65.X);
+        var fy = F(y / D65.Y);
+        var fz = F(z / D65.Z);
 
         var l = 116 * fy - 16;
         var a = 500 * (fx - fy);
@@ -53,10 +56,11 @@ file readonly record struct CieLab(f64 L, f64 A, f64 B) {
         return new(l, a, b);
     }
 
-    public Xyz ToXyz() {
-        var fy = (L + 16) / 116;
-        var fx = fy + A / 500;
-        var fz = fy - B / 200;
+    public static Tri ToXyz(in Tri lab) {
+        var (l, a, b) = lab;
+        var fy = (l + 16) / 116;
+        var fx = fy + a / 500;
+        var fz = fy - b / 200;
 
         var x = D65.X * InvF(fx);
         var y = D65.Y * InvF(fy);
@@ -66,8 +70,8 @@ file readonly record struct CieLab(f64 L, f64 A, f64 B) {
 }
 
 /// <summary> ISO/CIE 11664-5:2024 </summary>
-file readonly record struct CieLuv(f64 L, f64 U, f64 V) {
-    public static CieLuv FromXyz(Xyz xyz) {
+file static class CieLuv {
+    public static Tri FromXyz(in Tri xyz) {
         var (x, y, z) = xyz;
         if (y == 0) return new(0, 0, 0);
 
@@ -81,18 +85,21 @@ file readonly record struct CieLuv(f64 L, f64 U, f64 V) {
         return new(l, u, v);
     }
 
-    public Xyz ToXyz() {
-        if (L == 0) return new(0, 0, 0);
+    public static Tri ToXyz(in Tri luv) {
+        var (l, u, v) = luv;
+        if (l == 0) return new(0, 0, 0);
 
-        var y = D65.Y * InvF((L + 16) / 116);
-        var up = U / (13 * L) + D65.Up;
-        var vp = V / (13 * L) + D65.Vp;
+        var y = D65.Y * InvF((l + 16) / 116);
+        var up = u / (13 * l) + D65.Up;
+        var vp = v / (13 * l) + D65.Vp;
 
         var den = 6 * up - 16 * vp + 12;
         var xp = 9 * up / den;
         var yp = 4 * vp / den;
 
-        return new(xp * y / yp, y, (1 - xp - yp) * y / yp);
+        var x = xp * y / yp;
+        var z = (1 - xp - yp) * y / yp;
+        return new(x, y, z);
     }
 }
 

@@ -17,11 +17,11 @@ readonly record struct Mat(
     f64 M31,
     f64 M32,
     f64 M33) {
-    public static Tri operator *(in Mat m, in Tri t) =>
+    public static Tri operator *(in Mat m, in Tri v) =>
         new(
-            m.M11 * t.C1 + m.M12 * t.C2 + m.M13 * t.C3,
-            m.M21 * t.C1 + m.M22 * t.C2 + m.M23 * t.C3,
-            m.M31 * t.C1 + m.M32 * t.C2 + m.M33 * t.C3);
+            m.M11 * v.C1 + m.M12 * v.C2 + m.M13 * v.C3,
+            m.M21 * v.C1 + m.M22 * v.C2 + m.M23 * v.C3,
+            m.M31 * v.C1 + m.M32 * v.C2 + m.M33 * v.C3);
 
     public Mat Inverse() {
         f64 c11 = M22 * M33 - M23 * M32,

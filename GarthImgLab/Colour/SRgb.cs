@@ -3,19 +3,21 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 /// <summary> IEC 61966-2-1:1999 </summary>
-readonly record struct SRgb(f64 R, f64 G, f64 B) {
-    public (f64 Min, f64 Max) MinMax => (Min(R, Min(G, B)), Max(R, Max(G, B)));
-
-    public static bool IsValid(Xyz xyz) =>
+static class SRgb {
+    public static bool Contains(in Tri xyz) =>
         LinSRgb.FromXyz(xyz) is (>= 0 and <= 1, >= 0 and <= 1, >= 0 and <= 1);
 
-    public static SRgb FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (lr, lg, lb) = LinSRgb.FromXyz(xyz);
-        return new(Clamp(ToNonLin(lr), 0, 1), Clamp(ToNonLin(lg), 0, 1), Clamp(ToNonLin(lb), 0, 1));
+        return new(Clamp01(ToNonLin(lr)), Clamp01(ToNonLin(lg)), Clamp01(ToNonLin(lb)));
     }
 
-    public Xyz ToXyz() =>
-        new LinSRgb(Clamp(ToLin(R), 0, 1), Clamp(ToLin(G), 0, 1), Clamp(ToLin(B), 0, 1)).ToXyz();
+    public static Tri ToXyz(in Tri rgb) {
+        var (r, g, b) = rgb;
+        return LinSRgb.ToXyz(new(Clamp01(ToLin(r)), Clamp01(ToLin(g)), Clamp01(ToLin(b))));
+    }
+
+    static f64 Clamp01(f64 v) => Clamp(v, 0, 1);
 
     static f64 ToNonLin(f64 v) =>
         v <= .0031308
@@ -29,25 +31,18 @@ readonly record struct SRgb(f64 R, f64 G, f64 B) {
 }
 
 /// <summary> IEC 61966-2-1:1999 </summary>
-file readonly record struct LinSRgb(f64 R, f64 G, f64 B) {
-    static readonly Mat3X3 LinRgbToXyz = CreateLinRgbToXyz(), XyzToLinRgb = LinRgbToXyz.Inverse();
+file static class LinSRgb {
+    static readonly Mat LinRgbToXyz = CreateLinRgbToXyz(), XyzToLinRgb = LinRgbToXyz.Inverse();
 
-    static Mat3X3 CreateLinRgbToXyz() {
-        var (rx, ry, rz) = Bt709.R;
-        var (gx, gy, gz) = Bt709.G;
-        var (bx, by, bz) = Bt709.B;
-        Mat3X3 p = new(rx, gx, bx, ry, gy, by, rz, gz, bz);
-        var (sx, sy, sz) = p.Inverse().Mul3X1(D65.X, D65.Y, D65.Z);
-        return p.ScaleCols(sx, sy, sz);
-    }
+    public static Tri FromXyz(in Tri xyz) => XyzToLinRgb * xyz;
+    public static Tri ToXyz(in Tri rgb) => LinRgbToXyz * rgb;
 
-    public static LinSRgb FromXyz(Xyz xyz) {
-        var (r, g, b) = XyzToLinRgb.Mul3X1(xyz.X, xyz.Y, xyz.Z);
-        return new(r, g, b);
-    }
-
-    public Xyz ToXyz() {
-        var (x, y, z) = LinRgbToXyz.Mul3X1(R, G, B);
-        return new(x, y, z);
+    static Mat CreateLinRgbToXyz() {
+        var (rx, ry, rz) = Xyz.FromXy(Bt709.Rx, Bt709.Ry);
+        var (gx, gy, gz) = Xyz.FromXy(Bt709.Gx, Bt709.Gy);
+        var (bx, by, bz) = Xyz.FromXy(Bt709.Bx, Bt709.By);
+        var (sx, sy, sz) = new Mat(rx, gx, bx, ry, gy, by, rz, gz, bz).Inverse()
+                         * new Tri(D65.X, D65.Y, D65.Z);
+        return new(sx * rx, sy * gx, sz * bx, sx * ry, sy * gy, sz * by, sx * rz, sy * gz, sz * bz);
     }
 }

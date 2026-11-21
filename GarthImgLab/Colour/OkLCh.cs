@@ -1,28 +1,29 @@
 namespace GarthImgLab.Colour;
 
 /// <summary> https://bottosson.github.io/posts/oklab/ </summary>
-readonly record struct OkLCh(f64 L, f64 C, f64 H) {
+static class OkLCh {
     public static readonly MaxCLut MaxC = MaxCLut.Create(
-        FromXyz(new SRgb(1, 1, 1).ToXyz()).L,
-        FromXyz(new SRgb(1, 0, 1).ToXyz()).C,
-        static (l, c, h) => new OkLCh(l, c, h).ToXyz());
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(1, 0, 1))).C2,
+        ToXyz);
 
-    public static OkLCh FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
         return new(l, c, h);
     }
 
-    public Xyz ToXyz() {
-        var (a, b) = Polar.ChToAb(C, H);
-        return new OkLab(L, a, b).ToXyz();
+    public static Tri ToXyz(in Tri lch) {
+        var (l, c, h) = lch;
+        var (a, b) = Polar.ChToAb(c, h);
+        return OkLab.ToXyz(new(l, a, b));
     }
 }
 
 /// <summary> https://bottosson.github.io/posts/oklab/ </summary>
-file readonly record struct OkLab(f64 L, f64 A, f64 B) {
+file static class OkLab {
     /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
-    static readonly Mat3X3 XyzToLms = new(
+    static readonly Mat XyzToLms = new(
         .819022437996703,
         .3619062600528904,
         -.1288737815209879,
@@ -34,7 +35,7 @@ file readonly record struct OkLab(f64 L, f64 A, f64 B) {
         .6335478284694309);
 
     /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
-    static readonly Mat3X3 LmsToLab = new(
+    static readonly Mat LmsToLab = new(
         .210454268309314,
         .7936177747023054,
         -.0040720430116193,
@@ -45,17 +46,15 @@ file readonly record struct OkLab(f64 L, f64 A, f64 B) {
         .7827717124575296,
         -.8086757549230774);
 
-    static readonly Mat3X3 LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
+    static readonly Mat LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
 
-    public static OkLab FromXyz(Xyz xyz) {
-        var (l, m, s) = XyzToLms.Mul3X1(xyz.X, xyz.Y, xyz.Z);
-        var (okl, a, b) = LmsToLab.Mul3X1(Math.Cbrt(l), Math.Cbrt(m), Math.Cbrt(s));
-        return new(okl, a, b);
+    public static Tri FromXyz(in Tri xyz) {
+        var (l, m, s) = XyzToLms * xyz;
+        return LmsToLab * new Tri(Math.Cbrt(l), Math.Cbrt(m), Math.Cbrt(s));
     }
 
-    public Xyz ToXyz() {
-        var (l, m, s) = LabToLms.Mul3X1(L, A, B);
-        var (x, y, z) = LmsToXyz.Mul3X1(l * l * l, m * m * m, s * s * s);
-        return new(x, y, z);
+    public static Tri ToXyz(in Tri lab) {
+        var (l, m, s) = LabToLms * lab;
+        return LmsToXyz * new Tri(l * l * l, m * m * m, s * s * s);
     }
 }

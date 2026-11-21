@@ -1,6 +1,8 @@
 namespace GarthImgLab.Colour;
 
 sealed class MaxCLut(f32[] lut, f64 maxL) {
+    public delegate Tri ToXyz(in Tri lch);
+
     const int Nl = 128, Nh = 360, Scan = 16, Bisect = 24;
 
     public f64 this[f64 l, f64 h] {
@@ -25,7 +27,7 @@ sealed class MaxCLut(f32[] lut, f64 maxL) {
         }
     }
 
-    public static MaxCLut Create(f64 maxL, f64 maxC, Func<f64, f64, f64, Xyz> toXyz) {
+    public static MaxCLut Create(f64 maxL, f64 maxC, ToXyz toXyz) {
         var lut = new f32[Nl * Nh];
         var lStep = maxL / (Nl - 1);
         for (var i = 1; i < Nl - 1; i++) { // 端点行恒 0
@@ -37,20 +39,20 @@ sealed class MaxCLut(f32[] lut, f64 maxL) {
         return new(lut, maxL);
     }
 
-    static f64 SolveC(f64 l, f64 h, f64 maxC, Func<f64, f64, f64, Xyz> toXyz) {
+    static f64 SolveC(f64 l, f64 h, f64 maxC, ToXyz toXyz) {
         var lo = 0d;
         var step = maxC / Scan;
 
         for (var k = 1; k <= Scan; k++) {
             var hi = k * step;
-            if (SRgb.IsValid(toXyz(l, hi, h))) {
+            if (SRgb.Contains(toXyz(new(l, hi, h)))) {
                 lo = hi;
                 continue;
             }
 
             for (var n = 0; n < Bisect; n++) {
                 var mid = .5 * (lo + hi);
-                if (SRgb.IsValid(toXyz(l, mid, h)))
+                if (SRgb.Contains(toXyz(new(l, mid, h))))
                     lo = mid;
                 else
                     hi = mid;

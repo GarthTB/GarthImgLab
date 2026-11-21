@@ -4,26 +4,27 @@ using static Bt2408;
 using static Math;
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
-readonly record struct JzCzhz(f64 J, f64 C, f64 H) {
+static class JzCzhz {
     public static readonly MaxCLut MaxC = MaxCLut.Create(
-        FromXyz(new SRgb(1, 1, 1).ToXyz()).J,
-        FromXyz(new SRgb(0, 0, 1).ToXyz()).C,
-        static (j, c, h) => new JzCzhz(j, c, h).ToXyz());
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2,
+        ToXyz);
 
-    public static JzCzhz FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (j, a, b) = Jzazbz.FromXyz(xyz);
         var (c, h) = Polar.AbToCh(a, b);
         return new(j, c, h);
     }
 
-    public Xyz ToXyz() {
-        var (a, b) = Polar.ChToAb(C, H);
-        return new Jzazbz(J, a, b).ToXyz();
+    public static Tri ToXyz(in Tri jch) {
+        var (j, c, h) = jch;
+        var (a, b) = Polar.ChToAb(c, h);
+        return Jzazbz.ToXyz(new(j, a, b));
     }
 }
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
-file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
+file static class Jzazbz {
     const f64 B = 1.15, G = .66, D = -.56, D0 = 1.6295499532821566e-11;
 
     const f64 C1 = 3424d / 4096,
@@ -32,7 +33,7 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
         N = 2610d / 16384,
         P = 1.7 * 2523 / 32;
 
-    static readonly Mat3X3 XyzToLms = new(
+    static readonly Mat XyzToLms = new(
         .41478972,
         .579999,
         .014648,
@@ -43,7 +44,7 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
         .2648,
         .6684799);
 
-    static readonly Mat3X3 LmsToIab = new(
+    static readonly Mat LmsToIab = new(
         .5,
         .5,
         0,
@@ -54,9 +55,9 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
         1.096799,
         -1.295875);
 
-    static readonly Mat3X3 LmsToXyz = XyzToLms.Inverse(), IabToLms = LmsToIab.Inverse();
+    static readonly Mat LmsToXyz = XyzToLms.Inverse(), IabToLms = LmsToIab.Inverse();
 
-    public static Jzazbz FromXyz(Xyz xyz) {
+    public static Tri FromXyz(in Tri xyz) {
         var (x, y, z) = xyz;
         x *= SdrWhiteLum;
         y *= SdrWhiteLum;
@@ -65,18 +66,20 @@ file readonly record struct Jzazbz(f64 Jz, f64 Az, f64 Bz) {
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
 
-        var (l, m, s) = XyzToLms.Mul3X1(xp, yp, z);
-        var (i, a, b) = LmsToIab.Mul3X1(Pq(l), Pq(m), Pq(s));
+        var (l, m, s) = XyzToLms * new Tri(xp, yp, z);
+        var (i, a, b) = LmsToIab * new Tri(Pq(l), Pq(m), Pq(s));
 
         var j = (1 + D) * i / (1 + D * i) - D0;
         return new(j, a, b);
     }
 
-    public Xyz ToXyz() {
-        var i = (Jz + D0) / (1 + D - D * (Jz + D0));
+    public static Tri ToXyz(in Tri jab) {
+        var (j, a, b) = jab;
 
-        var (l, m, s) = IabToLms.Mul3X1(i, Az, Bz);
-        var (xp, yp, z) = LmsToXyz.Mul3X1(InvPq(l), InvPq(m), InvPq(s));
+        var i = (j + D0) / (1 + D - D * (j + D0));
+
+        var (l, m, s) = IabToLms * new Tri(i, a, b);
+        var (xp, yp, z) = LmsToXyz * new Tri(InvPq(l), InvPq(m), InvPq(s));
 
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;

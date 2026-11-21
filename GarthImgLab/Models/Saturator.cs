@@ -21,8 +21,9 @@ sealed class Saturator(string space, f64 amount, bool hard, bool mask): IEffect 
 
     public void Apply(Img img, CT ct) => throw new NotImplementedException();
 
-    static f64 GetMask(SRgb rgb) {
-        var (min, max) = rgb.MinMax;
+    static f64 GetMask(in Tri rgb) {
+        var min = rgb.Min;
+        var max = rgb.Max;
         var m = Min(min, 1 - max);
         return 2 * Sqrt(m * (1 - m));
     }
