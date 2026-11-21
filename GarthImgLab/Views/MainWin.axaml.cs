@@ -1,6 +1,5 @@
 namespace GarthImgLab.Views;
 
-using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Common;
@@ -39,7 +38,7 @@ sealed partial class MainWin: Window {
 
     async Task<IReadOnlyList<string>> PickImgPathsAsync() => [
         ..(await StorageProvider.OpenFilePickerAsync(OpenOptions)).Select(static f =>
-            f.TryGetLocalPath() ?? throw new UnreachableException())
+            f.TryGetLocalPath() ?? throw new Never())
     ];
 
     Task ShowMsg(string title, string msg) =>
