@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using GarthImgLab.Colour;
 using MaxTup = (double C, int R, int G, int B);
 
-const int n = 4096, shell = 87, cut = n - shell;
+const int n = 1024, shell = 87, cut = n - shell;
 
 var v = new double[n + 1];
 for (var i = 0; i <= n; i++) v[i] = (double)i / n;
@@ -46,15 +46,13 @@ Parallel.ForEach(
 
 var okTup = global[3];
 var okXyz = SRgb.ToXyz(new(v[okTup.R], v[okTup.G], v[okTup.B]));
-var okLrChTup = okTup with { C = OkLrCh.FromXyz(okXyz).C2 };
-var okLChPlusTup = okTup with { C = OkLChPlus.FromXyz(okXyz).C2 };
+var okLChPTup = okTup with { C = OkLChP.FromXyz(okXyz).C2 };
 
 Print("CIELCh(ab)", global[0]);
 Print("CIELCh(uv)", global[1]);
 Print("JzCzhz", global[2]);
 Print("OkLCh", okTup);
-Print("OkLrCh", okLrChTup);
-Print("OkLCh+", okLChPlusTup);
+Print("OkLCh+", okLChPTup);
 Print("sUCS", global[4]);
 
 static void Take(ref MaxTup tup, double c, int r, int g, int b) {
@@ -62,4 +60,4 @@ static void Take(ref MaxTup tup, double c, int r, int g, int b) {
 }
 
 static void Print(string name, MaxTup tup) =>
-    Console.WriteLine($"{name,-10}  RGB=({tup.R,4}, {tup.G,4}, {tup.B,4})  C={tup.C:R}");
+    Console.WriteLine($"{name,-10}  RGB=({tup.R,4},{tup.G,4},{tup.B,4})  C={tup.C:R}");

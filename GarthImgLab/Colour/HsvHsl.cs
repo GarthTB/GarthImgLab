@@ -44,11 +44,9 @@ file static class Hue {
     public static f64 FromRgb(in Tri rgb, f64 max, f64 c) {
         var (r, g, b) = rgb;
         var h = max switch {
-            _ when max == r => 60 * ((g - b) / c),
-            _ when max == g => 60 * ((b - r) / c + 2),
-            _ => 60 * ((r - g) / c + 4)
+            _ when max == r => (g - b) / c, _ when max == g => (b - r) / c + 2, _ => (r - g) / c + 4
         };
-        return Polar.NormHue(h);
+        return Polar.NormHue(60 * h);
     }
 
     public static Tri ToRgb(f64 h, f64 c, f64 min) {

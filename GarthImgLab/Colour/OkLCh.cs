@@ -9,49 +9,46 @@ static class OkLCh {
 
     public static Tri FromXyz(in Tri xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);
-        var (c, h) = Polar.AbToCh(a, b);
+        var (c, h) = Polar.FromCart(a, b);
         return new(l, c, h);
     }
 
     public static Tri ToXyz(in Tri lch) {
         var (l, c, h) = lch;
-        var (a, b) = Polar.ChToAb(c, h);
+        var (a, b) = Polar.ToCart(c, h);
         return OkLab.ToXyz(new(l, a, b));
     }
 }
 
 /// <summary> https://bottosson.github.io/posts/oklab/ </summary>
 file static class OkLab {
-    /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
-    static readonly Mat XyzToLms = new(
-        .819022437996703,
-        .3619062600528904,
-        -.1288737815209879,
-        .0329836539323885,
-        .9292868615863434,
-        .0361446663506424,
-        .0481771893596242,
-        .2642395317527308,
-        .6335478284694309);
+    static readonly Mat UnadaptedXyzToLms = new(
+        .8189330101,
+        .3618667424,
+        -.1288597137,
+        .0329845436,
+        .9293118715,
+        .0361456387,
+        .0482003018,
+        .2643662691,
+        .633851707);
 
-    /// <summary> https://www.w3.org/TR/css-color-4/ </summary>
-    static readonly Mat LmsToLab = new(
-        .210454268309314,
-        .7936177747023054,
-        -.0040720430116193,
-        1.9779985324311684,
-        -2.4285922420485799,
-        .450593709617411,
-        .0259040424655478,
-        .7827717124575296,
-        -.8086757549230774);
+    static readonly Mat LabToLms = new(
+        1,
+        .3963377774,
+        .2158037573,
+        1,
+        -.1055613458,
+        -.0638541728,
+        1,
+        -.0894841775,
+        -1.2914855480);
 
-    static readonly Mat LmsToXyz = XyzToLms.Inverse(), LabToLms = LmsToLab.Inverse();
+    static readonly Mat XyzToLms
+            = UnadaptedXyzToLms.ScaleRows((UnadaptedXyzToLms * D65.Xyz).Apply(static c => 1 / c)),
+        LmsToXyz = XyzToLms.Inverse(),
+        LmsToLab = LabToLms.Inverse();
 
     public static Tri FromXyz(in Tri xyz) => LmsToLab * (XyzToLms * xyz).Apply(Math.Cbrt);
-
-    public static Tri ToXyz(in Tri lab) {
-        var (l, m, s) = LabToLms * lab;
-        return LmsToXyz * new Tri(l * l * l, m * m * m, s * s * s);
-    }
+    public static Tri ToXyz(in Tri lab) => LmsToXyz * (LabToLms * lab).Apply(static c => c * c * c);
 }

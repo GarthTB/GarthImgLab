@@ -5,7 +5,7 @@ using static Math;
 
 sealed class Saturator(string space, f64 amount, bool hard, bool mask): IEffect {
     public static readonly string[] ColourSpaces = [
-        "CIELCh(ab)", "CIELCh(uv)", "HSV", "HSL", "JzCzhz", "OkLCh", "OkLrCh", "OkLCh+", "sUCS"
+        "HSV", "HSL", "CIELCh(ab)", "CIELCh(uv)", "JzCzhz", "OkLCh", "OkLCh+", "sUCS"
     ];
 
     readonly Func<f64, f64> _gain = (amount, hard) switch {

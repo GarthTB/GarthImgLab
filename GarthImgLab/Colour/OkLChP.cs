@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 using static Math;
 
 /// <summary> arXiv:2606.05255 </summary>
-static class OkLChPlus {
+static class OkLChP {
     const f64 Alpha = .73, N = .87, Sigma = .34;
     static readonly f64 SigmaN = Pow(Sigma, N);
 

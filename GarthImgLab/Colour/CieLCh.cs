@@ -1,6 +1,7 @@
 namespace GarthImgLab.Colour;
 
 using static CubeRoot;
+using static Polar;
 
 /// <summary> ISO/CIE 11664-4:2019 </summary>
 static class CieLChab {
@@ -11,13 +12,13 @@ static class CieLChab {
 
     public static Tri FromXyz(in Tri xyz) {
         var (l, a, b) = CieLab.FromXyz(xyz);
-        var (c, h) = Polar.AbToCh(a, b);
+        var (c, h) = FromCart(a, b);
         return new(l, c, h);
     }
 
     public static Tri ToXyz(in Tri lch) {
         var (l, c, h) = lch;
-        var (a, b) = Polar.ChToAb(c, h);
+        var (a, b) = ToCart(c, h);
         return CieLab.ToXyz(new(l, a, b));
     }
 }
@@ -31,13 +32,13 @@ static class CieLChuv {
 
     public static Tri FromXyz(in Tri xyz) {
         var (l, u, v) = CieLuv.FromXyz(xyz);
-        var (c, h) = Polar.AbToCh(u, v);
+        var (c, h) = FromCart(u, v);
         return new(l, c, h);
     }
 
     public static Tri ToXyz(in Tri lch) {
         var (l, c, h) = lch;
-        var (u, v) = Polar.ChToAb(c, h);
+        var (u, v) = ToCart(c, h);
         return CieLuv.ToXyz(new(l, u, v));
     }
 }

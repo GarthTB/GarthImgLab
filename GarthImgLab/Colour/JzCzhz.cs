@@ -11,13 +11,13 @@ static class JzCzhz {
 
     public static Tri FromXyz(in Tri xyz) {
         var (j, a, b) = Jzazbz.FromXyz(xyz);
-        var (c, h) = Polar.AbToCh(a, b);
+        var (c, h) = Polar.FromCart(a, b);
         return new(j, c, h);
     }
 
     public static Tri ToXyz(in Tri jch) {
         var (j, c, h) = jch;
-        var (a, b) = Polar.ChToAb(c, h);
+        var (a, b) = Polar.ToCart(c, h);
         return Jzazbz.ToXyz(new(j, a, b));
     }
 }
@@ -32,7 +32,7 @@ file static class Jzazbz {
         N = 2610d / 16384,
         P = 1.7 * 2523 / 32;
 
-    static readonly Mat XyzToLms = new(
+    static readonly Mat UnadaptedXyzToLms = new(
         .41478972,
         .579999,
         .014648,
@@ -54,10 +54,12 @@ file static class Jzazbz {
         1.096799,
         -1.295875);
 
-    static readonly Mat LmsToXyz = XyzToLms.Inverse(), IabToLms = LmsToIab.Inverse();
+    static readonly Mat XyzToLms = AdaptMat(),
+        LmsToXyz = XyzToLms.Inverse(),
+        IabToLms = LmsToIab.Inverse();
 
     public static Tri FromXyz(in Tri xyz) {
-        var (x, y, z) = xyz.Apply(static c => c * Bt2408.SdrWhiteLum);
+        var (x, y, z) = xyz;
 
         var xp = B * x - (B - 1) * z;
         var yp = G * y - (G - 1) * x;
@@ -77,8 +79,7 @@ file static class Jzazbz {
 
         var x = (xp + (B - 1) * z) / B;
         var y = (yp + (G - 1) * x) / G;
-
-        return new Tri(x, y, z).Apply(static c => c / Bt2408.SdrWhiteLum);
+        return new(x, y, z);
     }
 
     static f64 Pq(f64 v) {
@@ -89,5 +90,13 @@ file static class Jzazbz {
     static f64 InvPq(f64 v) {
         var vp = Pow(v, 1 / P);
         return 10000 * Pow(Max(vp - C1, 0) / (C2 - C3 * vp), 1 / N);
+    }
+
+    static Mat AdaptMat() {
+        const f64 x = B * D65.X - (B - 1) * D65.Z;
+        const f64 y = G * D65.Y - (G - 1) * D65.X;
+        var lms = UnadaptedXyzToLms * new Tri(x, y, D65.Z);
+        var k = Bt2408.SdrWhiteLum * (lms.C1 + lms.C2 + lms.C3) / 3;
+        return UnadaptedXyzToLms.ScaleRows(lms.Apply(c => k / c));
     }
 }

@@ -3,7 +3,7 @@ namespace GarthImgLab.Colour;
 sealed class MaxCLut(f32[] lut, f64 maxL) {
     public delegate Tri ToXyz(in Tri lch);
 
-    const int Nl = 128, Nh = 360, Scan = 16, Bisect = 24;
+    const int Nl = 256, Nh = 360, Scan = 16, Bisect = 24;
 
     public f64 this[f64 l, f64 h] {
         get {
@@ -13,9 +13,9 @@ sealed class MaxCLut(f32[] lut, f64 maxL) {
             var y = h * (Nh / 360d);
             var i = (int)x;
             var t = x - i;
-            var j = (int)y;
+            var j = (int)y; // 360 出现
             var u = y - j;
-            j %= Nh; // 舍入至 360 折回 0
+            j %= Nh; // 360 -> 0
             var j1 = (j + 1) % Nh;
 
             var k = i * Nh;
@@ -30,7 +30,7 @@ sealed class MaxCLut(f32[] lut, f64 maxL) {
     public static MaxCLut Create(f64 maxL, f64 maxC, ToXyz toXyz) {
         var lut = new f32[Nl * Nh];
         var lStep = maxL / (Nl - 1);
-        for (var i = 1; i < Nl - 1; i++) { // 端点行恒 0
+        for (var i = 1; i < Nl - 1; i++) { // 黑点与白点色度 0
             var l = i * lStep;
             var row = i * Nh;
             for (var j = 0; j < Nh; j++)
@@ -57,7 +57,7 @@ sealed class MaxCLut(f32[] lut, f64 maxL) {
                 else
                     hi = mid;
             }
-            return lo; // 可能略低估
+            return lo; // 略低估
         }
 
         return maxC;

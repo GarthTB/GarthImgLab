@@ -46,4 +46,28 @@ readonly record struct Mat(
             c23 / det,
             c33 / det);
     }
+
+    public Mat ScaleCols(in Tri s) =>
+        new(
+            s.C1 * M11,
+            s.C2 * M12,
+            s.C3 * M13,
+            s.C1 * M21,
+            s.C2 * M22,
+            s.C3 * M23,
+            s.C1 * M31,
+            s.C2 * M32,
+            s.C3 * M33);
+
+    public Mat ScaleRows(in Tri s) =>
+        new(
+            s.C1 * M11,
+            s.C1 * M12,
+            s.C1 * M13,
+            s.C2 * M21,
+            s.C2 * M22,
+            s.C2 * M23,
+            s.C3 * M31,
+            s.C3 * M32,
+            s.C3 * M33);
 }
