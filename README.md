@@ -14,7 +14,7 @@
 [![C# 14](https://img.shields.io/badge/C%23-14-7253dc)](https://github.com/dotnet/csharplang)
 [![AvaloniaUI 12](https://img.shields.io/badge/AvaloniaUI-12-007df9?logo=avaloniaui)](https://avaloniaui.net)
 
-一个轻量 GUI 应用，用于数字彩色静态摄影图像的末级非线性处理
+一个 GUI 应用，用于数字彩色静态摄影图像的末级非线性 SDR 处理
 
 ## ✨ 特性
 
