@@ -1,0 +1,11 @@
+<Application xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="GarthImgLab.App">
+    <Application.Styles>
+        <Fluent2Theme/>
+        <Style Selector="Window">
+            <Setter Property="Background" Value="#0000"/>
+            <Setter Property="TransparencyLevelHint" Value="Mica"/>
+        </Style>
+    </Application.Styles>
+</Application>

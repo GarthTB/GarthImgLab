@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="GarthImgLab.Views.MsgWin"
+    WindowStartupLocation="CenterOwner"
+    SizeToContent="WidthAndHeight">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollViewer>
+            <SelectableTextBlock x:Name="Msg"
+                Padding="16,8,16,15"
+                TextWrapping="Wrap"/>
+        </ScrollViewer>
+    </Grid>
+</Window>
