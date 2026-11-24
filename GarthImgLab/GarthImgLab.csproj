@@ -19,6 +19,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Benchmarks"/>
         <InternalsVisibleTo Include="Tests"/>
+        <InternalsVisibleTo Include="MaxC"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -28,7 +29,7 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.2.0"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" Condition="'$(Configuration)'=='Debug'"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="Magick.NET-Q16-arm64" Version="15.1.0" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
-        <PackageReference Include="Magick.NET-Q16-x64" Version="15.1.0" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
+        <PackageReference Include="Magick.NET-Q16-arm64" Version="15.1.1" Condition="'$(RuntimeIdentifier)'=='osx-arm64'"/>
+        <PackageReference Include="Magick.NET-Q16-x64" Version="15.1.1" Condition="'$(RuntimeIdentifier)'!='osx-arm64'"/>
     </ItemGroup>
 </Project>
