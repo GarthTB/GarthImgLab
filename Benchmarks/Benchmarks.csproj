@@ -9,6 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GarthImgLab\GarthImgLab.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.16.0-preview.2"/>
     </ItemGroup>
 </Project>
