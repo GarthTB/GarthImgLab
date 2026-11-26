@@ -9,14 +9,14 @@ static class SRgb {
     public static Tri ToXyz(Tri rgb) => LinSRgb.ToXyz(rgb.Apply(Decode));
 
     static f64 EncodeClamp(f64 v) {
-        var nl = v <= .0031308
+        var nl = v <= .003130668442500634
             ? v * 12.92
             : 1.055 * Math.Pow(v, 1 / 2.4) - .055;
         return Math.Clamp(nl, 0, 1);
     }
 
     static f64 Decode(f64 v) =>
-        v <= .04045
+        v <= .040448236277108192
             ? v / 12.92
             : Math.Pow((v + .055) / 1.055, 2.4);
 }

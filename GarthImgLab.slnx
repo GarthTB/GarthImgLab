@@ -9,5 +9,6 @@
     <Folder Name="/Precompute/">
         <File Path="Precompute/D65.cs"/>
         <File Path="Precompute/MaxC.cs"/>
+        <File Path="Precompute/SRgb.cs"/>
     </Folder>
 </Solution>
