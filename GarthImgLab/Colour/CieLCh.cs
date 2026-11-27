@@ -5,8 +5,10 @@ using static Polar;
 
 /// <summary> ISO/CIE 11664-4:2019 </summary>
 static class CieLChab {
-    public static MaxCLut CreateMaxCLut() =>
-        new(FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1, FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2, ToXyz);
+    public static readonly Lazy<MaxCLut> MaxCLut = new(static () => new(
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2,
+        ToXyz));
 
     public static Tri FromXyz(Tri xyz) {
         var (l, a, b) = CieLab.FromXyz(xyz);
@@ -23,8 +25,10 @@ static class CieLChab {
 
 /// <summary> ISO/CIE 11664-5:2024 </summary>
 static class CieLChuv {
-    public static MaxCLut CreateMaxCLut() =>
-        new(FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1, FromXyz(SRgb.ToXyz(new(1, 0, 0))).C2, ToXyz);
+    public static readonly Lazy<MaxCLut> MaxCLut = new(static () => new(
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(1, 0, 0))).C2,
+        ToXyz));
 
     public static Tri FromXyz(Tri xyz) {
         var (l, u, v) = CieLuv.FromXyz(xyz);

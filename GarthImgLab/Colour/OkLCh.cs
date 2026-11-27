@@ -2,8 +2,10 @@ namespace GarthImgLab.Colour;
 
 /// <summary> https://bottosson.github.io/posts/oklab/ </summary>
 static class OkLCh {
-    public static MaxCLut CreateMaxCLut() =>
-        new(FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1, FromXyz(SRgb.ToXyz(new(1, 0, 1))).C2, ToXyz);
+    public static readonly Lazy<MaxCLut> MaxCLut = new(static () => new(
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(1, 0, 1))).C2,
+        ToXyz));
 
     public static Tri FromXyz(Tri xyz) {
         var (l, a, b) = OkLab.FromXyz(xyz);

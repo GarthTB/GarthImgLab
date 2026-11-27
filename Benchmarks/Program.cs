@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using Benchmarks.Benchmarks;
+using Benchmarks.Colour;
 
-BenchmarkRunner.Run<MaxCLutCreate>();
+BenchmarkRunner.Run<MaxCLutCtor>();

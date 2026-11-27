@@ -1,11 +1,12 @@
-namespace Benchmarks.Benchmarks;
+#pragma warning disable CS8618
+namespace Benchmarks.Colour;
 
 using System.Collections.Concurrent;
 using BenchmarkDotNet.Attributes;
 using GarthImgLab.Colour;
 
 [MemoryDiagnoser]
-public class MaxCLutCreate {
+public class MaxCLutCtor {
     static readonly Tri W = SRgb.ToXyz(new(1, 1, 1)),
         R = SRgb.ToXyz(new(1, 0, 0)),
         B = SRgb.ToXyz(new(0, 0, 1)),
@@ -32,7 +33,7 @@ public class MaxCLutCreate {
             "JzCzhz" => (JzCzhz.FromXyz(W).C1, JzCzhz.FromXyz(B).C2, JzCzhz.ToXyz),
             "OkLCh" => (OkLCh.FromXyz(W).C1, OkLCh.FromXyz(M).C2, OkLCh.ToXyz),
             "OkLCh+" => (OkLChP.FromXyz(W).C1, OkLChP.FromXyz(M).C2, OkLChP.ToXyz),
-            "sUCS" => (SUcs.FromXyz(W).C1, SUcs.FromXyz(R).C2, SUcs.ToXyz)
+            _ => (SUcs.FromXyz(W).C1, SUcs.FromXyz(R).C2, SUcs.ToXyz)
         };
     }
 

@@ -4,8 +4,10 @@ using static Math;
 
 /// <summary> DOI: 10.1364/OE.25.015131 </summary>
 static class JzCzhz {
-    public static MaxCLut CreateMaxCLut() =>
-        new(FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1, FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2, ToXyz);
+    public static readonly Lazy<MaxCLut> MaxCLut = new(static () => new(
+        FromXyz(SRgb.ToXyz(new(1, 1, 1))).C1,
+        FromXyz(SRgb.ToXyz(new(0, 0, 1))).C2,
+        ToXyz));
 
     public static Tri FromXyz(Tri xyz) {
         var (j, a, b) = Jzazbz.FromXyz(xyz);
